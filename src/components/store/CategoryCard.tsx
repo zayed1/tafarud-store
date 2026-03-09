@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Category } from "@/types";
 import { getLocalizedField } from "@/lib/utils";
@@ -13,6 +13,7 @@ interface CategoryCardProps {
 
 export default function CategoryCard({ category }: CategoryCardProps) {
   const locale = useLocale();
+  const t = useTranslations("common");
   const name = getLocalizedField(category, "name", locale);
 
   return (
@@ -21,8 +22,8 @@ export default function CategoryCard({ category }: CategoryCardProps) {
       transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
     >
       <Link href={`/${locale}/categories/${category.slug}`} className="block group">
-        <div className="bg-surface rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
-          <div className="aspect-square relative bg-gradient-to-br from-primary/10 to-secondary/10 overflow-hidden">
+        <div className="bg-surface rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300">
+          <div className="aspect-[4/3] relative bg-gradient-to-br from-primary/10 to-accent/10 overflow-hidden">
             {category.image_url ? (
               <Image
                 src={category.image_url}
@@ -38,10 +39,11 @@ export default function CategoryCard({ category }: CategoryCardProps) {
                 </svg>
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-dark/20 to-transparent group-hover:from-dark/80 transition-all duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-dark/20 to-transparent group-hover:from-primary-dark/80 transition-all duration-500" />
             <div className="absolute bottom-0 start-0 end-0 p-4">
-              <h3 className="text-white font-bold text-lg">{name}</h3>
-              <div className="flex items-center gap-1 mt-1 text-white/60 text-sm opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+              <h3 className="text-white font-bold text-lg mb-1">{name}</h3>
+              <div className="flex items-center gap-1.5 text-white/70 text-sm opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                <span>{t("viewAll")}</span>
                 <svg className="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>

@@ -1,19 +1,26 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #8B1A1A;
-  --color-primary-light: #A52A2A;
-  --color-primary-dark: #6B0F0F;
-  --color-secondary: #6B3A2A;
-  --color-secondary-light: #8B5A4A;
-  --color-accent: #D4A574;
-  --color-accent-light: #E8C9A0;
-  --color-background: #FDF8F4;
+  /* Primary - Deep Teal (from logo) */
+  --color-primary: #0D8070;
+  --color-primary-light: #10A090;
+  --color-primary-dark: #0A6658;
+
+  /* Secondary - Darker Teal */
+  --color-secondary: #0B5E52;
+  --color-secondary-light: #0D7566;
+
+  /* Accent - Soft Mint for highlights */
+  --color-accent: #5EC4B0;
+  --color-accent-light: #8EDACE;
+
+  /* Neutrals */
+  --color-background: #F7FAFA;
   --color-surface: #FFFFFF;
-  --color-dark: #2D1810;
-  --color-dark-light: #4A3028;
-  --color-muted: #9C8B80;
-  --color-border: #E8DDD6;
+  --color-dark: #1A2E2A;
+  --color-dark-light: #3A5550;
+  --color-muted: #8A9E9A;
+  --color-border: #D6E5E2;
 }
 
 body {
@@ -33,19 +40,19 @@ body {
 
 /* Dark Mode */
 .dark {
-  --color-background: #1a1210;
-  --color-surface: #241c18;
-  --color-dark: #f5f0eb;
-  --color-dark-light: #d4c9c0;
-  --color-muted: #8a7d74;
-  --color-border: #3d3530;
-  --color-primary: #c43c3c;
-  --color-primary-light: #d45050;
-  --color-primary-dark: #a02020;
-  --color-secondary: #9b6a5a;
-  --color-secondary-light: #b08070;
-  --color-accent: #D4A574;
-  --color-accent-light: #E8C9A0;
+  --color-background: #0F1A18;
+  --color-surface: #172422;
+  --color-dark: #E8F0EE;
+  --color-dark-light: #B8CCC8;
+  --color-muted: #6A8580;
+  --color-border: #2A3D3A;
+  --color-primary: #20B8A2;
+  --color-primary-light: #30D4BC;
+  --color-primary-dark: #189080;
+  --color-secondary: #18A090;
+  --color-secondary-light: #20B8A2;
+  --color-accent: #5EC4B0;
+  --color-accent-light: #8EDACE;
 }
 
 /* Smooth scrolling */
@@ -60,7 +67,7 @@ html {
 }
 
 .dark ::selection {
-  color: #1a1210;
+  color: #0F1A18;
 }
 
 /* Custom scrollbar */
@@ -89,7 +96,7 @@ html {
 }
 
 .dark .glass {
-  background: rgba(26, 18, 16, 0.85);
+  background: rgba(15, 26, 24, 0.85);
 }
 
 /* Gradient text utility */
@@ -124,8 +131,8 @@ html {
 
 /* Pulse glow */
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 26, 26, 0.2); }
-  50% { box-shadow: 0 0 20px 5px rgba(139, 26, 26, 0.15); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(13, 128, 112, 0.2); }
+  50% { box-shadow: 0 0 20px 5px rgba(13, 128, 112, 0.15); }
 }
 
 .animate-pulse-glow {
