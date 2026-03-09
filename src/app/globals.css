@@ -31,6 +31,23 @@ body {
   font-family: "Inter", "Segoe UI", system-ui, sans-serif;
 }
 
+/* Dark Mode */
+.dark {
+  --color-background: #1a1210;
+  --color-surface: #241c18;
+  --color-dark: #f5f0eb;
+  --color-dark-light: #d4c9c0;
+  --color-muted: #8a7d74;
+  --color-border: #3d3530;
+  --color-primary: #c43c3c;
+  --color-primary-light: #d45050;
+  --color-primary-dark: #a02020;
+  --color-secondary: #9b6a5a;
+  --color-secondary-light: #b08070;
+  --color-accent: #D4A574;
+  --color-accent-light: #E8C9A0;
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
@@ -40,6 +57,10 @@ html {
 ::selection {
   background-color: var(--color-accent);
   color: var(--color-dark);
+}
+
+.dark ::selection {
+  color: #1a1210;
 }
 
 /* Custom scrollbar */
@@ -65,6 +86,10 @@ html {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .glass {
+  background: rgba(26, 18, 16, 0.85);
 }
 
 /* Gradient text utility */

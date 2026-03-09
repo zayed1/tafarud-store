@@ -21,7 +21,21 @@
     "phone": "Phone",
     "rights": "All rights reserved",
     "partOf": "Part of",
-    "language": "العربية"
+    "language": "العربية",
+    "searchProducts": "Search products...",
+    "searchResults": "Search Results",
+    "noSearchResults": "No results found",
+    "backToTop": "Back to Top",
+    "share": "Share",
+    "shareProduct": "Share Product",
+    "copyLink": "Copy Link",
+    "linkCopied": "Link copied!",
+    "shareVia": "Share via",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "pageNotFound": "Page Not Found",
+    "pageNotFoundDesc": "Sorry, the page you are looking for does not exist or has been moved.",
+    "backHome": "Back to Home"
   },
   "hero": {
     "title": "Tafarud Store",
