@@ -98,11 +98,17 @@ export default async function ProductPage({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-muted mb-8">
-        <Link href={`/${locale}/products`} className="hover:text-primary transition-colors">
+      <nav className="flex items-center gap-2 text-sm text-muted mb-8 overflow-x-auto">
+        <Link href={`/${locale}`} className="hover:text-primary transition-colors flex-shrink-0">
+          {t("home")}
+        </Link>
+        <svg className="w-4 h-4 rtl:rotate-180 flex-shrink-0 text-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+        <Link href={`/${locale}/products`} className="hover:text-primary transition-colors flex-shrink-0">
           {t("products")}
         </Link>
-        <svg className="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 rtl:rotate-180 flex-shrink-0 text-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
         <span className="text-dark font-medium truncate">{name}</span>
@@ -124,7 +130,7 @@ export default async function ProductPage({
                 priority
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/5 to-secondary/5">
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5">
                 <svg className="w-24 h-24 text-muted/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
@@ -152,7 +158,7 @@ export default async function ProductPage({
             <ShareButton title={name} />
           </div>
 
-          <div className="flex items-baseline gap-2">
+          <div className="flex items-baseline gap-3 bg-primary/5 px-5 py-3 rounded-xl">
             <p className="text-3xl font-bold text-primary">{formatPrice(product.price)}</p>
           </div>
 

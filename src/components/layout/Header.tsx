@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -14,6 +15,7 @@ export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const locale = useLocale();
   const t = useTranslations("common");
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,12 +37,22 @@ export default function Header() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
+
   const navLinks = [
     { href: `/${locale}`, label: t("home") },
     { href: `/${locale}/products`, label: t("products") },
     { href: `/${locale}/categories`, label: t("categories") },
     { href: `/${locale}/about`, label: t("about") },
   ];
+
+  const isActive = (href: string) => {
+    if (href === `/${locale}`) return pathname === `/${locale}`;
+    return pathname.startsWith(href);
+  };
 
   return (
     <>
@@ -54,15 +66,15 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href={`/${locale}`} className="flex items-center gap-2 group">
+            <Link href={`/${locale}`} className="flex items-center gap-2.5 group">
               <motion.div
-                className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-md"
+                className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-md shadow-primary/15"
                 whileHover={{ scale: 1.05, rotate: -3 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <span className="text-white font-bold text-lg">ت</span>
               </motion.div>
-              <span className="text-xl font-bold text-dark hidden sm:block group-hover:gradient-text transition-all duration-300 dark:text-white">
+              <span className="text-xl font-bold text-dark hidden sm:block group-hover:text-primary transition-colors duration-300 dark:text-white">
                 {t("storeName")}
               </span>
             </Link>
@@ -73,9 +85,20 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="relative px-4 py-2 text-dark-light hover:text-primary font-medium transition-colors rounded-lg hover:bg-primary/5 dark:text-white/70 dark:hover:text-accent"
+                  className={`relative px-4 py-2 font-medium transition-colors rounded-lg ${
+                    isActive(link.href)
+                      ? "text-primary bg-primary/8 dark:text-accent dark:bg-accent/10"
+                      : "text-dark-light hover:text-primary hover:bg-primary/5 dark:text-white/70 dark:hover:text-accent"
+                  }`}
                 >
                   {link.label}
+                  {isActive(link.href) && (
+                    <motion.div
+                      layoutId="activeNav"
+                      className="absolute bottom-0 inset-x-2 h-0.5 bg-primary dark:bg-accent rounded-full"
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
                 </Link>
               ))}
             </nav>
@@ -85,8 +108,9 @@ export default function Header() {
               {/* Search Button */}
               <motion.button
                 onClick={() => setIsSearchOpen(true)}
-                className="p-2 rounded-lg hover:bg-border/50 text-dark-light hover:text-primary transition-colors cursor-pointer dark:text-white/70 dark:hover:text-accent"
+                className="p-2.5 rounded-xl hover:bg-primary/5 text-dark-light hover:text-primary transition-colors cursor-pointer dark:text-white/70 dark:hover:text-accent"
                 whileTap={{ scale: 0.9 }}
+                title="Ctrl+K"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -154,7 +178,11 @@ export default function Header() {
                   >
                     <Link
                       href={link.href}
-                      className="block px-4 py-3 text-dark-light hover:text-primary hover:bg-primary/5 rounded-lg font-medium transition-colors dark:text-white/70"
+                      className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
+                        isActive(link.href)
+                          ? "text-primary bg-primary/8 dark:text-accent"
+                          : "text-dark-light hover:text-primary hover:bg-primary/5 dark:text-white/70"
+                      }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {link.label}

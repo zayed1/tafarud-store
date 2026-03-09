@@ -10,19 +10,19 @@ export default function HeroSection() {
   const locale = useLocale();
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-dark via-primary-dark to-secondary min-h-[520px] sm:min-h-[560px] flex items-center">
+    <section className="relative overflow-hidden bg-gradient-to-br from-primary-dark via-primary to-secondary min-h-[520px] sm:min-h-[580px] flex items-center">
       {/* Animated decorative patterns */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-10 start-10 w-72 h-72 bg-accent rounded-full blur-3xl opacity-15"
+          className="absolute top-10 start-10 w-72 h-72 bg-accent rounded-full blur-3xl opacity-20"
           animate={{
             scale: [1, 1.2, 1],
-            opacity: [0.15, 0.2, 0.15],
+            opacity: [0.2, 0.28, 0.2],
           }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-10 end-10 w-96 h-96 bg-primary rounded-full blur-3xl opacity-10"
+          className="absolute bottom-10 end-10 w-96 h-96 bg-accent-light rounded-full blur-3xl opacity-10"
           animate={{
             scale: [1, 1.15, 1],
             opacity: [0.1, 0.18, 0.1],
@@ -30,7 +30,7 @@ export default function HeroSection() {
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-light rounded-full blur-3xl opacity-5"
+          className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white rounded-full blur-3xl opacity-[0.04]"
           animate={{
             scale: [1, 1.1, 1],
           }}
@@ -40,12 +40,37 @@ export default function HeroSection() {
 
       {/* Geometric pattern overlay */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.04]"
         style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
           backgroundSize: "40px 40px",
         }}
       />
+
+      {/* Decorative floating squares (inspired by logo) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(12)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 sm:w-3 sm:h-3 bg-white/10 rounded-sm"
+            style={{
+              top: `${15 + Math.random() * 70}%`,
+              left: `${5 + Math.random() * 90}%`,
+            }}
+            animate={{
+              y: [0, -20, 0],
+              opacity: [0.1, 0.3, 0.1],
+              rotate: [0, 90, 0],
+            }}
+            transition={{
+              duration: 4 + Math.random() * 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: Math.random() * 3,
+            }}
+          />
+        ))}
+      </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center w-full">
         <motion.div
@@ -54,12 +79,12 @@ export default function HeroSection() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <motion.div
-            className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 rounded-full border border-white/10 mb-8"
+            className="inline-flex items-center gap-2 px-5 py-2 bg-white/10 rounded-full border border-white/15 mb-8 backdrop-blur-sm"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+            <span className="w-2 h-2 bg-accent-light rounded-full animate-pulse" />
             <span className="text-accent-light text-sm font-medium">{t("subtitle")}</span>
           </motion.div>
         </motion.div>
@@ -74,7 +99,7 @@ export default function HeroSection() {
         </motion.h1>
 
         <motion.p
-          className="text-white/60 max-w-2xl mx-auto mb-10 text-base sm:text-lg leading-relaxed"
+          className="text-white/65 max-w-2xl mx-auto mb-10 text-base sm:text-lg leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -91,7 +116,7 @@ export default function HeroSection() {
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Link
               href={`/${locale}/products`}
-              className="inline-flex items-center justify-center px-8 py-3.5 bg-accent text-dark font-semibold rounded-xl hover:bg-accent-light transition-all text-lg shadow-lg shadow-accent/20 hover:shadow-xl hover:shadow-accent/30"
+              className="inline-flex items-center justify-center px-8 py-3.5 bg-white text-primary-dark font-semibold rounded-xl hover:bg-accent-light transition-all text-lg shadow-lg shadow-black/10 hover:shadow-xl"
             >
               {t("browseProducts")}
               <svg className="w-5 h-5 ms-2 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +127,7 @@ export default function HeroSection() {
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Link
               href={`/${locale}/categories`}
-              className="inline-flex items-center justify-center px-8 py-3.5 border-2 border-white/20 text-white font-semibold rounded-xl hover:bg-white/10 hover:border-white/30 transition-all text-lg"
+              className="inline-flex items-center justify-center px-8 py-3.5 border-2 border-white/25 text-white font-semibold rounded-xl hover:bg-white/10 hover:border-white/40 transition-all text-lg backdrop-blur-sm"
             >
               {t("browseCategories")}
             </Link>

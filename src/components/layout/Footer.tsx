@@ -12,9 +12,15 @@ export default function Footer() {
   return (
     <footer className="bg-dark text-white mt-auto relative overflow-hidden">
       {/* Decorative element */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      {/* Decorative background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-20 -end-20 w-60 h-60 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-20 -start-20 w-60 h-60 bg-accent/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
           {/* Store Info */}
           <AnimatedSection delay={0}>
@@ -25,7 +31,7 @@ export default function Footer() {
                 </div>
                 <span className="text-xl font-bold">{t("storeName")}</span>
               </div>
-              <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+              <p className="text-white/50 text-sm leading-relaxed max-w-xs">
                 {t("partOf")}{" "}
                 <Link
                   href="https://altafarud.com"
@@ -42,7 +48,10 @@ export default function Footer() {
           {/* Quick Links */}
           <AnimatedSection delay={0.1}>
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">{t("products")}</h3>
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <div className="w-1 h-5 bg-gradient-to-b from-primary to-accent rounded-full" />
+                {t("products")}
+              </h3>
               <div className="space-y-3">
                 {[
                   { href: "/products", label: t("allProducts") },
@@ -52,9 +61,9 @@ export default function Footer() {
                   <motion.div key={link.href} whileHover={{ x: 4 }} className="rtl:text-right">
                     <Link
                       href={link.href}
-                      className="text-white/60 hover:text-accent transition-colors text-sm inline-flex items-center gap-2"
+                      className="text-white/50 hover:text-accent transition-colors text-sm inline-flex items-center gap-2"
                     >
-                      <span className="w-1 h-1 bg-accent/50 rounded-full" />
+                      <span className="w-1 h-1 bg-primary/50 rounded-full" />
                       {link.label}
                     </Link>
                   </motion.div>
@@ -66,8 +75,11 @@ export default function Footer() {
           {/* Contact */}
           <AnimatedSection delay={0.2}>
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">{t("contactUs")}</h3>
-              <div className="space-y-3 text-sm text-white/60">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <div className="w-1 h-5 bg-gradient-to-b from-primary to-accent rounded-full" />
+                {t("contactUs")}
+              </h3>
+              <div className="space-y-3 text-sm text-white/50">
                 <motion.p whileHover={{ x: 4 }} className="flex items-center gap-3">
                   <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
                     <svg className="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +121,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-10 pt-8 border-t border-white/10 text-center text-sm text-white/40">
+        <div className="mt-10 pt-8 border-t border-white/10 text-center text-sm text-white/30">
           <p>
             &copy; {currentYear} {t("storeName")}. {t("rights")}.
           </p>
