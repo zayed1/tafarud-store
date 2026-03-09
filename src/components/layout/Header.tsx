@@ -1,14 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { motion, AnimatePresence } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const locale = useLocale();
   const t = useTranslations("common");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navLinks = [
     { href: `/${locale}`, label: t("home") },
@@ -18,26 +28,36 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-surface border-b border-border sticky top-0 z-40">
+    <header
+      className={`sticky top-0 z-40 transition-all duration-300 ${
+        isScrolled
+          ? "glass border-b border-border/50 shadow-sm"
+          : "bg-surface border-b border-border"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href={`/${locale}`} className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+          <Link href={`/${locale}`} className="flex items-center gap-2 group">
+            <motion.div
+              className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-md"
+              whileHover={{ scale: 1.05, rotate: -3 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <span className="text-white font-bold text-lg">ت</span>
-            </div>
-            <span className="text-xl font-bold text-dark hidden sm:block">
+            </motion.div>
+            <span className="text-xl font-bold text-dark hidden sm:block group-hover:gradient-text transition-all duration-300">
               {t("storeName")}
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-dark-light hover:text-primary font-medium transition-colors"
+                className="relative px-4 py-2 text-dark-light hover:text-primary font-medium transition-colors rounded-lg hover:bg-primary/5"
               >
                 {link.label}
               </Link>
@@ -48,36 +68,73 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
             {/* Mobile Menu Button */}
-            <button
+            <motion.button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden p-2 rounded-lg hover:bg-border/50 cursor-pointer"
+              whileTap={{ scale: 0.9 }}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
+                <AnimatePresence mode="wait">
+                  {isMenuOpen ? (
+                    <motion.path
+                      key="close"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      exit={{ pathLength: 0 }}
+                      transition={{ duration: 0.2 }}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  ) : (
+                    <motion.path
+                      key="menu"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      exit={{ pathLength: 0 }}
+                      transition={{ duration: 0.2 }}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  )}
+                </AnimatePresence>
               </svg>
-            </button>
+            </motion.button>
           </div>
         </div>
 
         {/* Mobile Nav */}
-        {isMenuOpen && (
-          <nav className="md:hidden border-t border-border py-4 space-y-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block px-4 py-2 text-dark-light hover:text-primary hover:bg-background rounded-lg font-medium transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        )}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.nav
+              className="md:hidden border-t border-border py-3 space-y-1 overflow-hidden"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {navLinks.map((link, index) => (
+                <motion.div
+                  key={link.href}
+                  initial={{ opacity: 0, x: locale === "ar" ? 20 : -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.3 }}
+                >
+                  <Link
+                    href={link.href}
+                    className="block px-4 py-3 text-dark-light hover:text-primary hover:bg-primary/5 rounded-lg font-medium transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );
