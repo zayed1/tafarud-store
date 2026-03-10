@@ -61,16 +61,25 @@ export default function SortableProductList({ products, onDelete }: SortableProd
       sort_order: index,
     }));
 
+    let hasError = false;
     for (const update of updates) {
-      await supabase
+      const { error } = await supabase
         .from("products")
         .update({ sort_order: update.sort_order })
         .eq("id", update.id);
+      if (error) {
+        hasError = true;
+        break;
+      }
     }
 
     setSaving(false);
-    setHasChanges(false);
-    toast.showToast(t("orderSaved"), "success");
+    if (hasError) {
+      toast.showToast("sort_order column missing — add it in Supabase", "error");
+    } else {
+      setHasChanges(false);
+      toast.showToast(t("orderSaved"), "success");
+    }
   }
 
   return (

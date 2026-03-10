@@ -10,6 +10,7 @@ import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import PurchaseLinkEditor from "@/components/admin/PurchaseLinkEditor";
 import ProductPreview from "@/components/admin/ProductPreview";
+import { useToast } from "@/components/ui/Toast";
 
 export default function NewProductPage() {
   const [nameAr, setNameAr] = useState("");
@@ -28,6 +29,7 @@ export default function NewProductPage() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("admin");
+  const toast = useToast();
 
   useEffect(() => {
     async function loadCategories() {
@@ -77,6 +79,7 @@ export default function NewProductPage() {
       .single();
 
     if (error || !product) {
+      toast.showToast(t("saveError"), "error");
       setSaving(false);
       return;
     }
@@ -94,7 +97,8 @@ export default function NewProductPage() {
       await supabase.from("purchase_links").insert(linksToInsert);
     }
 
-    router.push(`/${locale}/admin/products`);
+    toast.showToast(t("productAdded"), "success");
+    setTimeout(() => router.push(`/${locale}/admin/products`), 1500);
   }
 
   return (
