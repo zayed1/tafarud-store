@@ -29,7 +29,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
                 src={category.image_url}
                 alt={name}
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                className="object-contain transition-transform duration-500 group-hover:scale-110"
                 sizes="(max-width: 768px) 50vw, 25vw"
               />
             ) : (

@@ -29,7 +29,7 @@ export default function ProductGallery({ images, name }: ProductGalleryProps) {
               src={images[selectedIndex]}
               alt={`${name} - ${selectedIndex + 1}`}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              className="object-contain transition-transform duration-700 group-hover:scale-105"
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority={selectedIndex === 0}
             />

@@ -19,7 +19,7 @@ export default function LanguageSwitcher() {
   return (
     <button
       onClick={switchLocale}
-      className="px-3 py-1.5 text-sm font-medium rounded-lg border border-border hover:bg-border/50 text-dark transition-colors cursor-pointer"
+      className="px-3 py-1.5 text-sm font-semibold rounded-lg border border-primary/30 bg-primary/5 text-primary hover:bg-primary/10 hover:border-primary/50 transition-colors cursor-pointer"
     >
       {t("language")}
     </button>

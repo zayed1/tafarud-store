@@ -40,19 +40,19 @@ body {
 
 /* Dark Mode */
 .dark {
-  --color-background: #0F1A18;
-  --color-surface: #172422;
-  --color-dark: #E8F0EE;
-  --color-dark-light: #B8CCC8;
-  --color-muted: #6A8580;
-  --color-border: #2A3D3A;
-  --color-primary: #20B8A2;
-  --color-primary-light: #30D4BC;
-  --color-primary-dark: #189080;
-  --color-secondary: #18A090;
-  --color-secondary-light: #20B8A2;
-  --color-accent: #5EC4B0;
-  --color-accent-light: #8EDACE;
+  --color-background: #111827;
+  --color-surface: #1F2937;
+  --color-dark: #F3F4F6;
+  --color-dark-light: #D1D5DB;
+  --color-muted: #9CA3AF;
+  --color-border: #374151;
+  --color-primary: #2DD4BF;
+  --color-primary-light: #5EEAD4;
+  --color-primary-dark: #14B8A6;
+  --color-secondary: #14B8A6;
+  --color-secondary-light: #2DD4BF;
+  --color-accent: #5EEAD4;
+  --color-accent-light: #99F6E4;
 }
 
 /* Smooth scrolling */
@@ -67,7 +67,7 @@ html {
 }
 
 .dark ::selection {
-  color: #0F1A18;
+  color: #111827;
 }
 
 /* Custom scrollbar */
@@ -96,7 +96,7 @@ html {
 }
 
 .dark .glass {
-  background: rgba(15, 26, 24, 0.85);
+  background: rgba(17, 24, 39, 0.88);
 }
 
 /* Gradient text utility */

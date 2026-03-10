@@ -163,7 +163,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                 src={product.image_url}
                                 alt={name}
                                 fill
-                                className="object-cover"
+                                className="object-contain"
                                 sizes="48px"
                               />
                             ) : (
