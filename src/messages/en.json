@@ -113,6 +113,9 @@
     "recentProducts": "Recently Added",
     "preview": "Preview",
     "dragToReorder": "Drag to reorder",
-    "orderSaved": "Order saved"
+    "orderSaved": "Order saved",
+    "productSaved": "Changes saved successfully",
+    "productAdded": "Product added successfully",
+    "saveError": "An error occurred while saving"
   }
 }

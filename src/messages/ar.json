@@ -113,6 +113,9 @@
     "recentProducts": "آخر المنتجات المضافة",
     "preview": "معاينة",
     "dragToReorder": "اسحب لإعادة الترتيب",
-    "orderSaved": "تم حفظ الترتيب"
+    "orderSaved": "تم حفظ الترتيب",
+    "productSaved": "تم حفظ التعديلات بنجاح",
+    "productAdded": "تمت إضافة المنتج بنجاح",
+    "saveError": "حدث خطأ أثناء الحفظ"
   }
 }

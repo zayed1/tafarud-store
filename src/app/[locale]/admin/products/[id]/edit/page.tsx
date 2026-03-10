@@ -10,6 +10,7 @@ import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import PurchaseLinkEditor from "@/components/admin/PurchaseLinkEditor";
 import ProductPreview from "@/components/admin/ProductPreview";
+import { useToast } from "@/components/ui/Toast";
 
 export default function EditProductPage({
   params,
@@ -35,6 +36,7 @@ export default function EditProductPage({
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("admin");
+  const toast = useToast();
 
   useEffect(() => {
     async function loadData() {
@@ -85,7 +87,7 @@ export default function EditProductPage({
       }
     }
 
-    await supabase
+    const { error: updateError } = await supabase
       .from("products")
       .update({
         name_ar: nameAr,
@@ -98,6 +100,12 @@ export default function EditProductPage({
         image_url: imageUrl,
       })
       .eq("id", id);
+
+    if (updateError) {
+      toast.showToast(t("saveError"), "error");
+      setSaving(false);
+      return;
+    }
 
     // Update purchase links: delete existing and re-insert
     await supabase.from("purchase_links").delete().eq("product_id", id);
@@ -114,7 +122,8 @@ export default function EditProductPage({
       await supabase.from("purchase_links").insert(linksToInsert);
     }
 
-    router.push(`/${locale}/admin/products`);
+    toast.showToast(t("productSaved"), "success");
+    setTimeout(() => router.push(`/${locale}/admin/products`), 1500);
   }
 
   if (loading) {
