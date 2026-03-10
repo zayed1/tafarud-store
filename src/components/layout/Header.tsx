@@ -60,8 +60,8 @@ export default function Header() {
         role="banner"
         className={`sticky top-0 z-40 transition-all duration-300 ${
           isScrolled
-            ? "glass border-b border-border/50 shadow-sm dark:bg-dark/90"
-            : "bg-surface border-b border-border dark:bg-dark"
+            ? "glass border-b border-border/50 shadow-sm"
+            : "bg-surface border-b border-border"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6">

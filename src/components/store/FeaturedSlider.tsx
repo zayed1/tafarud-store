@@ -92,7 +92,7 @@ export default function FeaturedSlider({ products }: FeaturedSliderProps) {
                       src={product.image_url}
                       alt={name}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="object-contain transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
                   ) : (
