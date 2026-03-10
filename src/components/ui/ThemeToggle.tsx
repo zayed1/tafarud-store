@@ -31,7 +31,7 @@ export default function ThemeToggle() {
   return (
     <motion.button
       onClick={toggle}
-      className="p-2 rounded-lg hover:bg-border/50 text-dark-light hover:text-primary transition-colors cursor-pointer"
+      className="p-2 rounded-lg hover:bg-border/50 text-dark hover:text-primary transition-colors cursor-pointer dark:text-gray-300 dark:hover:text-accent"
       whileTap={{ scale: 0.9 }}
       title={isDark ? "Light Mode" : "Dark Mode"}
     >

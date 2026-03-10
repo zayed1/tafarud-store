@@ -55,7 +55,7 @@ export default function ProductFilters({
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
               selectedCategory === ""
                 ? "bg-primary text-white shadow-sm"
-                : "bg-surface border border-border text-dark-light hover:border-primary/30 hover:text-primary"
+                : "bg-surface border border-border text-dark hover:border-primary/30 hover:text-primary dark:text-gray-300"
             }`}
             whileTap={{ scale: 0.95 }}
           >
@@ -68,7 +68,7 @@ export default function ProductFilters({
               className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                 selectedCategory === category.id
                   ? "bg-primary text-white shadow-sm"
-                  : "bg-surface border border-border text-dark-light hover:border-primary/30 hover:text-primary"
+                  : "bg-surface border border-border text-dark hover:border-primary/30 hover:text-primary dark:text-gray-300"
               }`}
               whileTap={{ scale: 0.95 }}
             >

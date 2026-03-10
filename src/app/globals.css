@@ -18,8 +18,8 @@
   --color-background: #F7FAFA;
   --color-surface: #FFFFFF;
   --color-dark: #1A2E2A;
-  --color-dark-light: #3A5550;
-  --color-muted: #8A9E9A;
+  --color-dark-light: #2D4440;
+  --color-muted: #5F7370;
   --color-border: #D6E5E2;
 }
 
@@ -44,7 +44,7 @@ body {
   --color-surface: #1F2937;
   --color-dark: #F3F4F6;
   --color-dark-light: #D1D5DB;
-  --color-muted: #9CA3AF;
+  --color-muted: #B0B8C1;
   --color-border: #374151;
   --color-primary: #2DD4BF;
   --color-primary-light: #5EEAD4;

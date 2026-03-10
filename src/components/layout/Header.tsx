@@ -88,8 +88,8 @@ export default function Header() {
                   href={link.href}
                   className={`relative px-4 py-2 font-medium transition-colors rounded-lg ${
                     isActive(link.href)
-                      ? "text-primary bg-primary/8 dark:text-accent dark:bg-accent/10"
-                      : "text-dark-light hover:text-primary hover:bg-primary/5 dark:text-white/70 dark:hover:text-accent"
+                      ? "text-primary bg-primary/10 dark:text-accent dark:bg-accent/10"
+                      : "text-dark hover:text-primary hover:bg-primary/5 dark:text-gray-300 dark:hover:text-accent"
                   }`}
                 >
                   {link.label}
@@ -109,7 +109,7 @@ export default function Header() {
               {/* Search Button */}
               <motion.button
                 onClick={() => setIsSearchOpen(true)}
-                className="p-2.5 rounded-xl hover:bg-primary/5 text-dark-light hover:text-primary transition-colors cursor-pointer dark:text-white/70 dark:hover:text-accent"
+                className="p-2.5 rounded-xl hover:bg-primary/5 text-dark hover:text-primary transition-colors cursor-pointer dark:text-gray-300 dark:hover:text-accent"
                 whileTap={{ scale: 0.9 }}
                 title="Ctrl+K"
               >
@@ -181,8 +181,8 @@ export default function Header() {
                       href={link.href}
                       className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
                         isActive(link.href)
-                          ? "text-primary bg-primary/8 dark:text-accent"
-                          : "text-dark-light hover:text-primary hover:bg-primary/5 dark:text-white/70"
+                          ? "text-primary bg-primary/10 dark:text-accent"
+                          : "text-dark hover:text-primary hover:bg-primary/5 dark:text-gray-300"
                       }`}
                       onClick={() => setIsMenuOpen(false)}
                     >

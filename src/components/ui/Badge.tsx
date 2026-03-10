@@ -10,9 +10,9 @@ export default function Badge({
   className = "",
 }: BadgeProps) {
   const variants = {
-    primary: "bg-primary/10 text-primary border border-primary/20",
-    secondary: "bg-secondary/10 text-secondary border border-secondary/20",
-    accent: "bg-accent/20 text-secondary border border-accent/30",
+    primary: "bg-primary/10 text-primary border border-primary/20 dark:bg-primary/15 dark:text-primary",
+    secondary: "bg-secondary/10 text-secondary border border-secondary/20 dark:text-secondary-light",
+    accent: "bg-accent/20 text-secondary border border-accent/30 dark:bg-accent/15 dark:text-accent dark:border-accent/25",
   };
 
   return (

@@ -45,7 +45,7 @@ export default function ShareButton({ title, url }: ShareButtonProps) {
     <div className="relative">
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-dark-light bg-background border border-border rounded-xl hover:border-primary/30 hover:text-primary transition-all cursor-pointer"
+        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-dark bg-background border border-border rounded-xl hover:border-primary/30 hover:text-primary transition-all cursor-pointer dark:text-gray-300"
         whileTap={{ scale: 0.95 }}
         aria-label={t("share")}
       >
