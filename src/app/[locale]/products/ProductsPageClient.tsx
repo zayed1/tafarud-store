@@ -5,7 +5,10 @@ import { useTranslations } from "next-intl";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ProductGrid from "@/components/store/ProductGrid";
 import ProductFilters from "@/components/store/ProductFilters";
+import Pagination from "@/components/ui/Pagination";
 import { Product, Category } from "@/types";
+
+const PRODUCTS_PER_PAGE = 12;
 
 interface Props {
   products: Product[];
@@ -17,6 +20,7 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
   const t = useTranslations("common");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredAndSorted = useMemo(() => {
     let result = [...products];
@@ -41,6 +45,27 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
     return result;
   }, [products, selectedCategory, sortBy]);
 
+  const totalPages = Math.ceil(filteredAndSorted.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = filteredAndSorted.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE
+  );
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (sort: string) => {
+    setSortBy(sort);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <Breadcrumb
@@ -59,13 +84,20 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
         categories={categories}
         selectedCategory={selectedCategory}
         sortBy={sortBy}
-        onCategoryChange={setSelectedCategory}
-        onSortChange={setSortBy}
+        onCategoryChange={handleCategoryChange}
+        onSortChange={handleSortChange}
         productCount={filteredAndSorted.length}
       />
 
-      {filteredAndSorted.length > 0 ? (
-        <ProductGrid products={filteredAndSorted} />
+      {paginatedProducts.length > 0 ? (
+        <>
+          <ProductGrid products={paginatedProducts} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </>
       ) : (
         <div className="text-center py-20 text-muted">
           <div className="w-20 h-20 mx-auto mb-4 bg-border/30 rounded-2xl flex items-center justify-center">

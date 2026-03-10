@@ -4,6 +4,7 @@ import { routing } from "@/i18n/routing";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BackToTop from "@/components/ui/BackToTop";
+import PageTransition from "@/components/ui/PageTransition";
 import { ToastProvider } from "@/components/ui/Toast";
 
 export default async function LocaleLayout({
@@ -71,7 +72,9 @@ export default async function LocaleLayout({
               {locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content"}
             </a>
             <Header />
-            <main id="main-content" className="flex-1">{children}</main>
+            <main id="main-content" className="flex-1">
+              <PageTransition>{children}</PageTransition>
+            </main>
             <Footer />
             <BackToTop />
           </ToastProvider>

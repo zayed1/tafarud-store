@@ -46,7 +46,12 @@
     "filterByCategory": "تصفية حسب التصنيف",
     "suggestedCategories": "تصنيفات مقترحة",
     "trySearching": "جرّب البحث عن ما تحتاجه",
-    "productsCount": "{count} منتج"
+    "productsCount": "{count} منتج",
+    "previous": "السابق",
+    "next": "التالي",
+    "pageOf": "صفحة {current} من {total}",
+    "orderViaWhatsApp": "اطلب عبر واتساب",
+    "whatsAppOrderMessage": "مرحباً، أرغب بالاستفسار عن المنتج: {product}"
   },
   "hero": {
     "title": "متجر التفرّد",

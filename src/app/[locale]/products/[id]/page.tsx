@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
 import PurchaseLinks from "@/components/store/PurchaseLinks";
+import WhatsAppButton from "@/components/store/WhatsAppButton";
 import ShareButton from "@/components/store/ShareButton";
 import RelatedProducts from "@/components/store/RelatedProducts";
 import ProductGallery from "@/components/store/ProductGallery";
@@ -185,6 +186,9 @@ export default async function ProductPage({
               </p>
             </div>
           )}
+
+          {/* WhatsApp Order */}
+          <WhatsAppButton productName={name} />
 
           {/* Purchase Links */}
           <div className="pt-4 border-t border-border">

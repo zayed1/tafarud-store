@@ -23,7 +23,33 @@ export function ProductGridSkeleton({ count = 8 }: { count?: number }) {
 export function CategoryCardSkeleton() {
   return (
     <div className="bg-surface rounded-2xl border border-border overflow-hidden">
-      <div className="aspect-square bg-border/30 shimmer" />
+      <div className="aspect-[4/3] bg-border/30 shimmer" />
+    </div>
+  );
+}
+
+export function CategoryGridSkeleton({ count = 4 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+      {Array.from({ length: count }).map((_, i) => (
+        <CategoryCardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
+
+export function FiltersSkeleton() {
+  return (
+    <div className="space-y-4 mb-8">
+      <div className="flex items-center justify-between">
+        <div className="h-4 bg-border/30 rounded shimmer w-20" />
+        <div className="h-8 bg-border/30 rounded-lg shimmer w-32" />
+      </div>
+      <div className="flex gap-2">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="h-9 bg-border/30 rounded-full shimmer w-20 flex-shrink-0" />
+        ))}
+      </div>
     </div>
   );
 }

@@ -46,7 +46,12 @@
     "filterByCategory": "Filter by category",
     "suggestedCategories": "Suggested Categories",
     "trySearching": "Try searching for what you need",
-    "productsCount": "{count} products"
+    "productsCount": "{count} products",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {current} of {total}",
+    "orderViaWhatsApp": "Order via WhatsApp",
+    "whatsAppOrderMessage": "Hello, I would like to inquire about the product: {product}"
   },
   "hero": {
     "title": "Tafarud Store",
