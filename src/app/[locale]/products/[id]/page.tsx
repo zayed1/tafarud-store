@@ -9,8 +9,11 @@ import ShareButton from "@/components/store/ShareButton";
 import RelatedProducts from "@/components/store/RelatedProducts";
 import ProductGallery from "@/components/store/ProductGallery";
 import Badge from "@/components/ui/Badge";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import { Product, PurchaseLink } from "@/types";
 import type { Metadata } from "next";
+
+export const revalidate = 60;
 
 async function getProduct(id: string) {
   try {
@@ -95,24 +98,37 @@ export default async function ProductPage({
     ? [product.image_url]
     : [];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: name,
+    description: description || "",
+    image: product.image_url || "",
+    offers: {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "AED",
+      availability: "https://schema.org/InStock",
+    },
+    brand: {
+      "@type": "Brand",
+      name: "متجر التفرّد",
+    },
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-muted mb-8 overflow-x-auto">
-        <Link href={`/${locale}`} className="hover:text-primary transition-colors flex-shrink-0">
-          {t("home")}
-        </Link>
-        <svg className="w-4 h-4 rtl:rotate-180 flex-shrink-0 text-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-        <Link href={`/${locale}/products`} className="hover:text-primary transition-colors flex-shrink-0">
-          {t("products")}
-        </Link>
-        <svg className="w-4 h-4 rtl:rotate-180 flex-shrink-0 text-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-        <span className="text-dark font-medium truncate">{name}</span>
-      </nav>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Breadcrumb
+        items={[
+          { label: t("home"), href: `/${locale}` },
+          { label: t("products"), href: `/${locale}/products` },
+          { label: name },
+        ]}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {/* Product Image / Gallery */}

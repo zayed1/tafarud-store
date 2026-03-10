@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import { createClient } from "@/lib/supabase/server";
 import { useTranslations } from "next-intl";
 import { getLocale } from "next-intl/server";

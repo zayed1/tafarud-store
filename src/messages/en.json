@@ -36,7 +36,17 @@
     "pageNotFound": "Page Not Found",
     "pageNotFoundDesc": "Sorry, the page you are looking for does not exist or has been moved.",
     "backHome": "Back to Home",
-    "viewAll": "View All"
+    "viewAll": "View All",
+    "skipToContent": "Skip to content",
+    "sortBy": "Sort by",
+    "newest": "Newest",
+    "priceHighToLow": "Price: High to Low",
+    "priceLowToHigh": "Price: Low to High",
+    "allCategories2": "All",
+    "filterByCategory": "Filter by category",
+    "suggestedCategories": "Suggested Categories",
+    "trySearching": "Try searching for what you need",
+    "productsCount": "{count} products"
   },
   "hero": {
     "title": "Tafarud Store",
@@ -97,6 +107,12 @@
     "sortOrder": "Sort Order",
     "totalProducts": "Total Products",
     "totalCategories": "Total Categories",
-    "loginError": "Invalid email or password"
+    "loginError": "Invalid email or password",
+    "featuredCount": "Featured Products",
+    "purchaseLinksCount": "Purchase Links",
+    "recentProducts": "Recently Added",
+    "preview": "Preview",
+    "dragToReorder": "Drag to reorder",
+    "orderSaved": "Order saved"
   }
 }
