@@ -44,10 +44,34 @@ export default async function LocaleLayout({
         />
       </head>
       <body className="antialiased min-h-screen flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "متجر التفرّد - Tafarud Store",
+              url: "https://altafarudstore.com",
+              contactPoint: {
+                "@type": "ContactPoint",
+                telephone: "+971504677161",
+                contactType: "customer service",
+                availableLanguage: ["Arabic", "English"],
+              },
+              sameAs: ["https://altafarud.com"],
+            }),
+          }}
+        />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ToastProvider>
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-medium"
+            >
+              {locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content"}
+            </a>
             <Header />
-            <main className="flex-1">{children}</main>
+            <main id="main-content" className="flex-1">{children}</main>
             <Footer />
             <BackToTop />
           </ToastProvider>

@@ -37,6 +37,9 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       {isOpen && (
         <motion.div
           ref={overlayRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           onClick={(e) => e.target === overlayRef.current && onClose()}
           initial={{ opacity: 0 }}
@@ -52,7 +55,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="flex items-center justify-between p-5 border-b border-border">
-              <h3 className="text-lg font-semibold text-dark">{title}</h3>
+              <h3 id="modal-title" className="text-lg font-semibold text-dark">{title}</h3>
               <button
                 onClick={onClose}
                 className="p-1.5 rounded-lg hover:bg-border/50 text-muted hover:text-dark cursor-pointer transition-colors"

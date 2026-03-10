@@ -1,16 +1,25 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import AnimatedSection from "@/components/ui/AnimatedSection";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 
 export default function AboutPage() {
   const t = useTranslations("about");
   const tCommon = useTranslations("common");
+  const locale = useLocale();
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <Breadcrumb
+        items={[
+          { label: tCommon("home"), href: `/${locale}` },
+          { label: tCommon("about") },
+        ]}
+      />
+
       <AnimatedSection>
         <div className="flex items-center gap-3 mb-10">
           <div className="w-1 h-8 bg-gradient-to-b from-primary to-accent rounded-full" />

@@ -9,6 +9,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import PurchaseLinkEditor from "@/components/admin/PurchaseLinkEditor";
+import ProductPreview from "@/components/admin/ProductPreview";
 
 export default function EditProductPage({
   params,
@@ -28,6 +29,7 @@ export default function EditProductPage({
   const [categories, setCategories] = useState<Category[]>([]);
   const [purchaseLinks, setPurchaseLinks] = useState<Partial<PurchaseLink>[]>([]);
   const [saving, setSaving] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const router = useRouter();
@@ -216,12 +218,34 @@ export default function EditProductPage({
           <Button
             type="button"
             variant="ghost"
+            onClick={() => setShowPreview(true)}
+          >
+            {t("preview")}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
             onClick={() => router.push(`/${locale}/admin/products`)}
           >
             {t("cancel")}
           </Button>
         </div>
       </form>
+
+      <ProductPreview
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        product={{
+          nameAr,
+          nameEn,
+          descAr,
+          descEn,
+          price,
+          imageUrl: imageFile ? URL.createObjectURL(imageFile) : currentImageUrl,
+          featured,
+          purchaseLinks,
+        }}
+      />
     </div>
   );
 }

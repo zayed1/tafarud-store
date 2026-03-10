@@ -36,7 +36,17 @@
     "pageNotFound": "الصفحة غير موجودة",
     "pageNotFoundDesc": "عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
     "backHome": "العودة للرئيسية",
-    "viewAll": "عرض الكل"
+    "viewAll": "عرض الكل",
+    "skipToContent": "تخطي إلى المحتوى",
+    "sortBy": "ترتيب حسب",
+    "newest": "الأحدث",
+    "priceHighToLow": "السعر: من الأعلى",
+    "priceLowToHigh": "السعر: من الأدنى",
+    "allCategories2": "الكل",
+    "filterByCategory": "تصفية حسب التصنيف",
+    "suggestedCategories": "تصنيفات مقترحة",
+    "trySearching": "جرّب البحث عن ما تحتاجه",
+    "productsCount": "{count} منتج"
   },
   "hero": {
     "title": "متجر التفرّد",
@@ -97,6 +107,12 @@
     "sortOrder": "الترتيب",
     "totalProducts": "إجمالي المنتجات",
     "totalCategories": "إجمالي التصنيفات",
-    "loginError": "خطأ في البريد الإلكتروني أو كلمة المرور"
+    "loginError": "خطأ في البريد الإلكتروني أو كلمة المرور",
+    "featuredCount": "المنتجات المميزة",
+    "purchaseLinksCount": "روابط الشراء",
+    "recentProducts": "آخر المنتجات المضافة",
+    "preview": "معاينة",
+    "dragToReorder": "اسحب لإعادة الترتيب",
+    "orderSaved": "تم حفظ الترتيب"
   }
 }

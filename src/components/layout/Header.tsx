@@ -57,6 +57,7 @@ export default function Header() {
   return (
     <>
       <header
+        role="banner"
         className={`sticky top-0 z-40 transition-all duration-300 ${
           isScrolled
             ? "glass border-b border-border/50 shadow-sm dark:bg-dark/90"
@@ -80,7 +81,7 @@ export default function Header() {
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav aria-label="Main navigation" className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}

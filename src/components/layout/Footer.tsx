@@ -10,7 +10,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-dark text-white mt-auto relative overflow-hidden">
+    <footer role="contentinfo" className="bg-dark text-white mt-auto relative overflow-hidden">
       {/* Decorative element */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
