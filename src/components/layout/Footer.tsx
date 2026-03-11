@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 
@@ -26,9 +27,13 @@ export default function Footer() {
           <AnimatedSection delay={0}>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-                  <span className="text-white font-bold text-lg">ت</span>
-                </div>
+                <Image
+                  src="/main/iconn.png"
+                  alt={t("storeName")}
+                  width={44}
+                  height={44}
+                  className="w-11 h-11 object-contain"
+                />
                 <span className="text-xl font-bold">{t("storeName")}</span>
               </div>
               <p className="text-white/65 text-sm leading-relaxed max-w-xs">
