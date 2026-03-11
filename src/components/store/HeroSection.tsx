@@ -1,18 +1,29 @@
 "use client";
 
+import { useRef } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export default function HeroSection() {
   const t = useTranslations("hero");
   const locale = useLocale();
+  const ref = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary-dark via-primary to-secondary min-h-[520px] sm:min-h-[580px] flex items-center">
-      {/* Animated decorative patterns */}
-      <div className="absolute inset-0 overflow-hidden">
+    <section ref={ref} className="relative overflow-hidden bg-gradient-to-br from-primary-dark via-primary to-secondary min-h-[520px] sm:min-h-[580px] flex items-center">
+      {/* Parallax animated decorative patterns */}
+      <motion.div className="absolute inset-0 overflow-hidden" style={{ y: bgY }}>
         <motion.div
           className="absolute top-10 start-10 w-72 h-72 bg-accent rounded-full blur-3xl opacity-20"
           animate={{
@@ -36,18 +47,19 @@ export default function HeroSection() {
           }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
-      </div>
+      </motion.div>
 
-      {/* Geometric pattern overlay */}
-      <div
+      {/* Geometric pattern overlay with parallax */}
+      <motion.div
         className="absolute inset-0 opacity-[0.04]"
         style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
           backgroundSize: "40px 40px",
+          y: bgY,
         }}
       />
 
-      {/* Decorative floating squares (inspired by logo) */}
+      {/* Decorative floating squares */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(12)].map((_, i) => (
           <motion.div
@@ -72,7 +84,10 @@ export default function HeroSection() {
         ))}
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center w-full">
+      <motion.div
+        className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center w-full"
+        style={{ y: textY, opacity }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -144,7 +159,7 @@ export default function HeroSection() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }

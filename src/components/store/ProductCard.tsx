@@ -10,12 +10,21 @@ import Badge from "@/components/ui/Badge";
 
 interface ProductCardProps {
   product: Product;
+  onQuickView?: (product: Product) => void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+function isNewProduct(createdAt: string): boolean {
+  const created = new Date(createdAt);
+  const now = new Date();
+  const diffDays = (now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24);
+  return diffDays <= 7;
+}
+
+export default function ProductCard({ product, onQuickView }: ProductCardProps) {
   const locale = useLocale();
   const t = useTranslations("common");
   const name = getLocalizedField(product, "name", locale);
+  const isNew = isNewProduct(product.created_at);
 
   return (
     <motion.div
@@ -32,6 +41,8 @@ export default function ProductCard({ product }: ProductCardProps) {
                 fill
                 className="object-contain transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUzMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjBGNEYzIi8+PC9zdmc+"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5">
@@ -40,16 +51,43 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </svg>
               </div>
             )}
-            {product.featured && (
-              <div className="absolute top-3 start-3">
+            {/* Badges */}
+            <div className="absolute top-3 start-3 flex flex-col gap-1.5">
+              {product.featured && (
                 <Badge variant="accent">{t("featuredProducts")}</Badge>
+              )}
+              {isNew && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-500 text-white shadow-sm">
+                  {t("new")}
+                </span>
+              )}
+            </div>
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-dark/40 via-dark/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-4">
+              <div className="flex items-center gap-2">
+                <span className="text-white text-sm font-medium bg-primary/90 backdrop-blur-sm px-4 py-2 rounded-full translate-y-3 group-hover:translate-y-0 transition-transform duration-300 flex items-center gap-1.5">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  {t("viewDetails")}
+                </span>
+                {onQuickView && (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onQuickView(product);
+                    }}
+                    className="text-white bg-white/20 backdrop-blur-sm p-2 rounded-full translate-y-3 group-hover:translate-y-0 transition-transform duration-300 delay-75 hover:bg-white/30 cursor-pointer"
+                    title={t("quickView")}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                  </button>
+                )}
               </div>
-            )}
-            {/* Hover overlay with quick view hint */}
-            <div className="absolute inset-0 bg-gradient-to-t from-dark/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-              <span className="text-white text-sm font-medium bg-primary/80 backdrop-blur-sm px-4 py-1.5 rounded-full translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                {t("viewDetails")}
-              </span>
             </div>
           </div>
           <div className="p-4 space-y-2">

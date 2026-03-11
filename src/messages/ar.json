@@ -51,7 +51,15 @@
     "next": "التالي",
     "pageOf": "صفحة {current} من {total}",
     "orderViaWhatsApp": "اطلب عبر واتساب",
-    "whatsAppOrderMessage": "مرحباً، أرغب بالاستفسار عن المنتج: {product}"
+    "whatsAppOrderMessage": "مرحباً، أرغب بالاستفسار عن المنتج: {product}",
+    "new": "جديد",
+    "quickView": "نظرة سريعة",
+    "close": "إغلاق",
+    "loadMore": "تحميل المزيد",
+    "showingOf": "عرض {showing} من {total}",
+    "searchByCategory": "البحث حسب التصنيف",
+    "recentSearches": "عمليات بحث سابقة",
+    "clearSearch": "مسح"
   },
   "hero": {
     "title": "متجر التفرّد",

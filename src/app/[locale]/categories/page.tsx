@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { getLocale } from "next-intl/server";
 import CategoryCard from "@/components/store/CategoryCard";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import EmptyState from "@/components/ui/EmptyState";
 import { Category } from "@/types";
 
 async function getCategories(): Promise<Category[]> {
@@ -43,14 +44,7 @@ function CategoriesContent({ categories, locale }: { categories: Category[]; loc
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 text-muted">
-          <div className="w-20 h-20 mx-auto mb-4 bg-border/30 rounded-2xl flex items-center justify-center">
-            <svg className="w-10 h-10 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
-          </div>
-          <p className="text-lg">{t("noResults")}</p>
-        </div>
+        <EmptyState icon="category" message={t("noResults")} />
       )}
     </div>
   );

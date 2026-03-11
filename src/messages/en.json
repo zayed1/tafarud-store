@@ -51,7 +51,15 @@
     "next": "Next",
     "pageOf": "Page {current} of {total}",
     "orderViaWhatsApp": "Order via WhatsApp",
-    "whatsAppOrderMessage": "Hello, I would like to inquire about the product: {product}"
+    "whatsAppOrderMessage": "Hello, I would like to inquire about the product: {product}",
+    "new": "New",
+    "quickView": "Quick View",
+    "close": "Close",
+    "loadMore": "Load More",
+    "showingOf": "Showing {showing} of {total}",
+    "searchByCategory": "Search by category",
+    "recentSearches": "Recent searches",
+    "clearSearch": "Clear"
   },
   "hero": {
     "title": "Tafarud Store",
