@@ -31,7 +31,7 @@ export default function Footer() {
                 </div>
                 <span className="text-xl font-bold">{t("storeName")}</span>
               </div>
-              <p className="text-white/50 text-sm leading-relaxed max-w-xs">
+              <p className="text-white/65 text-sm leading-relaxed max-w-xs">
                 {t("partOf")}{" "}
                 <Link
                   href="https://altafarud.com"
@@ -61,7 +61,7 @@ export default function Footer() {
                   <motion.div key={link.href} whileHover={{ x: 4 }} className="rtl:text-right">
                     <Link
                       href={link.href}
-                      className="text-white/50 hover:text-accent transition-colors text-sm inline-flex items-center gap-2"
+                      className="text-white/65 hover:text-accent transition-colors text-sm inline-flex items-center gap-2"
                     >
                       <span className="w-1 h-1 bg-primary/50 rounded-full" />
                       {link.label}
@@ -79,7 +79,7 @@ export default function Footer() {
                 <div className="w-1 h-5 bg-gradient-to-b from-primary to-accent rounded-full" />
                 {t("contactUs")}
               </h3>
-              <div className="space-y-3 text-sm text-white/50">
+              <div className="space-y-3 text-sm text-white/65">
                 <motion.p whileHover={{ x: 4 }} className="flex items-center gap-3">
                   <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
                     <svg className="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,7 +121,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-10 pt-8 border-t border-white/10 text-center text-sm text-white/30">
+        <div className="mt-10 pt-8 border-t border-white/10 text-center text-sm text-white/50">
           <p>
             &copy; {currentYear} {t("storeName")}. {t("rights")}.
           </p>

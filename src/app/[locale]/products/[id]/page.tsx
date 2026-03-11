@@ -5,11 +5,14 @@ import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
 import PurchaseLinks from "@/components/store/PurchaseLinks";
+import WhatsAppButton from "@/components/store/WhatsAppButton";
 import ShareButton from "@/components/store/ShareButton";
 import RelatedProducts from "@/components/store/RelatedProducts";
 import ProductGallery from "@/components/store/ProductGallery";
 import Badge from "@/components/ui/Badge";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import ProductViewTracker from "@/components/store/ProductViewTracker";
+import RecentlyViewed from "@/components/store/RecentlyViewed";
 import { Product, PurchaseLink } from "@/types";
 import type { Metadata } from "next";
 
@@ -103,12 +106,19 @@ export default async function ProductPage({
     "@type": "Product",
     name: name,
     description: description || "",
-    image: product.image_url || "",
+    image: images.length > 0 ? images : product.image_url || "",
+    url: `https://tafarud.store/${locale}/products/${product.id}`,
+    category: categoryName || undefined,
+    datePublished: product.created_at,
     offers: {
       "@type": "Offer",
       price: product.price,
       priceCurrency: "AED",
       availability: "https://schema.org/InStock",
+      seller: {
+        "@type": "Organization",
+        name: "متجر التفرّد",
+      },
     },
     brand: {
       "@type": "Brand",
@@ -116,11 +126,25 @@ export default async function ProductPage({
     },
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "الرئيسية", item: `https://tafarud.store/${locale}` },
+      { "@type": "ListItem", position: 2, name: "المنتجات", item: `https://tafarud.store/${locale}/products` },
+      { "@type": "ListItem", position: 3, name: name },
+    ],
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Breadcrumb
         items={[
@@ -186,6 +210,9 @@ export default async function ProductPage({
             </div>
           )}
 
+          {/* WhatsApp Order */}
+          <WhatsAppButton productName={name} />
+
           {/* Purchase Links */}
           <div className="pt-4 border-t border-border">
             <PurchaseLinks links={product.purchase_links || []} />
@@ -195,6 +222,20 @@ export default async function ProductPage({
 
       {/* Related Products */}
       <RelatedProducts categoryId={product.category_id} currentProductId={product.id} />
+
+      {/* Recently Viewed */}
+      <RecentlyViewed excludeProductId={product.id} />
+
+      {/* Track view */}
+      <ProductViewTracker
+        product={{
+          id: product.id,
+          name_ar: product.name_ar,
+          name_en: product.name_en,
+          price: product.price,
+          image_url: product.image_url,
+        }}
+      />
     </div>
   );
 }
