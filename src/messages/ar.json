@@ -59,7 +59,14 @@
     "showingOf": "عرض {showing} من {total}",
     "searchByCategory": "البحث حسب التصنيف",
     "recentSearches": "عمليات بحث سابقة",
-    "clearSearch": "مسح"
+    "clearSearch": "مسح",
+    "recentlyViewed": "شاهدتها مؤخراً",
+    "totalViews": "إجمالي المشاهدات",
+    "viewsThisWeek": "مشاهدات هذا الأسبوع",
+    "mostViewed": "الأكثر مشاهدة",
+    "exportCSV": "تصدير CSV",
+    "analytics": "الإحصائيات",
+    "noData": "لا توجد بيانات"
   },
   "hero": {
     "title": "متجر التفرّد",

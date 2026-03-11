@@ -11,6 +11,18 @@ import AnimatedSection, { StaggerContainer, StaggerItem } from "@/components/ui/
 import { Product, Category } from "@/types";
 import Link from "next/link";
 
+const storeJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Store",
+  name: "متجر التفرّد | Tafarud Store",
+  description: "نُقدّم عبر المتجر باقة متميزة من الكتب والإصدارات الإبداعية والمنتجات الثقافية",
+  url: "https://tafarud.store",
+  brand: {
+    "@type": "Brand",
+    name: "مجموعة التفرّد",
+  },
+};
+
 async function getFeaturedProducts(): Promise<Product[]> {
   try {
     const supabase = await createClient();
@@ -53,6 +65,10 @@ function HomeContent({
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(storeJsonLd) }}
+      />
       <HeroSection />
 
       {/* Categories Section */}

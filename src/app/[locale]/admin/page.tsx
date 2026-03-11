@@ -5,6 +5,8 @@ import Image from "next/image";
 import { getLocale } from "next-intl/server";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
 import { Product } from "@/types";
+import ExportCSVButton from "@/components/admin/ExportCSVButton";
+import AnalyticsSection from "@/components/admin/AnalyticsSection";
 
 async function getStats() {
   try {
@@ -15,6 +17,7 @@ async function getStats() {
       { count: featuredCount },
       { count: linksCount },
       { data: recentProducts },
+      { data: allProducts },
     ] = await Promise.all([
       supabase.from("products").select("*", { count: "exact", head: true }),
       supabase.from("categories").select("*", { count: "exact", head: true }),
@@ -25,6 +28,10 @@ async function getStats() {
         .select("*, category:categories(*)")
         .order("created_at", { ascending: false })
         .limit(5),
+      supabase
+        .from("products")
+        .select("*, category:categories(*)")
+        .order("created_at", { ascending: false }),
     ]);
     return {
       productCount: productCount || 0,
@@ -32,9 +39,10 @@ async function getStats() {
       featuredCount: featuredCount || 0,
       linksCount: linksCount || 0,
       recentProducts: (recentProducts || []) as Product[],
+      allProducts: (allProducts || []) as Product[],
     };
   } catch {
-    return { productCount: 0, categoryCount: 0, featuredCount: 0, linksCount: 0, recentProducts: [] };
+    return { productCount: 0, categoryCount: 0, featuredCount: 0, linksCount: 0, recentProducts: [], allProducts: [] };
   }
 }
 
@@ -48,6 +56,7 @@ function DashboardContent({
     featuredCount: number;
     linksCount: number;
     recentProducts: Product[];
+    allProducts: Product[];
   };
   locale: string;
 }) {
@@ -102,7 +111,10 @@ function DashboardContent({
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-dark mb-8">{t("dashboard")}</h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold text-dark">{t("dashboard")}</h1>
+        <ExportCSVButton products={stats.allProducts} />
+      </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
@@ -123,9 +135,12 @@ function DashboardContent({
         ))}
       </div>
 
+      {/* Analytics */}
+      <AnalyticsSection products={stats.allProducts} />
+
       {/* Recent Products */}
       {stats.recentProducts.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-xl overflow-hidden mt-8">
           <div className="px-5 py-4 border-b border-border flex items-center justify-between">
             <h2 className="text-lg font-semibold text-dark">{t("recentProducts")}</h2>
             <Link

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useOptimistic, useCallback } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
@@ -13,6 +13,11 @@ export default function AdminProductsPage() {
   const [loading, setLoading] = useState(true);
   const locale = useLocale();
   const t = useTranslations("admin");
+
+  const [optimisticProducts, removeOptimistic] = useOptimistic(
+    products,
+    (state, deletedId: string) => state.filter((p) => p.id !== deletedId)
+  );
 
   useEffect(() => {
     loadProducts();
@@ -28,16 +33,41 @@ export default function AdminProductsPage() {
     setLoading(false);
   }
 
-  async function deleteProduct(id: string) {
+  const deleteProduct = useCallback(async (id: string) => {
     if (!confirm(t("confirmDelete"))) return;
-    const supabase = createClient();
-    await supabase.from("purchase_links").delete().eq("product_id", id);
-    await supabase.from("products").delete().eq("id", id);
-    setProducts(products.filter((p) => p.id !== id));
-  }
+
+    // Optimistic removal
+    removeOptimistic(id);
+
+    try {
+      const supabase = createClient();
+      await supabase.from("purchase_links").delete().eq("product_id", id);
+      await supabase.from("products").delete().eq("id", id);
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+    } catch {
+      // Revert on failure by reloading
+      loadProducts();
+    }
+  }, [t, removeOptimistic]);
 
   if (loading) {
-    return <div className="text-center py-12 text-muted">{t("dashboard")}...</div>;
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between mb-8">
+          <div className="h-9 w-32 bg-border/40 rounded-lg animate-pulse" />
+          <div className="h-10 w-36 bg-border/40 rounded-lg animate-pulse" />
+        </div>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="flex items-center gap-4 p-4 bg-surface border border-border rounded-xl animate-pulse">
+            <div className="w-10 h-14 bg-border/40 rounded" />
+            <div className="flex-1 space-y-2">
+              <div className="h-4 bg-border/40 rounded w-2/3" />
+              <div className="h-3 bg-border/40 rounded w-1/3" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -49,7 +79,7 @@ export default function AdminProductsPage() {
         </Link>
       </div>
 
-      <SortableProductList products={products} onDelete={deleteProduct} />
+      <SortableProductList products={optimisticProducts} onDelete={deleteProduct} />
     </div>
   );
 }

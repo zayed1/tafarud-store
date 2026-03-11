@@ -59,7 +59,14 @@
     "showingOf": "Showing {showing} of {total}",
     "searchByCategory": "Search by category",
     "recentSearches": "Recent searches",
-    "clearSearch": "Clear"
+    "clearSearch": "Clear",
+    "recentlyViewed": "Recently Viewed",
+    "totalViews": "Total Views",
+    "viewsThisWeek": "Views This Week",
+    "mostViewed": "Most Viewed",
+    "exportCSV": "Export CSV",
+    "analytics": "Analytics",
+    "noData": "No data available"
   },
   "hero": {
     "title": "Tafarud Store",

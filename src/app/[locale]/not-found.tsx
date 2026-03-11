@@ -1,12 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
+import SearchModal from "@/components/ui/SearchModal";
 
 export default function NotFound() {
   const locale = useLocale();
   const t = useTranslations("common");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const suggestedLinks = [
     { href: `/${locale}/products`, label: t("allProducts"), icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" },
@@ -18,12 +21,33 @@ export default function NotFound() {
     <div className="min-h-[70vh] flex items-center justify-center px-4 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 start-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 end-1/4 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
+        <motion.div
+          className="absolute top-1/4 start-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
+          transition={{ duration: 6, repeat: Infinity }}
+        />
+        <motion.div
+          className="absolute bottom-1/4 end-1/4 w-64 h-64 bg-accent/5 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.7, 0.5] }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
+      </div>
+
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-primary/10 rounded-full"
+            style={{ top: `${20 + Math.random() * 60}%`, left: `${10 + Math.random() * 80}%` }}
+            animate={{ y: [-15, 15, -15], opacity: [0.2, 0.5, 0.2] }}
+            transition={{ duration: 3 + Math.random() * 3, repeat: Infinity, delay: Math.random() * 2 }}
+          />
+        ))}
       </div>
 
       <div className="text-center max-w-lg relative">
-        {/* Animated 404 with floating book */}
+        {/* Animated 404 */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -35,10 +59,10 @@ export default function NotFound() {
           </div>
           <motion.div
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-            animate={{ y: [-8, 8, -8], rotate: [-3, 3, -3] }}
+            animate={{ y: [-8, 8, -8], rotate: [-5, 5, -5] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           >
-            <div className="w-16 h-16 bg-primary/10 backdrop-blur-sm rounded-2xl border border-primary/20 flex items-center justify-center">
+            <div className="w-16 h-16 bg-primary/10 backdrop-blur-sm rounded-2xl border border-primary/20 flex items-center justify-center shadow-lg shadow-primary/5">
               <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
@@ -54,7 +78,7 @@ export default function NotFound() {
           <h1 className="text-2xl sm:text-3xl font-bold text-dark mb-3">
             {t("pageNotFound")}
           </h1>
-          <p className="text-muted text-lg mb-10">
+          <p className="text-muted text-lg mb-8">
             {t("pageNotFoundDesc")}
           </p>
         </motion.div>
@@ -62,9 +86,21 @@ export default function NotFound() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.5 }}
-          className="space-y-8"
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="space-y-6"
         >
+          {/* Search button */}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="flex items-center gap-3 w-full max-w-sm mx-auto px-5 py-3 bg-surface border border-border rounded-xl text-muted hover:border-primary/30 hover:text-primary transition-all cursor-pointer"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span className="text-sm">{t("trySearching")}</span>
+          </button>
+
+          {/* Back home */}
           <Link
             href={`/${locale}`}
             className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
@@ -75,8 +111,8 @@ export default function NotFound() {
             {t("backHome")}
           </Link>
 
-          {/* Suggested links as cards */}
-          <div className="pt-8 border-t border-border">
+          {/* Suggested links */}
+          <div className="pt-6 border-t border-border">
             <p className="text-sm text-muted mb-4">{t("suggestedCategories")}</p>
             <div className="flex flex-wrap justify-center gap-3">
               {suggestedLinks.map((link, index) => (
@@ -88,9 +124,9 @@ export default function NotFound() {
                 >
                   <Link
                     href={link.href}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface border border-border rounded-xl text-dark hover:border-primary/30 hover:text-primary hover:shadow-md transition-all dark:text-gray-300"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface border border-border rounded-xl text-dark hover:border-primary/30 hover:text-primary hover:shadow-md transition-all dark:text-gray-300 group"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={link.icon} />
                     </svg>
                     {link.label}
@@ -101,6 +137,8 @@ export default function NotFound() {
           </div>
         </motion.div>
       </div>
+
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   );
 }
