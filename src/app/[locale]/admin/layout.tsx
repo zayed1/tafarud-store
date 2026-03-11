@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function AdminLayout({
   children,
@@ -53,7 +54,14 @@ export default function AdminLayout({
     <div className="flex min-h-[calc(100vh-4rem)]">
       {/* Sidebar */}
       <aside className="w-64 bg-dark text-white hidden lg:block">
-        <div className="p-4 border-b border-white/10">
+        <div className="p-4 border-b border-white/10 flex items-center gap-3">
+          <Image
+            src="/main/iconn.png"
+            alt={t("dashboard")}
+            width={32}
+            height={32}
+            className="w-8 h-8 object-contain"
+          />
           <h2 className="text-lg font-bold">{t("dashboard")}</h2>
         </div>
         <nav className="p-4 space-y-1">

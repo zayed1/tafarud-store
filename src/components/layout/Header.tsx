@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
@@ -69,11 +70,17 @@ export default function Header() {
             {/* Logo */}
             <Link href={`/${locale}`} className="flex items-center gap-2.5 group">
               <motion.div
-                className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-md shadow-primary/15"
-                whileHover={{ scale: 1.05, rotate: -3 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <span className="text-white font-bold text-lg">ت</span>
+                <Image
+                  src="/main/iconn.png"
+                  alt={t("storeName")}
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 object-contain"
+                  priority
+                />
               </motion.div>
               <span className="text-xl font-bold text-dark hidden sm:block group-hover:text-primary transition-colors duration-300 dark:text-white">
                 {t("storeName")}
