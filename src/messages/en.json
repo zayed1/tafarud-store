@@ -66,7 +66,18 @@
     "mostViewed": "Most Viewed",
     "exportCSV": "Export CSV",
     "analytics": "Analytics",
-    "noData": "No data available"
+    "noData": "No data available",
+    "errorTitle": "Something Went Wrong",
+    "errorDescription": "An unexpected error occurred. Please try again.",
+    "tryAgain": "Try Again",
+    "youMightLike": "You Might Like",
+    "suggestions": "Suggestions",
+    "noCategory": "Uncategorized",
+    "topProducts": "Top Products",
+    "priceTrend": "Price Trend",
+    "categoryPerformance": "Category Performance",
+    "revenue": "Revenue",
+    "productsOverTime": "Products Over Time"
   },
   "hero": {
     "title": "Tafarud Store",
@@ -136,6 +147,10 @@
     "orderSaved": "Order saved",
     "productSaved": "Changes saved successfully",
     "productAdded": "Product added successfully",
-    "saveError": "An error occurred while saving"
+    "saveError": "An error occurred while saving",
+    "galleryImages": "Gallery Images",
+    "dropImagesHere": "Drop images here or click to browse",
+    "maxImages": "Maximum {count} images",
+    "reorderImages": "Drag to reorder images"
   }
 }

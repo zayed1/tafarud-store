@@ -66,7 +66,18 @@
     "mostViewed": "الأكثر مشاهدة",
     "exportCSV": "تصدير CSV",
     "analytics": "الإحصائيات",
-    "noData": "لا توجد بيانات"
+    "noData": "لا توجد بيانات",
+    "errorTitle": "حدث خطأ ما",
+    "errorDescription": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
+    "tryAgain": "حاول مرة أخرى",
+    "youMightLike": "قد يعجبك أيضاً",
+    "suggestions": "اقتراحات",
+    "noCategory": "بدون تصنيف",
+    "topProducts": "أبرز المنتجات",
+    "priceTrend": "اتجاه الأسعار",
+    "categoryPerformance": "أداء التصنيفات",
+    "revenue": "الإيرادات",
+    "productsOverTime": "المنتجات عبر الزمن"
   },
   "hero": {
     "title": "متجر التفرّد",
@@ -136,6 +147,10 @@
     "orderSaved": "تم حفظ الترتيب",
     "productSaved": "تم حفظ التعديلات بنجاح",
     "productAdded": "تمت إضافة المنتج بنجاح",
-    "saveError": "حدث خطأ أثناء الحفظ"
+    "saveError": "حدث خطأ أثناء الحفظ",
+    "galleryImages": "صور المعرض",
+    "dropImagesHere": "اسحب الصور هنا أو انقر للتصفح",
+    "maxImages": "حد أقصى {count} صور",
+    "reorderImages": "اسحب لإعادة ترتيب الصور"
   }
 }
