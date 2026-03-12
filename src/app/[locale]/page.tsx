@@ -9,14 +9,41 @@ import FeaturedSlider from "@/components/store/FeaturedSlider";
 import CategoryCard from "@/components/store/CategoryCard";
 import AnimatedSection, { StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
 import { Product, Category } from "@/types";
+import { getLocalizedField } from "@/lib/utils";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+const BASE_URL = "https://altafarudstore.com";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: locale === "ar"
+      ? "متجر التفرّد | إصدارات إبداعية ومنتجات ثقافية"
+      : "Tafarud Store | Creative Publications & Cultural Products",
+    description: locale === "ar"
+      ? "نُقدّم عبر المتجر باقة متميزة من الكتب والإصدارات الإبداعية والمنتجات الثقافية"
+      : "A distinguished collection of books, creative publications, and cultural products",
+    alternates: {
+      canonical: `${BASE_URL}/${locale}`,
+      languages: {
+        ar: `${BASE_URL}/ar`,
+        en: `${BASE_URL}/en`,
+      },
+    },
+  };
+}
 
 const storeJsonLd = {
   "@context": "https://schema.org",
   "@type": "Store",
   name: "متجر التفرّد | Tafarud Store",
   description: "نُقدّم عبر المتجر باقة متميزة من الكتب والإصدارات الإبداعية والمنتجات الثقافية",
-  url: "https://tafarud.store",
+  url: BASE_URL,
   brand: {
     "@type": "Brand",
     name: "مجموعة التفرّد",
@@ -63,12 +90,46 @@ function HomeContent({
   const t = useTranslations("common");
   const tAbout = useTranslations("about");
 
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "متجر التفرّد | Tafarud Store",
+    url: BASE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${BASE_URL}/${locale}/products?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
+  const itemListJsonLd = featuredProducts.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: featuredProducts.map((product, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: getLocalizedField(product, "name", locale),
+      url: `${BASE_URL}/${locale}/products/${product.id}`,
+      image: product.image_url || undefined,
+    })),
+  } : null;
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(storeJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
+      {itemListJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+        />
+      )}
       <HeroSection />
 
       {/* Categories Section */}

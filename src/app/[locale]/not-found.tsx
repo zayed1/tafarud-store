@@ -10,11 +10,9 @@ import { getLocalizedField, formatPrice } from "@/lib/utils";
 import { Product } from "@/types";
 import SearchModal from "@/components/ui/SearchModal";
 
-export default function NotFound() {
-  const locale = useLocale();
+function SuggestedProducts({ locale }: { locale: string }) {
+  const [products, setProducts] = useState<Product[]>([]);
   const t = useTranslations("common");
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [suggestedProducts, setSuggestedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -23,8 +21,60 @@ export default function NotFound() {
       .select("*, category:categories(*)")
       .eq("featured", true)
       .limit(4)
-      .then(({ data }) => setSuggestedProducts(data || []));
+      .then(({ data }) => setProducts(data || []));
   }, []);
+
+  if (products.length === 0) return null;
+
+  return (
+    <div className="pt-6 border-t border-border">
+      <p className="text-sm text-muted mb-4">{t("youMightLike")}</p>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {products.map((product, index) => {
+          const name = getLocalizedField(product, "name", locale);
+          return (
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 + index * 0.1 }}
+            >
+              <Link
+                href={`/${locale}/products/${product.id}`}
+                className="block bg-surface border border-border rounded-xl p-3 hover:border-primary/30 hover:shadow-md transition-all group"
+              >
+                <div className="w-full aspect-[3/4] relative bg-background rounded-lg overflow-hidden mb-2">
+                  {product.image_url ? (
+                    <Image
+                      src={product.image_url}
+                      alt={name}
+                      fill
+                      className="object-contain group-hover:scale-105 transition-transform"
+                      sizes="120px"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <svg className="w-6 h-6 text-muted/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs font-medium text-dark truncate group-hover:text-primary transition-colors">{name}</p>
+                <p className="text-xs text-primary font-semibold mt-0.5">{formatPrice(product.price)}</p>
+              </Link>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default function NotFound() {
+  const locale = useLocale();
+  const t = useTranslations("common");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const suggestedLinks = [
     { href: `/${locale}/products`, label: t("allProducts"), icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" },
@@ -62,22 +112,6 @@ export default function NotFound() {
       </div>
 
       <div className="text-center max-w-2xl relative">
-        {/* Store Logo */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="mb-4"
-        >
-          <Image
-            src="/main/iconn.png"
-            alt={t("storeName")}
-            width={60}
-            height={60}
-            className="mx-auto w-15 h-15 object-contain"
-          />
-        </motion.div>
-
         {/* Animated 404 */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -143,49 +177,7 @@ export default function NotFound() {
           </Link>
 
           {/* Suggested Products */}
-          {suggestedProducts.length > 0 && (
-            <div className="pt-6 border-t border-border">
-              <p className="text-sm text-muted mb-4">{t("youMightLike")}</p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {suggestedProducts.map((product, index) => {
-                  const name = getLocalizedField(product, "name", locale);
-                  return (
-                    <motion.div
-                      key={product.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 + index * 0.1 }}
-                    >
-                      <Link
-                        href={`/${locale}/products/${product.id}`}
-                        className="block bg-surface border border-border rounded-xl p-3 hover:border-primary/30 hover:shadow-md transition-all group"
-                      >
-                        <div className="w-full aspect-[3/4] relative bg-background rounded-lg overflow-hidden mb-2">
-                          {product.image_url ? (
-                            <Image
-                              src={product.image_url}
-                              alt={name}
-                              fill
-                              className="object-contain group-hover:scale-105 transition-transform"
-                              sizes="120px"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <svg className="w-6 h-6 text-muted/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                              </svg>
-                            </div>
-                          )}
-                        </div>
-                        <p className="text-xs font-medium text-dark truncate group-hover:text-primary transition-colors">{name}</p>
-                        <p className="text-xs text-primary font-semibold mt-0.5">{formatPrice(product.price)}</p>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <SuggestedProducts locale={locale} />
 
           {/* Suggested links */}
           <div className="pt-6 border-t border-border">

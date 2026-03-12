@@ -55,13 +55,24 @@ export async function generateMetadata({
 
   const name = locale === "ar" ? product.name_ar : product.name_en;
   const description = locale === "ar" ? product.description_ar : product.description_en;
+  const categoryName = product.category
+    ? (locale === "ar" ? product.category.name_ar : product.category.name_en)
+    : "";
+  const metaDescription = `${name} - ${formatPrice(product.price)}${categoryName ? ` | ${categoryName}` : ""} - ${(description || "").slice(0, 120)}`;
 
   return {
     title: `${name} | متجر التفرّد`,
-    description: description?.slice(0, 160) || "",
+    description: metaDescription,
+    alternates: {
+      canonical: `https://altafarudstore.com/${locale}/products/${id}`,
+      languages: {
+        ar: `https://altafarudstore.com/ar/products/${id}`,
+        en: `https://altafarudstore.com/en/products/${id}`,
+      },
+    },
     openGraph: {
       title: name,
-      description: description?.slice(0, 160) || "",
+      description: metaDescription,
       images: product.image_url ? [{ url: product.image_url, width: 600, height: 800 }] : [],
       type: "website",
       siteName: "متجر التفرّد | Tafarud Store",
@@ -69,7 +80,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: name,
-      description: description?.slice(0, 160) || "",
+      description: metaDescription,
       images: product.image_url ? [product.image_url] : [],
     },
   };

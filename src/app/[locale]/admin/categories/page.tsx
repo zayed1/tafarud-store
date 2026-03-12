@@ -7,9 +7,10 @@ import { Category } from "@/types";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Modal from "@/components/ui/Modal";
+import { useDragReorder } from "@/lib/hooks/useDragReorder";
+import { useToast } from "@/components/ui/Toast";
 
 export default function AdminCategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -18,8 +19,22 @@ export default function AdminCategoriesPage() {
   const [slug, setSlug] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const [savingOrder, setSavingOrder] = useState(false);
 
   const t = useTranslations("admin");
+  const toast = useToast();
+
+  const {
+    items: categories,
+    dragIndex,
+    overIndex,
+    hasChanges,
+    handleDragStart,
+    handleDragOver,
+    handleDragEnd,
+    resetChanges,
+    resetItems,
+  } = useDragReorder<Category>([]);
 
   useEffect(() => {
     loadCategories();
@@ -31,7 +46,7 @@ export default function AdminCategoriesPage() {
       .from("categories")
       .select("*")
       .order("created_at", { ascending: false });
-    setCategories(data || []);
+    resetItems(data || []);
     setLoading(false);
   }
 
@@ -99,7 +114,32 @@ export default function AdminCategoriesPage() {
     if (!confirm(t("confirmDelete"))) return;
     const supabase = createClient();
     await supabase.from("categories").delete().eq("id", id);
-    setCategories(categories.filter((c) => c.id !== id));
+    loadCategories();
+  }
+
+  async function saveOrder() {
+    setSavingOrder(true);
+    const supabase = createClient();
+
+    let hasError = false;
+    for (let i = 0; i < categories.length; i++) {
+      const { error } = await supabase
+        .from("categories")
+        .update({ sort_order: i })
+        .eq("id", categories[i].id);
+      if (error) {
+        hasError = true;
+        break;
+      }
+    }
+
+    setSavingOrder(false);
+    if (hasError) {
+      toast.showToast("sort_order column missing — add it in Supabase", "error");
+    } else {
+      resetChanges();
+      toast.showToast(t("orderSaved"), "success");
+    }
   }
 
   if (loading) {
@@ -113,18 +153,40 @@ export default function AdminCategoriesPage() {
         <Button onClick={openAdd}>+ {t("addCategory")}</Button>
       </div>
 
+      {hasChanges && (
+        <div className="flex items-center gap-3 mb-4 p-3 bg-primary/5 border border-primary/20 rounded-xl">
+          <p className="text-sm text-primary font-medium flex-1">{t("dragToReorder")}</p>
+          <Button size="sm" onClick={saveOrder} disabled={savingOrder}>
+            {savingOrder ? "..." : t("save")}
+          </Button>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {categories.map((category) => (
+        {categories.map((category, index) => (
           <div
             key={category.id}
-            className="bg-surface border border-border rounded-xl p-4 flex items-center justify-between"
+            draggable
+            onDragStart={() => handleDragStart(index)}
+            onDragOver={(e) => handleDragOver(e, index)}
+            onDragEnd={handleDragEnd}
+            className={`bg-surface border border-border rounded-xl p-4 flex items-center justify-between transition-all ${
+              dragIndex === index ? "opacity-50 scale-95" : ""
+            } ${overIndex === index ? "border-primary shadow-md" : ""}`}
           >
-            <div>
-              <h3 className="font-semibold text-dark">{category.name_ar}</h3>
-              <p className="text-sm text-muted">{category.name_en}</p>
-              <p className="text-xs text-muted mt-1" dir="ltr">
-                /{category.slug}
-              </p>
+            <div className="flex items-center gap-3">
+              <div className="cursor-grab active:cursor-grabbing text-muted hover:text-dark transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-dark">{category.name_ar}</h3>
+                <p className="text-sm text-muted">{category.name_en}</p>
+                <p className="text-xs text-muted mt-1" dir="ltr">
+                  /{category.slug}
+                </p>
+              </div>
             </div>
             <div className="flex gap-2">
               <Button variant="ghost" size="sm" onClick={() => openEdit(category)}>
