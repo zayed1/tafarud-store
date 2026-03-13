@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getLocale } from "next-intl/server";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
-import { Product } from "@/types";
+import type { Product } from "@/types";
 import ExportCSVButton from "@/components/admin/ExportCSVButton";
 import AnalyticsSection from "@/components/admin/AnalyticsSection";
 
@@ -30,8 +30,9 @@ async function getStats() {
         .limit(5),
       supabase
         .from("products")
-        .select("*, category:categories(*)")
-        .order("created_at", { ascending: false }),
+        .select("id, name_ar, name_en, price, image_url, created_at, category_id, category:categories(id, name_ar, name_en)")
+        .order("created_at", { ascending: false })
+        .limit(100),
     ]);
     return {
       productCount: productCount || 0,
@@ -39,7 +40,7 @@ async function getStats() {
       featuredCount: featuredCount || 0,
       linksCount: linksCount || 0,
       recentProducts: (recentProducts || []) as Product[],
-      allProducts: (allProducts || []) as Product[],
+      allProducts: (allProducts || []) as unknown as Product[],
     };
   } catch {
     return { productCount: 0, categoryCount: 0, featuredCount: 0, linksCount: 0, recentProducts: [], allProducts: [] };

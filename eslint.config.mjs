@@ -12,7 +12,33 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "public/sw.js",
   ]),
+  {
+    rules: {
+      // Prevent unused variables (warn instead of error for dev flexibility)
+      "@typescript-eslint/no-unused-vars": ["warn", {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+      }],
+      // Prefer const
+      "prefer-const": "warn",
+      // No console.log in production (allow warn/error)
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      // Enforce consistent return types
+      "@typescript-eslint/consistent-type-imports": ["warn", {
+        prefer: "type-imports",
+        disallowTypeAnnotations: false,
+      }],
+      // React best practices
+      "react/self-closing-comp": "warn",
+      "react/jsx-no-target-blank": "error",
+      // Next.js specific
+      "@next/next/no-img-element": "error",
+      // App Router uses layout.tsx, not _document.js
+      "@next/next/no-page-custom-font": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

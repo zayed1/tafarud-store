@@ -157,3 +157,64 @@ html {
 .img-zoom:hover img {
   transform: scale(1.05);
 }
+
+/* Button press effect */
+.btn-press {
+  transition: transform 0.1s ease;
+}
+
+.btn-press:active {
+  transform: scale(0.96);
+}
+
+/* Link hover underline animation */
+.link-hover-underline {
+  position: relative;
+}
+
+.link-hover-underline::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  inset-inline-start: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: 1px;
+  transition: width 0.3s ease;
+}
+
+.link-hover-underline:hover::after {
+  width: 100%;
+}
+
+/* Card lift on focus */
+.card-interactive:focus-within {
+  box-shadow: 0 8px 25px -5px rgba(13, 128, 112, 0.15);
+  border-color: var(--color-primary);
+}
+
+/* High contrast mode */
+.high-contrast {
+  --color-dark: #000000;
+  --color-dark-light: #1a1a1a;
+  --color-muted: #333333;
+  --color-border: #666666;
+  --color-background: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-primary: #005A4D;
+  --color-primary-light: #007A68;
+  --color-primary-dark: #003D34;
+}
+
+.dark.high-contrast {
+  --color-dark: #FFFFFF;
+  --color-dark-light: #F0F0F0;
+  --color-muted: #CCCCCC;
+  --color-border: #888888;
+  --color-background: #000000;
+  --color-surface: #111111;
+  --color-primary: #5EEAD4;
+  --color-primary-light: #99F6E4;
+  --color-primary-dark: #2DD4BF;
+}

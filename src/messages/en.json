@@ -77,7 +77,13 @@
     "priceTrend": "Price Trend",
     "categoryPerformance": "Category Performance",
     "revenue": "Revenue",
-    "productsOverTime": "Products Over Time"
+    "productsOverTime": "Products Over Time",
+    "gridView": "Grid View",
+    "listView": "List View",
+    "highContrast": "High Contrast",
+    "installApp": "Install App",
+    "offlineReady": "Ready to work offline",
+    "newUpdate": "New update available"
   },
   "hero": {
     "title": "Tafarud Store",
@@ -151,6 +157,11 @@
     "galleryImages": "Gallery Images",
     "dropImagesHere": "Drop images here or click to browse",
     "maxImages": "Maximum {count} images",
-    "reorderImages": "Drag to reorder images"
+    "reorderImages": "Drag to reorder images",
+    "storeSettings": "Store Settings",
+    "storeLogo": "Store Logo",
+    "whatsappNumber": "WhatsApp Number",
+    "socialLinks": "Social Links",
+    "settingsSaved": "Settings saved"
   }
 }

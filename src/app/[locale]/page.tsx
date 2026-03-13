@@ -1,19 +1,17 @@
-export const revalidate = 60;
+export const revalidate = 120;
 
 import { createClient } from "@/lib/supabase/server";
 import { useTranslations } from "next-intl";
 import { getLocale } from "next-intl/server";
 import HeroSection from "@/components/store/HeroSection";
-import ProductGrid from "@/components/store/ProductGrid";
 import FeaturedSlider from "@/components/store/FeaturedSlider";
 import CategoryCard from "@/components/store/CategoryCard";
 import AnimatedSection, { StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
-import { Product, Category } from "@/types";
+import type { Product, Category } from "@/types";
 import { getLocalizedField } from "@/lib/utils";
+import { BASE_URL } from "@/lib/config";
 import Link from "next/link";
 import type { Metadata } from "next";
-
-const BASE_URL = "https://altafarudstore.com";
 
 export async function generateMetadata({
   params,

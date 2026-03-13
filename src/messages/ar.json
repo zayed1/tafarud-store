@@ -77,7 +77,13 @@
     "priceTrend": "اتجاه الأسعار",
     "categoryPerformance": "أداء التصنيفات",
     "revenue": "الإيرادات",
-    "productsOverTime": "المنتجات عبر الزمن"
+    "productsOverTime": "المنتجات عبر الزمن",
+    "gridView": "عرض شبكي",
+    "listView": "عرض قائمة",
+    "highContrast": "تباين عالي",
+    "installApp": "تثبيت التطبيق",
+    "offlineReady": "جاهز للعمل بدون إنترنت",
+    "newUpdate": "تحديث جديد متاح"
   },
   "hero": {
     "title": "متجر التفرّد",
@@ -151,6 +157,11 @@
     "galleryImages": "صور المعرض",
     "dropImagesHere": "اسحب الصور هنا أو انقر للتصفح",
     "maxImages": "حد أقصى {count} صور",
-    "reorderImages": "اسحب لإعادة ترتيب الصور"
+    "reorderImages": "اسحب لإعادة ترتيب الصور",
+    "storeSettings": "إعدادات المتجر",
+    "storeLogo": "شعار المتجر",
+    "whatsappNumber": "رقم واتساب",
+    "socialLinks": "روابط التواصل",
+    "settingsSaved": "تم حفظ الإعدادات"
   }
 }

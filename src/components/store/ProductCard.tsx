@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { Product } from "@/types";
+import type { Product } from "@/types";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 
@@ -24,6 +24,9 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
   const locale = useLocale();
   const t = useTranslations("common");
   const name = getLocalizedField(product, "name", locale);
+  const categoryName = product.category
+    ? getLocalizedField(product.category, "name", locale)
+    : "";
   const isNew = isNewProduct(product.created_at);
 
   return (
@@ -57,9 +60,14 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
                 <Badge variant="accent">{t("featuredProducts")}</Badge>
               )}
               {isNew && (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-500 text-white shadow-sm">
+                <motion.span
+                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-500 text-white shadow-sm"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                >
                   {t("new")}
-                </span>
+                </motion.span>
               )}
             </div>
             {/* Hover overlay */}
@@ -91,6 +99,9 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             </div>
           </div>
           <div className="p-4 space-y-2">
+            {categoryName && (
+              <span className="text-xs text-primary/70 font-medium">{categoryName}</span>
+            )}
             <h3 className="font-semibold text-dark text-base sm:text-lg line-clamp-2 group-hover:text-primary transition-colors duration-200">{name}</h3>
             <div className="flex items-center justify-between">
               <p className="text-primary font-bold text-lg">{formatPrice(product.price)}</p>

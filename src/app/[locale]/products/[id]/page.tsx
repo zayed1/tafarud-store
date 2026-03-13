@@ -13,7 +13,8 @@ import Badge from "@/components/ui/Badge";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ProductViewTracker from "@/components/store/ProductViewTracker";
 import RecentlyViewed from "@/components/store/RecentlyViewed";
-import { Product, PurchaseLink } from "@/types";
+import type { Product, PurchaseLink } from "@/types";
+import { BASE_URL } from "@/lib/config";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -64,10 +65,10 @@ export async function generateMetadata({
     title: `${name} | متجر التفرّد`,
     description: metaDescription,
     alternates: {
-      canonical: `https://altafarudstore.com/${locale}/products/${id}`,
+      canonical: `${BASE_URL}/${locale}/products/${id}`,
       languages: {
-        ar: `https://altafarudstore.com/ar/products/${id}`,
-        en: `https://altafarudstore.com/en/products/${id}`,
+        ar: `${BASE_URL}/ar/products/${id}`,
+        en: `${BASE_URL}/en/products/${id}`,
       },
     },
     openGraph: {
@@ -118,7 +119,7 @@ export default async function ProductPage({
     name: name,
     description: description || "",
     image: images.length > 0 ? images : product.image_url || "",
-    url: `https://tafarud.store/${locale}/products/${product.id}`,
+    url: `${BASE_URL}/${locale}/products/${product.id}`,
     category: categoryName || undefined,
     datePublished: product.created_at,
     offers: {
@@ -141,8 +142,8 @@ export default async function ProductPage({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "الرئيسية", item: `https://tafarud.store/${locale}` },
-      { "@type": "ListItem", position: 2, name: "المنتجات", item: `https://tafarud.store/${locale}/products` },
+      { "@type": "ListItem", position: 1, name: "الرئيسية", item: `${BASE_URL}/${locale}` },
+      { "@type": "ListItem", position: 2, name: "المنتجات", item: `${BASE_URL}/${locale}/products` },
       { "@type": "ListItem", position: 3, name: name },
     ],
   };
