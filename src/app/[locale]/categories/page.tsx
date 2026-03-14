@@ -1,4 +1,4 @@
-export const revalidate = 60;
+export const revalidate = 300;
 
 import { createClient } from "@/lib/supabase/server";
 import { useTranslations } from "next-intl";
@@ -6,7 +6,7 @@ import { getLocale } from "next-intl/server";
 import CategoryCard from "@/components/store/CategoryCard";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import EmptyState from "@/components/ui/EmptyState";
-import { Category } from "@/types";
+import type { Category } from "@/types";
 
 async function getCategories(): Promise<Category[]> {
   try {

@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import BackToTop from "@/components/ui/BackToTop";
 import PageTransition from "@/components/ui/PageTransition";
 import { ToastProvider } from "@/components/ui/Toast";
+import { BASE_URL } from "@/lib/config";
 
 export default async function LocaleLayout({
   children,
@@ -26,6 +27,11 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#0D8070" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <link rel="apple-touch-icon" href="/main/iconn.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -40,6 +46,9 @@ export default async function LocaleLayout({
                   document.documentElement.classList.add('dark');
                 }
               } catch (e) {}
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
+              }
             `,
           }}
         />
@@ -52,7 +61,7 @@ export default async function LocaleLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "متجر التفرّد - Tafarud Store",
-              url: "https://altafarudstore.com",
+              url: BASE_URL,
               contactPoint: {
                 "@type": "ContactPoint",
                 telephone: "+971504677161",

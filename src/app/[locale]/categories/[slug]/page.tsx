@@ -1,4 +1,4 @@
-export const revalidate = 60;
+export const revalidate = 120;
 
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
@@ -7,7 +7,7 @@ import { getLocalizedField } from "@/lib/utils";
 import ProductGrid from "@/components/store/ProductGrid";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import EmptyState from "@/components/ui/EmptyState";
-import { Product, Category } from "@/types";
+import type { Product, Category } from "@/types";
 
 async function getCategoryWithProducts(slug: string) {
   try {

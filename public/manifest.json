@@ -1,0 +1,21 @@
+{
+  "name": "متجر التفرّد | Tafarud Store",
+  "short_name": "التفرّد",
+  "description": "إصدارات إبداعية ومنتجات ثقافية | Creative publications and cultural products",
+  "start_url": "/ar",
+  "display": "standalone",
+  "background_color": "#F7FAFA",
+  "theme_color": "#0D8070",
+  "orientation": "portrait-primary",
+  "categories": ["books", "shopping"],
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/main/iconn.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

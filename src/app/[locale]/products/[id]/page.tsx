@@ -13,7 +13,8 @@ import Badge from "@/components/ui/Badge";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ProductViewTracker from "@/components/store/ProductViewTracker";
 import RecentlyViewed from "@/components/store/RecentlyViewed";
-import { Product, PurchaseLink } from "@/types";
+import type { Product, PurchaseLink } from "@/types";
+import { BASE_URL } from "@/lib/config";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -55,13 +56,24 @@ export async function generateMetadata({
 
   const name = locale === "ar" ? product.name_ar : product.name_en;
   const description = locale === "ar" ? product.description_ar : product.description_en;
+  const categoryName = product.category
+    ? (locale === "ar" ? product.category.name_ar : product.category.name_en)
+    : "";
+  const metaDescription = `${name} - ${formatPrice(product.price)}${categoryName ? ` | ${categoryName}` : ""} - ${(description || "").slice(0, 120)}`;
 
   return {
     title: `${name} | متجر التفرّد`,
-    description: description?.slice(0, 160) || "",
+    description: metaDescription,
+    alternates: {
+      canonical: `${BASE_URL}/${locale}/products/${id}`,
+      languages: {
+        ar: `${BASE_URL}/ar/products/${id}`,
+        en: `${BASE_URL}/en/products/${id}`,
+      },
+    },
     openGraph: {
       title: name,
-      description: description?.slice(0, 160) || "",
+      description: metaDescription,
       images: product.image_url ? [{ url: product.image_url, width: 600, height: 800 }] : [],
       type: "website",
       siteName: "متجر التفرّد | Tafarud Store",
@@ -69,7 +81,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: name,
-      description: description?.slice(0, 160) || "",
+      description: metaDescription,
       images: product.image_url ? [product.image_url] : [],
     },
   };
@@ -107,7 +119,7 @@ export default async function ProductPage({
     name: name,
     description: description || "",
     image: images.length > 0 ? images : product.image_url || "",
-    url: `https://tafarud.store/${locale}/products/${product.id}`,
+    url: `${BASE_URL}/${locale}/products/${product.id}`,
     category: categoryName || undefined,
     datePublished: product.created_at,
     offers: {
@@ -130,8 +142,8 @@ export default async function ProductPage({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "الرئيسية", item: `https://tafarud.store/${locale}` },
-      { "@type": "ListItem", position: 2, name: "المنتجات", item: `https://tafarud.store/${locale}/products` },
+      { "@type": "ListItem", position: 1, name: "الرئيسية", item: `${BASE_URL}/${locale}` },
+      { "@type": "ListItem", position: 2, name: "المنتجات", item: `${BASE_URL}/${locale}/products` },
       { "@type": "ListItem", position: 3, name: name },
     ],
   };

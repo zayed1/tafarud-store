@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ProductGrid from "@/components/store/ProductGrid";
+import ProductListItem from "@/components/store/ProductListItem";
 import ProductFilters from "@/components/store/ProductFilters";
-import Pagination from "@/components/ui/Pagination";
 import QuickViewModal from "@/components/store/QuickViewModal";
-import { Product, Category } from "@/types";
+import type { Product, Category } from "@/types";
 
 const PRODUCTS_PER_PAGE = 12;
 
@@ -22,8 +22,10 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
   const t = useTranslations("common");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortBy, setSortBy] = useState("newest");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const filteredAndSorted = useMemo(() => {
     let result = [...products];
@@ -48,25 +50,38 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
     return result;
   }, [products, selectedCategory, sortBy]);
 
-  const totalPages = Math.ceil(filteredAndSorted.length / PRODUCTS_PER_PAGE);
-  const paginatedProducts = filteredAndSorted.slice(
-    (currentPage - 1) * PRODUCTS_PER_PAGE,
-    currentPage * PRODUCTS_PER_PAGE
-  );
+  const visibleProducts = filteredAndSorted.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredAndSorted.length;
+
+  // Infinite scroll observer
+  useEffect(() => {
+    if (!hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => prev + PRODUCTS_PER_PAGE);
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    const el = loadMoreRef.current;
+    if (el) observer.observe(el);
+
+    return () => {
+      if (el) observer.unobserve(el);
+    };
+  }, [hasMore]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
-    setCurrentPage(1);
+    setVisibleCount(PRODUCTS_PER_PAGE);
   };
 
   const handleSortChange = (sort: string) => {
     setSortBy(sort);
-    setCurrentPage(1);
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setVisibleCount(PRODUCTS_PER_PAGE);
   };
 
   const handleQuickView = useCallback((product: Product) => {
@@ -82,9 +97,45 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
         ]}
       />
 
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-1 h-8 bg-gradient-to-b from-primary to-accent rounded-full" />
-        <h1 className="text-3xl sm:text-4xl font-bold text-dark">{t("allProducts")}</h1>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <div className="w-1 h-8 bg-gradient-to-b from-primary to-accent rounded-full" />
+          <h1 className="text-3xl sm:text-4xl font-bold text-dark">{t("allProducts")}</h1>
+        </div>
+
+        {/* View mode toggle */}
+        <div className="hidden sm:flex items-center gap-1 bg-surface border border-border rounded-xl p-1">
+          <button
+            onClick={() => setViewMode("grid")}
+            className={`p-2 rounded-lg transition-colors cursor-pointer ${
+              viewMode === "grid"
+                ? "bg-primary/10 text-primary"
+                : "text-muted hover:text-dark"
+            }`}
+            title={t("gridView")}
+            aria-label={t("gridView")}
+            aria-pressed={viewMode === "grid"}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+          </button>
+          <button
+            onClick={() => setViewMode("list")}
+            className={`p-2 rounded-lg transition-colors cursor-pointer ${
+              viewMode === "list"
+                ? "bg-primary/10 text-primary"
+                : "text-muted hover:text-dark"
+            }`}
+            title={t("listView")}
+            aria-label={t("listView")}
+            aria-pressed={viewMode === "list"}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <ProductFilters
@@ -96,39 +147,65 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
         productCount={filteredAndSorted.length}
       />
 
-      {paginatedProducts.length > 0 ? (
+      {visibleProducts.length > 0 ? (
         <>
-          <ProductGrid products={paginatedProducts} onQuickView={handleQuickView} />
-
-          {/* Load more + pagination */}
-          {totalPages > 1 && (
-            <div className="mt-8 space-y-4">
-              {currentPage < totalPages && (
-                <div className="text-center">
-                  <motion.button
-                    onClick={() => setCurrentPage((p) => p + 1)}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-surface border border-border rounded-xl text-dark font-medium hover:border-primary/30 hover:text-primary transition-all cursor-pointer dark:text-gray-300"
-                    whileTap={{ scale: 0.97 }}
+          <AnimatePresence mode="wait">
+            {viewMode === "grid" ? (
+              <motion.div
+                key="grid"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ProductGrid products={visibleProducts} onQuickView={handleQuickView} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="list"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-4"
+              >
+                {visibleProducts.map((product, index) => (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.03 }}
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m0 0l-4-4m4 4l4-4" />
-                    </svg>
-                    {t("loadMore")}
-                  </motion.button>
-                  <p className="text-xs text-muted mt-2">
-                    {t("showingOf", {
-                      showing: Math.min(currentPage * PRODUCTS_PER_PAGE, filteredAndSorted.length),
-                      total: filteredAndSorted.length,
-                    })}
-                  </p>
-                </div>
-              )}
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
+                    <ProductListItem product={product} onQuickView={handleQuickView} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Infinite scroll trigger */}
+          {hasMore && (
+            <div ref={loadMoreRef} className="mt-8 text-center">
+              <div className="inline-flex items-center gap-2 text-muted text-sm">
+                <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                {t("loading")}
+              </div>
+              <p className="text-xs text-muted mt-2">
+                {t("showingOf", {
+                  showing: visibleProducts.length,
+                  total: filteredAndSorted.length,
+                })}
+              </p>
             </div>
+          )}
+
+          {!hasMore && filteredAndSorted.length > PRODUCTS_PER_PAGE && (
+            <p className="text-center text-xs text-muted mt-8">
+              {t("showingOf", {
+                showing: filteredAndSorted.length,
+                total: filteredAndSorted.length,
+              })}
+            </p>
           )}
         </>
       ) : (

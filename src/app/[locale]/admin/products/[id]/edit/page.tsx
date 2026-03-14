@@ -10,6 +10,7 @@ import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import PurchaseLinkEditor from "@/components/admin/PurchaseLinkEditor";
 import ProductPreview from "@/components/admin/ProductPreview";
+import MultiImageUpload from "@/components/admin/MultiImageUpload";
 import { useToast } from "@/components/ui/Toast";
 
 export default function EditProductPage({
@@ -27,6 +28,8 @@ export default function EditProductPage({
   const [featured, setFeatured] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(null);
+  const [galleryUrls, setGalleryUrls] = useState<string[]>([]);
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [purchaseLinks, setPurchaseLinks] = useState<Partial<PurchaseLink>[]>([]);
   const [saving, setSaving] = useState(false);
@@ -57,6 +60,7 @@ export default function EditProductPage({
         setCategoryId(product.category_id || "");
         setFeatured(product.featured || false);
         setCurrentImageUrl(product.image_url);
+        setGalleryUrls(product.gallery_urls || []);
       }
 
       setPurchaseLinks(links || []);
@@ -87,6 +91,21 @@ export default function EditProductPage({
       }
     }
 
+    // Upload new gallery images
+    const uploadedGalleryUrls = [...galleryUrls];
+    for (const file of galleryFiles) {
+      const fileName = `gallery/${Date.now()}-${file.name}`;
+      const { data: uploadData } = await supabase.storage
+        .from("product-images")
+        .upload(fileName, file);
+      if (uploadData) {
+        const { data: urlData } = supabase.storage
+          .from("product-images")
+          .getPublicUrl(uploadData.path);
+        uploadedGalleryUrls.push(urlData.publicUrl);
+      }
+    }
+
     const { error: updateError } = await supabase
       .from("products")
       .update({
@@ -98,6 +117,7 @@ export default function EditProductPage({
         category_id: categoryId || null,
         featured,
         image_url: imageUrl,
+        gallery_urls: uploadedGalleryUrls.length > 0 ? uploadedGalleryUrls : null,
       })
       .eq("id", id);
 
@@ -205,6 +225,13 @@ export default function EditProductPage({
             className="w-full px-4 py-2.5 rounded-lg border border-border bg-surface text-dark file:me-4 file:py-1 file:px-3 file:rounded file:border-0 file:bg-primary/10 file:text-primary file:font-medium file:cursor-pointer"
           />
         </div>
+
+        <MultiImageUpload
+          existingUrls={galleryUrls}
+          onChangeUrls={setGalleryUrls}
+          onChangeFiles={setGalleryFiles}
+          pendingFiles={galleryFiles}
+        />
 
         <label className="flex items-center gap-3 cursor-pointer">
           <input
