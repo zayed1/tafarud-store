@@ -12,6 +12,7 @@ import { getLocalizedField } from "@/lib/utils";
 import { BASE_URL } from "@/lib/config";
 import Link from "next/link";
 import type { Metadata } from "next";
+import ParallaxSection from "@/components/store/ParallaxSection";
 
 export async function generateMetadata({
   params,
@@ -200,8 +201,8 @@ function HomeContent({
         <FeaturedSlider products={featuredProducts} />
       )}
 
-      {/* About Snippet */}
-      <AnimatedSection>
+      {/* About Snippet with Parallax */}
+      <ParallaxSection>
         <section className="relative overflow-hidden py-16 sm:py-20">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-background to-accent/[0.03]" />
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
@@ -231,7 +232,7 @@ function HomeContent({
             </div>
           </div>
         </section>
-      </AnimatedSection>
+      </ParallaxSection>
     </>
   );
 }

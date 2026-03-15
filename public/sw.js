@@ -1,7 +1,8 @@
-const CACHE_NAME = "tafarud-v1";
+const CACHE_NAME = "tafarud-v2";
 const STATIC_ASSETS = [
   "/main/iconn.png",
   "/manifest.json",
+  "/offline.html",
 ];
 
 self.addEventListener("install", (event) => {
@@ -41,7 +42,9 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           return response;
         })
-        .catch(() => caches.match(request))
+        .catch(() =>
+          caches.match(request).then((cached) => cached || caches.match("/offline.html"))
+        )
     );
   } else {
     event.respondWith(
@@ -53,7 +56,7 @@ self.addEventListener("fetch", (event) => {
             caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           }
           return response;
-        });
+        }).catch(() => new Response("", { status: 408 }));
       })
     );
   }

@@ -1,13 +1,15 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import type { Product } from "@/types";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
+import TiltCard from "./TiltCard";
 
 interface ProductCardProps {
   product: Product;
@@ -24,18 +26,21 @@ function isNewProduct(createdAt: string): boolean {
 function ProductCard({ product, onQuickView }: ProductCardProps) {
   const locale = useLocale();
   const t = useTranslations("common");
+  const router = useRouter();
   const name = getLocalizedField(product, "name", locale);
   const categoryName = product.category
     ? getLocalizedField(product.category, "name", locale)
     : "";
   const isNew = isNewProduct(product.created_at);
 
+  // Smart prefetch on hover
+  const handlePrefetch = useCallback(() => {
+    router.prefetch(`/${locale}/products/${product.id}`);
+  }, [router, locale, product.id]);
+
   return (
-    <motion.div
-      whileHover={{ y: -6 }}
-      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <Link href={`/${locale}/products/${product.id}`} className="block group">
+    <TiltCard>
+      <Link href={`/${locale}/products/${product.id}`} className="block group" onMouseEnter={handlePrefetch}>
         <div className="bg-surface rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300">
           <div className="aspect-[3/4] relative bg-background overflow-hidden">
             {product.image_url ? (
@@ -113,7 +118,7 @@ function ProductCard({ product, onQuickView }: ProductCardProps) {
           </div>
         </div>
       </Link>
-    </motion.div>
+    </TiltCard>
   );
 }
 

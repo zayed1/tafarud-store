@@ -141,20 +141,31 @@ export default async function ProductPage({
     url: `${BASE_URL}/${locale}/products/${product.id}`,
     category: categoryName || undefined,
     datePublished: product.created_at,
+    sku: product.id,
     offers: {
       "@type": "Offer",
       price: product.price,
       priceCurrency: "AED",
       availability: "https://schema.org/InStock",
+      url: `${BASE_URL}/${locale}/products/${product.id}`,
       seller: {
         "@type": "Organization",
         name: "متجر التفرّد",
+        url: BASE_URL,
       },
+      priceValidUntil: new Date(new Date(product.created_at).getTime() + 2 * 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
     },
     brand: {
       "@type": "Brand",
-      name: "متجر التفرّد",
+      name: "مجموعة التفرّد",
     },
+    publisher: {
+      "@type": "Organization",
+      name: "مجموعة التفرّد",
+      url: "https://altafarud.com",
+    },
+    inLanguage: locale === "ar" ? "ar" : "en",
+    isAccessibleForFree: false,
   };
 
   const breadcrumbJsonLd = {

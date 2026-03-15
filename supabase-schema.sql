@@ -116,6 +116,32 @@ CREATE POLICY "Authenticated manage activity_logs" ON activity_logs
   FOR ALL USING (auth.role() = 'authenticated')
   WITH CHECK (auth.role() = 'authenticated');
 
+-- Coupons table
+CREATE TABLE IF NOT EXISTS coupons (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  code TEXT UNIQUE NOT NULL,
+  discount_type TEXT NOT NULL DEFAULT 'percentage' CHECK (discount_type IN ('percentage', 'fixed')),
+  discount_value DECIMAL(10, 2) NOT NULL DEFAULT 0,
+  min_order_amount DECIMAL(10, 2),
+  max_uses INTEGER,
+  used_count INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT TRUE,
+  expires_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_coupons_code ON coupons(code);
+CREATE INDEX IF NOT EXISTS idx_coupons_active ON coupons(is_active);
+
+ALTER TABLE coupons ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read coupons" ON coupons
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated manage coupons" ON coupons
+  FOR ALL USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
 -- Create storage bucket for product images
 -- Note: Run this separately or via Supabase Dashboard
 -- INSERT INTO storage.buckets (id, name, public) VALUES ('product-images', 'product-images', true);

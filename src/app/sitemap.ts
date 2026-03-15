@@ -6,39 +6,53 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();
 
   const [{ data: products }, { data: categories }] = await Promise.all([
-    supabase.from("products").select("id, created_at"),
-    supabase.from("categories").select("slug, created_at"),
+    supabase.from("products").select("id, created_at, image_url, name_ar, name_en, featured"),
+    supabase.from("categories").select("slug, created_at, image_url"),
   ]);
 
   const locales = ["ar", "en"];
 
-  // Static pages
+  // Static pages with differentiated priorities
   const staticPages = locales.flatMap((locale) =>
-    ["", "/products", "/categories", "/about"].map((path) => ({
-      url: `${BASE_URL}/${locale}${path}`,
+    [
+      { path: "", priority: 1.0, changeFrequency: "daily" as const },
+      { path: "/products", priority: 0.9, changeFrequency: "daily" as const },
+      { path: "/categories", priority: 0.8, changeFrequency: "weekly" as const },
+      { path: "/about", priority: 0.5, changeFrequency: "monthly" as const },
+    ].map((page) => ({
+      url: `${BASE_URL}/${locale}${page.path}`,
       lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: path === "" ? 1 : 0.8,
+      changeFrequency: page.changeFrequency,
+      priority: page.priority,
+      ...(page.path === "" ? {
+        images: [`${BASE_URL}/main/iconn.png`],
+      } : {}),
     }))
   );
 
-  // Product pages
+  // Product pages with images and dynamic priority
   const productPages = (products || []).flatMap((product) =>
     locales.map((locale) => ({
       url: `${BASE_URL}/${locale}/products/${product.id}`,
       lastModified: new Date(product.created_at),
       changeFrequency: "weekly" as const,
-      priority: 0.9,
+      priority: product.featured ? 0.95 : 0.8,
+      ...(product.image_url ? {
+        images: [product.image_url],
+      } : {}),
     }))
   );
 
-  // Category pages
+  // Category pages with images
   const categoryPages = (categories || []).flatMap((category) =>
     locales.map((locale) => ({
       url: `${BASE_URL}/${locale}/categories/${category.slug}`,
       lastModified: new Date(category.created_at),
       changeFrequency: "weekly" as const,
       priority: 0.7,
+      ...(category.image_url ? {
+        images: [category.image_url],
+      } : {}),
     }))
   );
 

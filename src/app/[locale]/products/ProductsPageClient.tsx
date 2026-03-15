@@ -7,6 +7,7 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import ProductGrid from "@/components/store/ProductGrid";
 import ProductListItem from "@/components/store/ProductListItem";
 import ProductFilters from "@/components/store/ProductFilters";
+import ShareCollection from "@/components/store/ShareCollection";
 import type { Product, Category } from "@/types";
 
 const QuickViewModal = lazy(() => import("@/components/store/QuickViewModal"));
@@ -233,6 +234,9 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
           <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
         </Suspense>
       )}
+
+      {/* Share Collection */}
+      <ShareCollection products={products} />
     </div>
   );
 }

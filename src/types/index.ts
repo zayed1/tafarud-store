@@ -50,7 +50,20 @@ export interface Banner {
 export interface ActivityLog {
   id: string;
   action: "added" | "updated" | "deleted";
-  entity_type: "product" | "category" | "banner" | "settings";
+  entity_type: "product" | "category" | "banner" | "settings" | "coupon";
   entity_name: string;
+  created_at: string;
+}
+
+export interface Coupon {
+  id: string;
+  code: string;
+  discount_type: "percentage" | "fixed";
+  discount_value: number;
+  min_order_amount: number | null;
+  max_uses: number | null;
+  used_count: number;
+  is_active: boolean;
+  expires_at: string | null;
   created_at: string;
 }

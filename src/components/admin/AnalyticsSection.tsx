@@ -192,7 +192,7 @@ export default function AnalyticsSection({ products }: AnalyticsSectionProps) {
           </div>
         </div>
 
-        {/* Category distribution with revenue */}
+        {/* Category distribution with pie chart + revenue */}
         <div className="bg-surface border border-border rounded-xl p-5">
           <h3 className="font-semibold text-dark mb-4 flex items-center gap-2">
             <svg className="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -202,26 +202,61 @@ export default function AnalyticsSection({ products }: AnalyticsSectionProps) {
             {t("categoryPerformance")}
           </h3>
           {analytics.categoryDist.length > 0 ? (
-            <div className="space-y-3">
-              {analytics.categoryDist.map((cat) => (
-                <div key={cat.name}>
-                  <div className="flex items-center justify-between text-sm mb-1">
-                    <span className="text-dark">{cat.name}</span>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-muted">{cat.count}</span>
-                      <span className="text-xs text-primary font-medium">{formatPrice(cat.revenue)}</span>
+            <div className="space-y-4">
+              {/* SVG Pie Chart */}
+              <div className="flex justify-center">
+                <svg viewBox="0 0 120 120" className="w-32 h-32">
+                  {(() => {
+                    const total = analytics.categoryDist.reduce((s, c) => s + c.count, 0);
+                    const colors = ["var(--color-primary, #0d9488)", "var(--color-accent, #f59e0b)", "var(--color-secondary, #6366f1)", "#ec4899", "#10b981", "#8b5cf6"];
+                    let startAngle = 0;
+                    return analytics.categoryDist.map((cat, i) => {
+                      const angle = (cat.count / Math.max(total, 1)) * 360;
+                      const endAngle = startAngle + angle;
+                      const largeArc = angle > 180 ? 1 : 0;
+                      const startRad = (startAngle - 90) * Math.PI / 180;
+                      const endRad = (endAngle - 90) * Math.PI / 180;
+                      const x1 = 60 + 50 * Math.cos(startRad);
+                      const y1 = 60 + 50 * Math.sin(startRad);
+                      const x2 = 60 + 50 * Math.cos(endRad);
+                      const y2 = 60 + 50 * Math.sin(endRad);
+                      const d = total === cat.count
+                        ? `M 60,10 A 50,50 0 1,1 59.99,10 Z`
+                        : `M 60,60 L ${x1},${y1} A 50,50 0 ${largeArc},1 ${x2},${y2} Z`;
+                      startAngle = endAngle;
+                      return <path key={i} d={d} fill={colors[i % colors.length]} opacity={0.85} />;
+                    });
+                  })()}
+                </svg>
+              </div>
+              {/* Legend + bars */}
+              <div className="space-y-3">
+                {analytics.categoryDist.map((cat, i) => {
+                  const colors = ["bg-primary", "bg-accent", "bg-secondary", "bg-pink-500", "bg-emerald-500", "bg-violet-500"];
+                  return (
+                    <div key={cat.name}>
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span className="text-dark flex items-center gap-2">
+                          <span className={`w-2.5 h-2.5 rounded-full ${colors[i % colors.length]}`} />
+                          {cat.name}
+                        </span>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-muted">{cat.count}</span>
+                          <span className="text-xs text-primary font-medium">{formatPrice(cat.revenue)}</span>
+                        </div>
+                      </div>
+                      <div className="h-2 bg-background rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${(cat.count / maxCategoryCount) * 100}%` }}
+                          transition={{ duration: 0.6 }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="h-2 bg-background rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(cat.count / maxCategoryCount) * 100}%` }}
-                      transition={{ duration: 0.6 }}
-                    />
-                  </div>
-                </div>
-              ))}
+                  );
+                })}
+              </div>
             </div>
           ) : (
             <p className="text-muted text-sm">{t("noData")}</p>

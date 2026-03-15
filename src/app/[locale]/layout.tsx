@@ -26,7 +26,7 @@ export default async function LocaleLayout({
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning>
+    <html lang={locale} dir={dir} suppressHydrationWarning id="top">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -86,7 +86,7 @@ export default async function LocaleLayout({
               {locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content"}
             </a>
             <Header />
-            <main id="main-content" className="flex-1">
+            <main id="main-content" className="flex-1" role="main" aria-label={locale === "ar" ? "المحتوى الرئيسي" : "Main content"}>
               <PageTransition>{children}</PageTransition>
             </main>
             <Footer />
