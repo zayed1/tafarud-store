@@ -7,7 +7,7 @@ import HeroSection from "@/components/store/HeroSection";
 import FeaturedSlider from "@/components/store/FeaturedSlider";
 import CategoryCard from "@/components/store/CategoryCard";
 import AnimatedSection, { StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
-import type { Product, Category } from "@/types";
+import type { Product, Category, Banner } from "@/types";
 import { getLocalizedField } from "@/lib/utils";
 import { BASE_URL } from "@/lib/config";
 import Link from "next/link";
@@ -64,16 +64,47 @@ async function getFeaturedProducts(): Promise<Product[]> {
   }
 }
 
-async function getCategories(): Promise<Category[]> {
+async function getBanners(): Promise<Banner[]> {
   try {
     const supabase = await createClient();
     const { data } = await supabase
+      .from("banners")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true });
+    return data || [];
+  } catch {
+    return [];
+  }
+}
+
+async function getCategoriesWithCounts(): Promise<(Category & { product_count: number })[]> {
+  try {
+    const supabase = await createClient();
+    const { data: categories } = await supabase
       .from("categories")
       .select("*")
       .order("created_at", { ascending: false });
-    return data || [];
+
+    if (!categories || categories.length === 0) return [];
+
+    const { data: products } = await supabase
+      .from("products")
+      .select("category_id");
+
+    const countMap = new Map<string, number>();
+    (products || []).forEach((p) => {
+      if (p.category_id) {
+        countMap.set(p.category_id, (countMap.get(p.category_id) || 0) + 1);
+      }
+    });
+
+    return categories.map((c) => ({
+      ...c,
+      product_count: countMap.get(c.id) || 0,
+    }));
   } catch (error) {
-    console.error("[getCategories]", error);
+    console.error("[getCategoriesWithCounts]", error);
     return [];
   }
 }
@@ -81,10 +112,12 @@ async function getCategories(): Promise<Category[]> {
 function HomeContent({
   featuredProducts,
   categories,
+  banners,
   locale,
 }: {
   featuredProducts: Product[];
-  categories: Category[];
+  categories: (Category & { product_count: number })[];
+  banners: Banner[];
   locale: string;
 }) {
   const t = useTranslations("common");
@@ -130,7 +163,7 @@ function HomeContent({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
         />
       )}
-      <HeroSection />
+      <HeroSection banners={banners} />
 
       {/* Categories Section */}
       {categories.length > 0 && (
@@ -155,7 +188,7 @@ function HomeContent({
           <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {categories.map((category) => (
               <StaggerItem key={category.id}>
-                <CategoryCard category={category} />
+                <CategoryCard category={category} productCount={category.product_count} />
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -204,11 +237,12 @@ function HomeContent({
 }
 
 export default async function HomePage() {
-  const [featuredProducts, categories, locale] = await Promise.all([
+  const [featuredProducts, categories, banners, locale] = await Promise.all([
     getFeaturedProducts(),
-    getCategories(),
+    getCategoriesWithCounts(),
+    getBanners(),
     getLocale(),
   ]);
 
-  return <HomeContent featuredProducts={featuredProducts} categories={categories} locale={locale} />;
+  return <HomeContent featuredProducts={featuredProducts} categories={categories} banners={banners} locale={locale} />;
 }

@@ -105,7 +105,7 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
         </div>
 
         {/* View mode toggle */}
-        <div className="hidden sm:flex items-center gap-1 bg-surface border border-border rounded-xl p-1">
+        <div className="flex items-center gap-1 bg-surface border border-border rounded-xl p-1">
           <button
             onClick={() => setViewMode("grid")}
             className={`p-2 rounded-lg transition-colors cursor-pointer ${

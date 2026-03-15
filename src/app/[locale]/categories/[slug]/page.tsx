@@ -7,6 +7,7 @@ import { getLocalizedField } from "@/lib/utils";
 import ProductGrid from "@/components/store/ProductGrid";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import EmptyState from "@/components/ui/EmptyState";
+import { BASE_URL } from "@/lib/config";
 import type { Product, Category } from "@/types";
 
 async function getCategoryWithProducts(slug: string) {
@@ -50,8 +51,22 @@ export default async function CategoryPage({
   const { category, products } = result;
   const name = getLocalizedField(category, "name", locale);
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: locale === "ar" ? "الرئيسية" : "Home", item: `${BASE_URL}/${locale}` },
+      { "@type": "ListItem", position: 2, name: locale === "ar" ? "التصنيفات" : "Categories", item: `${BASE_URL}/${locale}/categories` },
+      { "@type": "ListItem", position: 3, name: name },
+    ],
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <Breadcrumb
         items={[
           { label: t("home"), href: `/${locale}` },

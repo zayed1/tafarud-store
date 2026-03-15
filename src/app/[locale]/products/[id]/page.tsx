@@ -17,6 +17,7 @@ import type { Product, PurchaseLink as PurchaseLinkType } from "@/types";
 import { BASE_URL } from "@/lib/config";
 import type { Metadata } from "next";
 import RelatedProducts from "@/components/store/RelatedProducts";
+import ProductTabs from "@/components/store/ProductTabs";
 
 const RecentlyViewed = dynamic(() => import("@/components/store/RecentlyViewed"));
 
@@ -198,6 +199,8 @@ export default async function ProductPage({
                 className="object-contain transition-transform duration-700 group-hover:scale-105"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUzMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjBGNEYzIi8+PC9zdmc+"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5">
@@ -232,26 +235,18 @@ export default async function ProductPage({
             <p className="text-3xl font-bold text-primary">{formatPrice(product.price)}</p>
           </div>
 
-          {description && (
-            <div className="pt-4 border-t border-border">
-              <p className="text-dark-light text-lg leading-relaxed whitespace-pre-wrap">
-                {description}
-              </p>
-            </div>
-          )}
-
           {/* WhatsApp Order */}
           <WhatsAppButton productName={name} />
-
-          {/* Purchase Links */}
-          <div className="pt-4 border-t border-border">
-            <PurchaseLinks links={product.purchase_links || []} />
-          </div>
         </div>
       </div>
 
-      {/* Related Products */}
-      <RelatedProducts categoryId={product.category_id} currentProductId={product.id} />
+      {/* Tabbed Content */}
+      <ProductTabs
+        description={description}
+        purchaseLinksSlot={<PurchaseLinks links={product.purchase_links || []} />}
+        relatedProductsSlot={<RelatedProducts categoryId={product.category_id} currentProductId={product.id} />}
+        hasPurchaseLinks={(product.purchase_links || []).filter(l => l.is_enabled).length > 0}
+      />
 
       {/* Recently Viewed */}
       <RecentlyViewed excludeProductId={product.id} />

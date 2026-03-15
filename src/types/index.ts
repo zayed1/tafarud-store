@@ -33,3 +33,24 @@ export interface PurchaseLink {
   is_enabled: boolean;
   sort_order: number;
 }
+
+export interface Banner {
+  id: string;
+  title_ar: string;
+  title_en: string;
+  subtitle_ar: string;
+  subtitle_en: string;
+  image_url: string | null;
+  link: string;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface ActivityLog {
+  id: string;
+  action: "added" | "updated" | "deleted";
+  entity_type: "product" | "category" | "banner" | "settings";
+  entity_name: string;
+  created_at: string;
+}

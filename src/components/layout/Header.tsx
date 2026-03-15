@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import DesignThemeSelector from "@/components/ui/DesignThemeSelector";
+import MegaMenu from "./MegaMenu";
 
 const SearchModal = lazy(() => import("@/components/ui/SearchModal"));
 
@@ -92,26 +93,31 @@ export default function Header() {
 
             {/* Desktop Nav */}
             <nav aria-label="Main navigation" className="hidden md:flex items-center gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative px-4 py-2 font-medium transition-colors rounded-lg ${
-                    isActive(link.href)
-                      ? "text-primary bg-primary/10 dark:text-accent dark:bg-accent/10"
-                      : "text-dark hover:text-primary hover:bg-primary/5 dark:text-gray-300 dark:hover:text-accent"
-                  }`}
-                >
-                  {link.label}
-                  {isActive(link.href) && (
-                    <motion.div
-                      layoutId="activeNav"
-                      className="absolute bottom-0 inset-x-2 h-0.5 bg-primary dark:bg-accent rounded-full"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                if (link.href === `/${locale}/categories`) {
+                  return <MegaMenu key={link.href} />;
+                }
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`relative px-4 py-2 font-medium transition-colors rounded-lg ${
+                      isActive(link.href)
+                        ? "text-primary bg-primary/10 dark:text-accent dark:bg-accent/10"
+                        : "text-dark hover:text-primary hover:bg-primary/5 dark:text-gray-300 dark:hover:text-accent"
+                    }`}
+                  >
+                    {link.label}
+                    {isActive(link.href) && (
+                      <motion.div
+                        layoutId="activeNav"
+                        className="absolute bottom-0 inset-x-2 h-0.5 bg-primary dark:bg-accent rounded-full"
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Actions */}

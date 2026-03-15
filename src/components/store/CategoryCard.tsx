@@ -4,14 +4,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { Category } from "@/types";
+import type { Category } from "@/types";
 import { getLocalizedField } from "@/lib/utils";
 
 interface CategoryCardProps {
   category: Category;
+  productCount?: number;
 }
 
-export default function CategoryCard({ category }: CategoryCardProps) {
+export default function CategoryCard({ category, productCount }: CategoryCardProps) {
   const locale = useLocale();
   const t = useTranslations("common");
   const name = getLocalizedField(category, "name", locale);
@@ -42,11 +43,18 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-dark/20 to-transparent group-hover:from-primary-dark/80 transition-all duration-500" />
             <div className="absolute bottom-0 start-0 end-0 p-4">
               <h3 className="text-white font-bold text-lg mb-1">{name}</h3>
-              <div className="flex items-center gap-1.5 text-white/70 text-sm opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                <span>{t("viewAll")}</span>
-                <svg className="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+              <div className="flex items-center justify-between">
+                {productCount !== undefined && (
+                  <span className="text-white/60 text-xs bg-white/10 px-2 py-0.5 rounded-full backdrop-blur-sm">
+                    {t("productsCount", { count: productCount })}
+                  </span>
+                )}
+                <div className="flex items-center gap-1.5 text-white/70 text-sm opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                  <span>{t("viewAll")}</span>
+                  <svg className="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
