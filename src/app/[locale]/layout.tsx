@@ -45,6 +45,13 @@ export default async function LocaleLayout({
                 if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                   document.documentElement.classList.add('dark');
                 }
+                var dt = localStorage.getItem('design-theme');
+                if (dt && dt !== 'classic') {
+                  document.documentElement.classList.add('theme-' + dt);
+                }
+                if (localStorage.getItem('high-contrast') === 'true') {
+                  document.documentElement.classList.add('high-contrast');
+                }
               } catch (e) {}
               if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js').catch(() => {});

@@ -83,7 +83,12 @@
     "highContrast": "High Contrast",
     "installApp": "Install App",
     "offlineReady": "Ready to work offline",
-    "newUpdate": "New update available"
+    "newUpdate": "New update available",
+    "designTheme": "Design Theme",
+    "theme_classic": "Classic",
+    "theme_ocean": "Ocean",
+    "theme_sunset": "Sunset",
+    "theme_lavender": "Lavender"
   },
   "hero": {
     "title": "Tafarud Store",

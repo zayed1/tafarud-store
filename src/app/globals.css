@@ -55,6 +55,105 @@ body {
   --color-accent-light: #99F6E4;
 }
 
+/* ========== Design Theme: Ocean ========== */
+.theme-ocean {
+  --color-primary: #1E6CB0;
+  --color-primary-light: #3B8DD4;
+  --color-primary-dark: #15538A;
+  --color-secondary: #13456E;
+  --color-secondary-light: #1A5C94;
+  --color-accent: #60A5E8;
+  --color-accent-light: #93C5F0;
+  --color-background: #F5F8FC;
+  --color-surface: #FFFFFF;
+  --color-dark: #1A2840;
+  --color-dark-light: #2D3E56;
+  --color-muted: #5A7089;
+  --color-border: #D0DDE8;
+}
+
+.dark.theme-ocean {
+  --color-background: #0F1724;
+  --color-surface: #1A2536;
+  --color-dark: #E8EDF4;
+  --color-dark-light: #C5CED9;
+  --color-muted: #8899AB;
+  --color-border: #2C3B4E;
+  --color-primary: #60A5FA;
+  --color-primary-light: #93BBFD;
+  --color-primary-dark: #3B82F6;
+  --color-secondary: #3B82F6;
+  --color-secondary-light: #60A5FA;
+  --color-accent: #93BBFD;
+  --color-accent-light: #BFDBFE;
+}
+
+/* ========== Design Theme: Sunset ========== */
+.theme-sunset {
+  --color-primary: #C96830;
+  --color-primary-light: #E0833F;
+  --color-primary-dark: #A85524;
+  --color-secondary: #8B4020;
+  --color-secondary-light: #A75230;
+  --color-accent: #E8A050;
+  --color-accent-light: #F0C080;
+  --color-background: #FFFAF5;
+  --color-surface: #FFFFFF;
+  --color-dark: #3A2418;
+  --color-dark-light: #5A3D2C;
+  --color-muted: #8A7060;
+  --color-border: #E8D8CC;
+}
+
+.dark.theme-sunset {
+  --color-background: #1A1210;
+  --color-surface: #2A1E18;
+  --color-dark: #F5E6D8;
+  --color-dark-light: #D9C4B0;
+  --color-muted: #B09880;
+  --color-border: #4A3828;
+  --color-primary: #F59E0B;
+  --color-primary-light: #FBBF24;
+  --color-primary-dark: #D97706;
+  --color-secondary: #D97706;
+  --color-secondary-light: #F59E0B;
+  --color-accent: #FBBF24;
+  --color-accent-light: #FDE68A;
+}
+
+/* ========== Design Theme: Lavender ========== */
+.theme-lavender {
+  --color-primary: #7C3AED;
+  --color-primary-light: #9B5CF0;
+  --color-primary-dark: #6D28D9;
+  --color-secondary: #5B21B6;
+  --color-secondary-light: #6D28D9;
+  --color-accent: #A78BFA;
+  --color-accent-light: #C4B5FD;
+  --color-background: #FAF5FF;
+  --color-surface: #FFFFFF;
+  --color-dark: #2E1065;
+  --color-dark-light: #4C1D95;
+  --color-muted: #7C6C94;
+  --color-border: #DDD6FE;
+}
+
+.dark.theme-lavender {
+  --color-background: #13091F;
+  --color-surface: #1E1030;
+  --color-dark: #EDE9FE;
+  --color-dark-light: #C4B5FD;
+  --color-muted: #A8A0C0;
+  --color-border: #3B2960;
+  --color-primary: #A78BFA;
+  --color-primary-light: #C4B5FD;
+  --color-primary-dark: #8B5CF6;
+  --color-secondary: #8B5CF6;
+  --color-secondary-light: #A78BFA;
+  --color-accent: #C4B5FD;
+  --color-accent-light: #DDD6FE;
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
@@ -192,6 +291,26 @@ html {
 .card-interactive:focus-within {
   box-shadow: 0 8px 25px -5px rgba(13, 128, 112, 0.15);
   border-color: var(--color-primary);
+}
+
+/* Glass effect per theme */
+.theme-ocean .glass {
+  background: rgba(245, 248, 252, 0.85);
+}
+.dark.theme-ocean .glass {
+  background: rgba(15, 23, 36, 0.88);
+}
+.theme-sunset .glass {
+  background: rgba(255, 250, 245, 0.85);
+}
+.dark.theme-sunset .glass {
+  background: rgba(26, 18, 16, 0.88);
+}
+.theme-lavender .glass {
+  background: rgba(250, 245, 255, 0.85);
+}
+.dark.theme-lavender .glass {
+  background: rgba(19, 9, 31, 0.88);
 }
 
 /* High contrast mode */

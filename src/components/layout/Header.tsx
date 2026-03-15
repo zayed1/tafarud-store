@@ -8,6 +8,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import DesignThemeSelector from "@/components/ui/DesignThemeSelector";
 import SearchModal from "@/components/ui/SearchModal";
 
 export default function Header() {
@@ -126,6 +127,7 @@ export default function Header() {
                 </svg>
               </motion.button>
 
+              <DesignThemeSelector />
               <ThemeToggle />
               <LanguageSwitcher />
 

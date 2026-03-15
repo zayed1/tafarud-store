@@ -83,7 +83,12 @@
     "highContrast": "تباين عالي",
     "installApp": "تثبيت التطبيق",
     "offlineReady": "جاهز للعمل بدون إنترنت",
-    "newUpdate": "تحديث جديد متاح"
+    "newUpdate": "تحديث جديد متاح",
+    "designTheme": "تصميم الموقع",
+    "theme_classic": "كلاسيكي",
+    "theme_ocean": "المحيط",
+    "theme_sunset": "الغروب",
+    "theme_lavender": "اللافندر"
   },
   "hero": {
     "title": "متجر التفرّد",
