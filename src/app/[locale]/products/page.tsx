@@ -2,7 +2,7 @@ export const revalidate = 60;
 
 import { createClient } from "@/lib/supabase/server";
 import { getLocale } from "next-intl/server";
-import { Product, Category } from "@/types";
+import type { Product, Category } from "@/types";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ProductsPageClient from "./ProductsPageClient";
 
@@ -12,9 +12,11 @@ async function getProducts(): Promise<Product[]> {
     const { data } = await supabase
       .from("products")
       .select("*, category:categories(*)")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(200);
     return data || [];
-  } catch {
+  } catch (error) {
+    console.error("[getProducts]", error);
     return [];
   }
 }
@@ -27,7 +29,8 @@ async function getCategories(): Promise<Category[]> {
       .select("*")
       .order("created_at", { ascending: false });
     return data || [];
-  } catch {
+  } catch (error) {
+    console.error("[getCategories]", error);
     return [];
   }
 }

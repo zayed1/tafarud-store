@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef, lazy, Suspense } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ProductGrid from "@/components/store/ProductGrid";
 import ProductListItem from "@/components/store/ProductListItem";
 import ProductFilters from "@/components/store/ProductFilters";
-import QuickViewModal from "@/components/store/QuickViewModal";
 import type { Product, Category } from "@/types";
+
+const QuickViewModal = lazy(() => import("@/components/store/QuickViewModal"));
 
 const PRODUCTS_PER_PAGE = 12;
 
@@ -227,7 +228,11 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
         </motion.div>
       )}
 
-      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+      {quickViewProduct && (
+        <Suspense fallback={null}>
+          <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+        </Suspense>
+      )}
     </div>
   );
 }

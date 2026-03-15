@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
@@ -20,7 +21,7 @@ function isNewProduct(createdAt: string): boolean {
   return diffDays <= 7;
 }
 
-export default function ProductCard({ product, onQuickView }: ProductCardProps) {
+function ProductCard({ product, onQuickView }: ProductCardProps) {
   const locale = useLocale();
   const t = useTranslations("common");
   const name = getLocalizedField(product, "name", locale);
@@ -115,3 +116,5 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
     </motion.div>
   );
 }
+
+export default memo(ProductCard);

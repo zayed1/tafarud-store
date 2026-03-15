@@ -58,10 +58,14 @@ export async function GET(request: NextRequest) {
         .limit(4),
     ]);
 
-    return NextResponse.json({
-      products: products || [],
-      categories: categories || [],
-    });
+    return NextResponse.json(
+      { products: products || [], categories: categories || [] },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
+        },
+      }
+    );
   } catch {
     return NextResponse.json(
       { error: "Search failed" },

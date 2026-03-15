@@ -58,7 +58,8 @@ async function getFeaturedProducts(): Promise<Product[]> {
       .order("created_at", { ascending: false })
       .limit(8);
     return data || [];
-  } catch {
+  } catch (error) {
+    console.error("[getFeaturedProducts]", error);
     return [];
   }
 }
@@ -71,7 +72,8 @@ async function getCategories(): Promise<Category[]> {
       .select("*")
       .order("created_at", { ascending: false });
     return data || [];
-  } catch {
+  } catch (error) {
+    console.error("[getCategories]", error);
     return [];
   }
 }

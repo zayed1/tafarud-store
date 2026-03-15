@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -9,7 +9,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import DesignThemeSelector from "@/components/ui/DesignThemeSelector";
-import SearchModal from "@/components/ui/SearchModal";
+
+const SearchModal = lazy(() => import("@/components/ui/SearchModal"));
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -208,7 +209,11 @@ export default function Header() {
         </div>
       </header>
 
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      {isSearchOpen && (
+        <Suspense fallback={null}>
+          <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+        </Suspense>
+      )}
     </>
   );
 }

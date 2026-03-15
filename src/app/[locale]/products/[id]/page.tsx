@@ -1,25 +1,42 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
 import PurchaseLinks from "@/components/store/PurchaseLinks";
 import WhatsAppButton from "@/components/store/WhatsAppButton";
 import ShareButton from "@/components/store/ShareButton";
-import RelatedProducts from "@/components/store/RelatedProducts";
 import ProductGallery from "@/components/store/ProductGallery";
 import Badge from "@/components/ui/Badge";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ProductViewTracker from "@/components/store/ProductViewTracker";
-import RecentlyViewed from "@/components/store/RecentlyViewed";
-import type { Product, PurchaseLink } from "@/types";
+import type { Product, PurchaseLink as PurchaseLinkType } from "@/types";
 import { BASE_URL } from "@/lib/config";
 import type { Metadata } from "next";
+import RelatedProducts from "@/components/store/RelatedProducts";
+
+const RecentlyViewed = dynamic(() => import("@/components/store/RecentlyViewed"));
 
 export const revalidate = 60;
 
-async function getProduct(id: string) {
+export async function generateStaticParams() {
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("products")
+      .select("id")
+      .order("created_at", { ascending: false })
+      .limit(20);
+    return (data || []).map((p) => ({ id: p.id }));
+  } catch {
+    return [];
+  }
+}
+
+const getProduct = cache(async function getProduct(id: string) {
   try {
     const supabase = await createClient();
     const { data: product } = await supabase
@@ -37,12 +54,13 @@ async function getProduct(id: string) {
       .order("sort_order", { ascending: true });
 
     return { ...product, purchase_links: links || [] } as Product & {
-      purchase_links: PurchaseLink[];
+      purchase_links: PurchaseLinkType[];
     };
-  } catch {
+  } catch (error) {
+    console.error("[getProduct]", id, error);
     return null;
   }
-}
+});
 
 export async function generateMetadata({
   params,

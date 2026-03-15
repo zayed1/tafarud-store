@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import { Product } from "@/types";
+import type { Product } from "@/types";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 
@@ -94,6 +94,7 @@ export default function FeaturedSlider({ products }: FeaturedSliderProps) {
                       fill
                       className="object-contain transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, 50vw"
+                      priority={currentIndex === 0}
                       placeholder="blur"
                       blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUzMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjBGNEYzIi8+PC9zdmc+"
                     />
