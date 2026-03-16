@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
-import { Category } from "@/types";
+import type { Category } from "@/types";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Modal from "@/components/ui/Modal";
@@ -36,11 +36,7 @@ export default function AdminCategoriesPage() {
     resetItems,
   } = useDragReorder<Category>([]);
 
-  useEffect(() => {
-    loadCategories();
-  }, []);
-
-  async function loadCategories() {
+  const loadCategories = useCallback(async () => {
     const supabase = createClient();
     const { data } = await supabase
       .from("categories")
@@ -48,7 +44,12 @@ export default function AdminCategoriesPage() {
       .order("created_at", { ascending: false });
     resetItems(data || []);
     setLoading(false);
-  }
+  }, [resetItems]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadCategories();
+  }, [loadCategories]);
 
   function openAdd() {
     setEditingCategory(null);

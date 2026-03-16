@@ -1,15 +1,34 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import Image from "next/image";
 import { useLocale } from "next-intl";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { getLocalizedField } from "@/lib/utils";
+import type { Banner } from "@/types";
 
-export default function HeroSection() {
+const floatingSquares = Array.from({ length: 12 }, (_, i) => ({
+  id: i,
+  top: `${15 + (i * 5.83) % 70}%`,
+  left: `${5 + (i * 7.5) % 90}%`,
+  duration: 4 + (i % 5),
+  delay: (i % 4) * 0.75,
+}));
+
+interface HeroSectionProps {
+  banners?: Banner[];
+}
+
+export default function HeroSection({ banners = [] }: HeroSectionProps) {
   const t = useTranslations("hero");
   const locale = useLocale();
   const ref = useRef<HTMLElement>(null);
+  const [currentBanner, setCurrentBanner] = useState(0);
+
+  const activeBanners = banners.filter((b) => b.is_active);
+  const hasBanners = activeBanners.length > 0;
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -20,8 +39,37 @@ export default function HeroSection() {
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
+  const nextBanner = useCallback(() => {
+    if (activeBanners.length > 1) {
+      setCurrentBanner((prev) => (prev + 1) % activeBanners.length);
+    }
+  }, [activeBanners.length]);
+
+  useEffect(() => {
+    if (activeBanners.length <= 1) return;
+    const timer = setInterval(nextBanner, 6000);
+    return () => clearInterval(timer);
+  }, [nextBanner, activeBanners.length]);
+
+  const banner = hasBanners ? activeBanners[currentBanner] : null;
+  const bannerTitle = banner ? getLocalizedField(banner, "title", locale) : t("title");
+  const bannerSubtitle = banner ? getLocalizedField(banner, "subtitle", locale) : t("subtitle");
+
   return (
     <section ref={ref} className="relative overflow-hidden bg-gradient-to-br from-primary-dark via-primary to-secondary min-h-[520px] sm:min-h-[580px] flex items-center">
+      {/* Banner background image */}
+      {banner?.image_url && (
+        <div className="absolute inset-0">
+          <Image
+            src={banner.image_url}
+            alt={bannerTitle}
+            fill
+            className="object-cover opacity-20"
+            priority
+          />
+        </div>
+      )}
+
       {/* Parallax animated decorative patterns */}
       <motion.div className="absolute inset-0 overflow-hidden" style={{ y: bgY }}>
         <motion.div
@@ -61,24 +109,21 @@ export default function HeroSection() {
 
       {/* Decorative floating squares */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(12)].map((_, i) => (
+        {floatingSquares.map((sq) => (
           <motion.div
-            key={i}
+            key={sq.id}
             className="absolute w-2 h-2 sm:w-3 sm:h-3 bg-white/10 rounded-sm"
-            style={{
-              top: `${15 + Math.random() * 70}%`,
-              left: `${5 + Math.random() * 90}%`,
-            }}
+            style={{ top: sq.top, left: sq.left }}
             animate={{
               y: [0, -20, 0],
               opacity: [0.1, 0.3, 0.1],
               rotate: [0, 90, 0],
             }}
             transition={{
-              duration: 4 + Math.random() * 4,
+              duration: sq.duration,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: Math.random() * 3,
+              delay: sq.delay,
             }}
           />
         ))}
@@ -88,39 +133,35 @@ export default function HeroSection() {
         className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center w-full"
         style={{ y: textY, opacity }}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <AnimatePresence mode="wait">
           <motion.div
-            className="inline-flex items-center gap-2 px-5 py-2 bg-white/10 rounded-full border border-white/15 mb-8 backdrop-blur-sm"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            key={hasBanners ? currentBanner : "default"}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
           >
-            <span className="w-2 h-2 bg-accent-light rounded-full animate-pulse" />
-            <span className="text-accent-light text-sm font-medium">{t("subtitle")}</span>
+            <motion.div
+              className="inline-flex items-center gap-2 px-5 py-2 bg-white/10 rounded-full border border-white/15 mb-8 backdrop-blur-sm"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <span className="w-2 h-2 bg-accent-light rounded-full animate-pulse" />
+              <span className="text-accent-light text-sm font-medium">{bannerSubtitle || t("subtitle")}</span>
+            </motion.div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 leading-tight">
+              {bannerTitle || t("title")}
+            </h1>
+
+            {!hasBanners && (
+              <p className="text-white/80 max-w-2xl mx-auto mb-10 text-base sm:text-lg leading-relaxed">
+                {t("description")}
+              </p>
+            )}
           </motion.div>
-        </motion.div>
-
-        <motion.h1
-          className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 leading-tight"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {t("title")}
-        </motion.h1>
-
-        <motion.p
-          className="text-white/80 max-w-2xl mx-auto mb-10 text-base sm:text-lg leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {t("description")}
-        </motion.p>
+        </AnimatePresence>
 
         <motion.div
           className="flex flex-col sm:flex-row gap-4 justify-center"
@@ -130,7 +171,7 @@ export default function HeroSection() {
         >
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Link
-              href={`/${locale}/products`}
+              href={banner?.link || `/${locale}/products`}
               className="inline-flex items-center justify-center px-8 py-3.5 bg-white text-primary-dark font-semibold rounded-xl hover:bg-accent-light transition-all text-lg shadow-lg shadow-black/10 hover:shadow-xl"
             >
               {t("browseProducts")}
@@ -148,6 +189,22 @@ export default function HeroSection() {
             </Link>
           </motion.div>
         </motion.div>
+
+        {/* Banner dots */}
+        {activeBanners.length > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-8">
+            {activeBanners.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentBanner(i)}
+                className={`w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${
+                  i === currentBanner ? "bg-white w-8" : "bg-white/40 hover:bg-white/60"
+                }`}
+                aria-label={`Banner ${i + 1}`}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Scroll indicator */}
         <motion.div

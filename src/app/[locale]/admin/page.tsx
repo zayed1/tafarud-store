@@ -7,6 +7,7 @@ import { getLocalizedField, formatPrice } from "@/lib/utils";
 import type { Product } from "@/types";
 import ExportCSVButton from "@/components/admin/ExportCSVButton";
 import AnalyticsSection from "@/components/admin/AnalyticsSection";
+import BackupRestore from "@/components/admin/BackupRestore";
 
 async function getStats() {
   try {
@@ -138,6 +139,11 @@ function DashboardContent({
 
       {/* Analytics */}
       <AnalyticsSection products={stats.allProducts} />
+
+      {/* Backup & Restore */}
+      <div className="mt-8">
+        <BackupRestore />
+      </div>
 
       {/* Recent Products */}
       {stats.recentProducts.length > 0 && (

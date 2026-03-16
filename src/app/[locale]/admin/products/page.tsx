@@ -4,9 +4,10 @@ import { useEffect, useState, useOptimistic, useCallback } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
-import { Product } from "@/types";
+import type { Product } from "@/types";
 import Button from "@/components/ui/Button";
 import SortableProductList from "@/components/admin/SortableProductList";
+import CSVImportExport from "@/components/admin/CSVImportExport";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -19,11 +20,7 @@ export default function AdminProductsPage() {
     (state, deletedId: string) => state.filter((p) => p.id !== deletedId)
   );
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
-
-  async function loadProducts() {
+  const loadProducts = useCallback(async () => {
     const supabase = createClient();
     const { data } = await supabase
       .from("products")
@@ -31,7 +28,12 @@ export default function AdminProductsPage() {
       .order("created_at", { ascending: false });
     setProducts(data || []);
     setLoading(false);
-  }
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadProducts();
+  }, [loadProducts]);
 
   const deleteProduct = useCallback(async (id: string) => {
     if (!confirm(t("confirmDelete"))) return;
@@ -48,7 +50,7 @@ export default function AdminProductsPage() {
       // Revert on failure by reloading
       loadProducts();
     }
-  }, [t, removeOptimistic]);
+  }, [t, removeOptimistic, loadProducts]);
 
   if (loading) {
     return (
@@ -74,9 +76,12 @@ export default function AdminProductsPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-dark">{t("products")}</h1>
-        <Link href={`/${locale}/admin/products/new`}>
-          <Button>+ {t("addProduct")}</Button>
-        </Link>
+        <div className="flex items-center gap-3">
+          <CSVImportExport products={products} onImportComplete={loadProducts} />
+          <Link href={`/${locale}/admin/products/new`}>
+            <Button>+ {t("addProduct")}</Button>
+          </Link>
+        </div>
       </div>
 
       <SortableProductList products={optimisticProducts} onDelete={deleteProduct} />

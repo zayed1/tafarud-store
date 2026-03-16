@@ -1,25 +1,43 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
 import PurchaseLinks from "@/components/store/PurchaseLinks";
 import WhatsAppButton from "@/components/store/WhatsAppButton";
 import ShareButton from "@/components/store/ShareButton";
-import RelatedProducts from "@/components/store/RelatedProducts";
 import ProductGallery from "@/components/store/ProductGallery";
 import Badge from "@/components/ui/Badge";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ProductViewTracker from "@/components/store/ProductViewTracker";
-import RecentlyViewed from "@/components/store/RecentlyViewed";
-import type { Product, PurchaseLink } from "@/types";
+import type { Product, PurchaseLink as PurchaseLinkType } from "@/types";
 import { BASE_URL } from "@/lib/config";
 import type { Metadata } from "next";
+import RelatedProducts from "@/components/store/RelatedProducts";
+import ProductTabs from "@/components/store/ProductTabs";
+
+const RecentlyViewed = dynamic(() => import("@/components/store/RecentlyViewed"));
 
 export const revalidate = 60;
 
-async function getProduct(id: string) {
+export async function generateStaticParams() {
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("products")
+      .select("id")
+      .order("created_at", { ascending: false })
+      .limit(20);
+    return (data || []).map((p) => ({ id: p.id }));
+  } catch {
+    return [];
+  }
+}
+
+const getProduct = cache(async function getProduct(id: string) {
   try {
     const supabase = await createClient();
     const { data: product } = await supabase
@@ -37,12 +55,13 @@ async function getProduct(id: string) {
       .order("sort_order", { ascending: true });
 
     return { ...product, purchase_links: links || [] } as Product & {
-      purchase_links: PurchaseLink[];
+      purchase_links: PurchaseLinkType[];
     };
-  } catch {
+  } catch (error) {
+    console.error("[getProduct]", id, error);
     return null;
   }
-}
+});
 
 export async function generateMetadata({
   params,
@@ -122,20 +141,31 @@ export default async function ProductPage({
     url: `${BASE_URL}/${locale}/products/${product.id}`,
     category: categoryName || undefined,
     datePublished: product.created_at,
+    sku: product.id,
     offers: {
       "@type": "Offer",
       price: product.price,
       priceCurrency: "AED",
       availability: "https://schema.org/InStock",
+      url: `${BASE_URL}/${locale}/products/${product.id}`,
       seller: {
         "@type": "Organization",
         name: "متجر التفرّد",
+        url: BASE_URL,
       },
+      priceValidUntil: new Date(new Date(product.created_at).getTime() + 2 * 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
     },
     brand: {
       "@type": "Brand",
-      name: "متجر التفرّد",
+      name: "مجموعة التفرّد",
     },
+    publisher: {
+      "@type": "Organization",
+      name: "مجموعة التفرّد",
+      url: "https://altafarud.com",
+    },
+    inLanguage: locale === "ar" ? "ar" : "en",
+    isAccessibleForFree: false,
   };
 
   const breadcrumbJsonLd = {
@@ -180,6 +210,8 @@ export default async function ProductPage({
                 className="object-contain transition-transform duration-700 group-hover:scale-105"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUzMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjBGNEYzIi8+PC9zdmc+"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5">
@@ -214,26 +246,18 @@ export default async function ProductPage({
             <p className="text-3xl font-bold text-primary">{formatPrice(product.price)}</p>
           </div>
 
-          {description && (
-            <div className="pt-4 border-t border-border">
-              <p className="text-dark-light text-lg leading-relaxed whitespace-pre-wrap">
-                {description}
-              </p>
-            </div>
-          )}
-
           {/* WhatsApp Order */}
           <WhatsAppButton productName={name} />
-
-          {/* Purchase Links */}
-          <div className="pt-4 border-t border-border">
-            <PurchaseLinks links={product.purchase_links || []} />
-          </div>
         </div>
       </div>
 
-      {/* Related Products */}
-      <RelatedProducts categoryId={product.category_id} currentProductId={product.id} />
+      {/* Tabbed Content */}
+      <ProductTabs
+        description={description}
+        purchaseLinksSlot={<PurchaseLinks links={product.purchase_links || []} />}
+        relatedProductsSlot={<RelatedProducts categoryId={product.category_id} currentProductId={product.id} />}
+        hasPurchaseLinks={(product.purchase_links || []).filter(l => l.is_enabled).length > 0}
+      />
 
       {/* Recently Viewed */}
       <RecentlyViewed excludeProductId={product.id} />

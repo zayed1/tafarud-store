@@ -22,11 +22,11 @@ export function formatPrice(price: number): string {
   }).format(price);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getLocalizedField(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   item: any,
   field: string,
   locale: string
 ): string {
-  return item[`${field}_${locale}`] || item[`${field}_ar`] || "";
+  return (item[`${field}_${locale}`] as string) || (item[`${field}_ar`] as string) || "";
 }

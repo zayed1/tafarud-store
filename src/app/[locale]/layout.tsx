@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import BackToTop from "@/components/ui/BackToTop";
 import PageTransition from "@/components/ui/PageTransition";
 import { ToastProvider } from "@/components/ui/Toast";
+import WebVitals from "@/components/ui/WebVitals";
 import { BASE_URL } from "@/lib/config";
 
 export default async function LocaleLayout({
@@ -25,25 +26,29 @@ export default async function LocaleLayout({
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning>
+    <html lang={locale} dir={dir} suppressHydrationWarning id="top">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0D8070" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <link rel="apple-touch-icon" href="/main/iconn.png" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
               try {
                 if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                   document.documentElement.classList.add('dark');
+                }
+                var dt = localStorage.getItem('design-theme');
+                if (dt && dt !== 'classic') {
+                  document.documentElement.classList.add('theme-' + dt);
+                }
+                if (localStorage.getItem('high-contrast') === 'true') {
+                  document.documentElement.classList.add('high-contrast');
                 }
               } catch (e) {}
               if ('serviceWorker' in navigator) {
@@ -81,11 +86,12 @@ export default async function LocaleLayout({
               {locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content"}
             </a>
             <Header />
-            <main id="main-content" className="flex-1">
+            <main id="main-content" className="flex-1" role="main" aria-label={locale === "ar" ? "المحتوى الرئيسي" : "Main content"}>
               <PageTransition>{children}</PageTransition>
             </main>
             <Footer />
             <BackToTop />
+            <WebVitals />
           </ToastProvider>
         </NextIntlClientProvider>
       </body>

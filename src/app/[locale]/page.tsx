@@ -7,11 +7,12 @@ import HeroSection from "@/components/store/HeroSection";
 import FeaturedSlider from "@/components/store/FeaturedSlider";
 import CategoryCard from "@/components/store/CategoryCard";
 import AnimatedSection, { StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
-import type { Product, Category } from "@/types";
+import type { Product, Category, Banner } from "@/types";
 import { getLocalizedField } from "@/lib/utils";
 import { BASE_URL } from "@/lib/config";
 import Link from "next/link";
 import type { Metadata } from "next";
+import ParallaxSection from "@/components/store/ParallaxSection";
 
 export async function generateMetadata({
   params,
@@ -58,20 +59,53 @@ async function getFeaturedProducts(): Promise<Product[]> {
       .order("created_at", { ascending: false })
       .limit(8);
     return data || [];
+  } catch (error) {
+    console.error("[getFeaturedProducts]", error);
+    return [];
+  }
+}
+
+async function getBanners(): Promise<Banner[]> {
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("banners")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true });
+    return data || [];
   } catch {
     return [];
   }
 }
 
-async function getCategories(): Promise<Category[]> {
+async function getCategoriesWithCounts(): Promise<(Category & { product_count: number })[]> {
   try {
     const supabase = await createClient();
-    const { data } = await supabase
+    const { data: categories } = await supabase
       .from("categories")
       .select("*")
       .order("created_at", { ascending: false });
-    return data || [];
-  } catch {
+
+    if (!categories || categories.length === 0) return [];
+
+    const { data: products } = await supabase
+      .from("products")
+      .select("category_id");
+
+    const countMap = new Map<string, number>();
+    (products || []).forEach((p) => {
+      if (p.category_id) {
+        countMap.set(p.category_id, (countMap.get(p.category_id) || 0) + 1);
+      }
+    });
+
+    return categories.map((c) => ({
+      ...c,
+      product_count: countMap.get(c.id) || 0,
+    }));
+  } catch (error) {
+    console.error("[getCategoriesWithCounts]", error);
     return [];
   }
 }
@@ -79,10 +113,12 @@ async function getCategories(): Promise<Category[]> {
 function HomeContent({
   featuredProducts,
   categories,
+  banners,
   locale,
 }: {
   featuredProducts: Product[];
-  categories: Category[];
+  categories: (Category & { product_count: number })[];
+  banners: Banner[];
   locale: string;
 }) {
   const t = useTranslations("common");
@@ -128,7 +164,7 @@ function HomeContent({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
         />
       )}
-      <HeroSection />
+      <HeroSection banners={banners} />
 
       {/* Categories Section */}
       {categories.length > 0 && (
@@ -153,7 +189,7 @@ function HomeContent({
           <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {categories.map((category) => (
               <StaggerItem key={category.id}>
-                <CategoryCard category={category} />
+                <CategoryCard category={category} productCount={category.product_count} />
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -165,8 +201,8 @@ function HomeContent({
         <FeaturedSlider products={featuredProducts} />
       )}
 
-      {/* About Snippet */}
-      <AnimatedSection>
+      {/* About Snippet with Parallax */}
+      <ParallaxSection>
         <section className="relative overflow-hidden py-16 sm:py-20">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-background to-accent/[0.03]" />
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
@@ -196,17 +232,18 @@ function HomeContent({
             </div>
           </div>
         </section>
-      </AnimatedSection>
+      </ParallaxSection>
     </>
   );
 }
 
 export default async function HomePage() {
-  const [featuredProducts, categories, locale] = await Promise.all([
+  const [featuredProducts, categories, banners, locale] = await Promise.all([
     getFeaturedProducts(),
-    getCategories(),
+    getCategoriesWithCounts(),
+    getBanners(),
     getLocale(),
   ]);
 
-  return <HomeContent featuredProducts={featuredProducts} categories={categories} locale={locale} />;
+  return <HomeContent featuredProducts={featuredProducts} categories={categories} banners={banners} locale={locale} />;
 }

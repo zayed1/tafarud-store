@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -8,7 +8,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import SearchModal from "@/components/ui/SearchModal";
+import DesignThemeSelector from "@/components/ui/DesignThemeSelector";
+import MegaMenu from "./MegaMenu";
+
+const SearchModal = lazy(() => import("@/components/ui/SearchModal"));
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -90,26 +93,31 @@ export default function Header() {
 
             {/* Desktop Nav */}
             <nav aria-label="Main navigation" className="hidden md:flex items-center gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative px-4 py-2 font-medium transition-colors rounded-lg ${
-                    isActive(link.href)
-                      ? "text-primary bg-primary/10 dark:text-accent dark:bg-accent/10"
-                      : "text-dark hover:text-primary hover:bg-primary/5 dark:text-gray-300 dark:hover:text-accent"
-                  }`}
-                >
-                  {link.label}
-                  {isActive(link.href) && (
-                    <motion.div
-                      layoutId="activeNav"
-                      className="absolute bottom-0 inset-x-2 h-0.5 bg-primary dark:bg-accent rounded-full"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                if (link.href === `/${locale}/categories`) {
+                  return <MegaMenu key={link.href} />;
+                }
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`relative px-4 py-2 font-medium transition-colors rounded-lg ${
+                      isActive(link.href)
+                        ? "text-primary bg-primary/10 dark:text-accent dark:bg-accent/10"
+                        : "text-dark hover:text-primary hover:bg-primary/5 dark:text-gray-300 dark:hover:text-accent"
+                    }`}
+                  >
+                    {link.label}
+                    {isActive(link.href) && (
+                      <motion.div
+                        layoutId="activeNav"
+                        className="absolute bottom-0 inset-x-2 h-0.5 bg-primary dark:bg-accent rounded-full"
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Actions */}
@@ -120,12 +128,14 @@ export default function Header() {
                 className="p-2.5 rounded-xl hover:bg-primary/5 text-dark hover:text-primary transition-colors cursor-pointer dark:text-gray-300 dark:hover:text-accent"
                 whileTap={{ scale: 0.9 }}
                 title="Ctrl+K"
+                aria-label={t("search")}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </motion.button>
 
+              <DesignThemeSelector />
               <ThemeToggle />
               <LanguageSwitcher />
 
@@ -206,7 +216,11 @@ export default function Header() {
         </div>
       </header>
 
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      {isSearchOpen && (
+        <Suspense fallback={null}>
+          <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+        </Suspense>
+      )}
     </>
   );
 }

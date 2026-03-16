@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
@@ -13,7 +14,7 @@ interface ProductListItemProps {
   onQuickView?: (product: Product) => void;
 }
 
-export default function ProductListItem({ product, onQuickView }: ProductListItemProps) {
+function ProductListItem({ product, onQuickView }: ProductListItemProps) {
   const locale = useLocale();
   const t = useTranslations("common");
   const name = getLocalizedField(product, "name", locale);
@@ -94,3 +95,5 @@ export default function ProductListItem({ product, onQuickView }: ProductListIte
     </motion.div>
   );
 }
+
+export default memo(ProductListItem);
