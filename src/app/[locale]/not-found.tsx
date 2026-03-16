@@ -7,8 +7,16 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
-import { Product } from "@/types";
+import type { Product } from "@/types";
 import SearchModal from "@/components/ui/SearchModal";
+
+const notFoundParticles = Array.from({ length: 6 }, (_, i) => ({
+  id: i,
+  top: `${20 + (i * 11.7) % 60}%`,
+  left: `${10 + (i * 14.3) % 80}%`,
+  duration: 3 + (i % 3) * 1.5,
+  delay: (i % 4) * 0.5,
+}));
 
 function SuggestedProducts({ locale }: { locale: string }) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -100,13 +108,13 @@ export default function NotFound() {
 
       {/* Floating particles */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(6)].map((_, i) => (
+        {notFoundParticles.map((p) => (
           <motion.div
-            key={i}
+            key={p.id}
             className="absolute w-2 h-2 bg-primary/10 rounded-full"
-            style={{ top: `${20 + Math.random() * 60}%`, left: `${10 + Math.random() * 80}%` }}
+            style={{ top: p.top, left: p.left }}
             animate={{ y: [-15, 15, -15], opacity: [0.2, 0.5, 0.2] }}
-            transition={{ duration: 3 + Math.random() * 3, repeat: Infinity, delay: Math.random() * 2 }}
+            transition={{ duration: p.duration, repeat: Infinity, delay: p.delay }}
           />
         ))}
       </div>

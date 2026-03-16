@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function RootError({
   reset,
 }: {
@@ -32,12 +34,12 @@ export default function RootError({
             </svg>
             حاول مرة أخرى — Try Again
           </button>
-          <a
+          <Link
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 text-teal-600 font-medium hover:text-teal-700 transition-colors"
           >
             العودة للرئيسية — Home
-          </a>
+          </Link>
         </div>
       </div>
     </div>
