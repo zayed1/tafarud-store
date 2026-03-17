@@ -253,6 +253,19 @@
     "expired": "منتهي",
     "inactive": "غير مفعّل",
     "deactivate": "إلغاء التفعيل",
-    "activate": "تفعيل"
+    "activate": "تفعيل",
+    "announcements": "شريط الإعلانات",
+    "addAnnouncement": "إضافة إعلان",
+    "editAnnouncement": "تعديل إعلان",
+    "announcementTextAr": "نص الإعلان (عربي)",
+    "announcementTextEn": "نص الإعلان (إنجليزي)",
+    "bgColor": "لون الخلفية",
+    "textColor": "لون النص",
+    "announcementSaved": "تم حفظ الإعلان",
+    "noAnnouncements": "لا توجد إعلانات",
+    "exportPDF": "تصدير PDF",
+    "exportPDFSuccess": "تم فتح نافذة الطباعة",
+    "excelExport": "تصدير Excel",
+    "excelExportSuccess": "تم تصدير البيانات بنجاح"
   }
 }

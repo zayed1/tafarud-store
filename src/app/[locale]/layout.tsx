@@ -2,6 +2,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/layout/Header";
+import AnnouncementBar from "@/components/store/AnnouncementBar";
 import Footer from "@/components/layout/Footer";
 import BackToTop from "@/components/ui/BackToTop";
 import PageTransition from "@/components/ui/PageTransition";
@@ -82,6 +83,7 @@ export default async function LocaleLayout({
             >
               {locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content"}
             </a>
+            <AnnouncementBar />
             <Header />
             <main id="main-content" className="flex-1" role="main" aria-label={locale === "ar" ? "المحتوى الرئيسي" : "Main content"}>
               <PageTransition>{children}</PageTransition>

@@ -253,6 +253,19 @@
     "expired": "Expired",
     "inactive": "Inactive",
     "deactivate": "Deactivate",
-    "activate": "Activate"
+    "activate": "Activate",
+    "announcements": "Announcements",
+    "addAnnouncement": "Add Announcement",
+    "editAnnouncement": "Edit Announcement",
+    "announcementTextAr": "Text (Arabic)",
+    "announcementTextEn": "Text (English)",
+    "bgColor": "Background Color",
+    "textColor": "Text Color",
+    "announcementSaved": "Announcement saved",
+    "noAnnouncements": "No announcements yet",
+    "exportPDF": "Export PDF",
+    "exportPDFSuccess": "Print window opened",
+    "excelExport": "Export Excel",
+    "excelExportSuccess": "Data exported successfully"
   }
 }

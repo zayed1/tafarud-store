@@ -8,6 +8,8 @@ import type { Product } from "@/types";
 import ExportCSVButton from "@/components/admin/ExportCSVButton";
 import AnalyticsSection from "@/components/admin/AnalyticsSection";
 import BackupRestore from "@/components/admin/BackupRestore";
+import PDFExport from "@/components/admin/PDFExport";
+import ExcelExport from "@/components/admin/ExcelExport";
 
 async function getStats() {
   try {
@@ -115,7 +117,11 @@ function DashboardContent({
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-dark">{t("dashboard")}</h1>
-        <ExportCSVButton products={stats.allProducts} />
+        <div className="flex items-center gap-2">
+          <PDFExport products={stats.allProducts} />
+          <ExcelExport />
+          <ExportCSVButton products={stats.allProducts} />
+        </div>
       </div>
 
       {/* Stats Grid */}

@@ -142,6 +142,27 @@ CREATE POLICY "Authenticated manage coupons" ON coupons
   FOR ALL USING (auth.role() = 'authenticated')
   WITH CHECK (auth.role() = 'authenticated');
 
+-- Announcements table
+CREATE TABLE IF NOT EXISTS announcements (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  text_ar TEXT NOT NULL,
+  text_en TEXT DEFAULT '',
+  link TEXT,
+  bg_color TEXT DEFAULT '#0D8070',
+  text_color TEXT DEFAULT '#FFFFFF',
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE announcements ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read announcements" ON announcements
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated manage announcements" ON announcements
+  FOR ALL USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
 -- Create storage bucket for product images
 -- Note: Run this separately or via Supabase Dashboard
 -- INSERT INTO storage.buckets (id, name, public) VALUES ('product-images', 'product-images', true);
