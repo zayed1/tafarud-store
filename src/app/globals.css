@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme inline {
+@theme {
   /* Primary - Deep Teal (from logo) */
   --color-primary: #0D8070;
   --color-primary-light: #10A090;
@@ -40,19 +40,19 @@ body {
 
 /* Dark Mode */
 .dark {
-  --color-background: #111827;
-  --color-surface: #1F2937;
-  --color-dark: #F3F4F6;
-  --color-dark-light: #D1D5DB;
-  --color-muted: #B0B8C1;
-  --color-border: #374151;
-  --color-primary: #2DD4BF;
-  --color-primary-light: #5EEAD4;
-  --color-primary-dark: #14B8A6;
-  --color-secondary: #14B8A6;
-  --color-secondary-light: #2DD4BF;
-  --color-accent: #5EEAD4;
-  --color-accent-light: #99F6E4;
+  --color-background: #0B1120;
+  --color-surface: #15202E;
+  --color-dark: #F0F4F8;
+  --color-dark-light: #D0D8E4;
+  --color-muted: #8899B0;
+  --color-border: #1E2D40;
+  --color-primary: #36D8C0;
+  --color-primary-light: #62E8D4;
+  --color-primary-dark: #1AB8A2;
+  --color-secondary: #1AB8A2;
+  --color-secondary-light: #36D8C0;
+  --color-accent: #62E8D4;
+  --color-accent-light: #96F4E8;
 }
 
 /* ========== Design Theme: Ocean ========== */
@@ -73,19 +73,19 @@ body {
 }
 
 .dark.theme-ocean {
-  --color-background: #0F1724;
-  --color-surface: #1A2536;
-  --color-dark: #E8EDF4;
-  --color-dark-light: #C5CED9;
-  --color-muted: #8899AB;
-  --color-border: #2C3B4E;
-  --color-primary: #60A5FA;
-  --color-primary-light: #93BBFD;
-  --color-primary-dark: #3B82F6;
-  --color-secondary: #3B82F6;
-  --color-secondary-light: #60A5FA;
-  --color-accent: #93BBFD;
-  --color-accent-light: #BFDBFE;
+  --color-background: #0A1525;
+  --color-surface: #142030;
+  --color-dark: #E8F0F8;
+  --color-dark-light: #B8CCE0;
+  --color-muted: #7090B0;
+  --color-border: #1A2E48;
+  --color-primary: #5EA8F8;
+  --color-primary-light: #88C0FF;
+  --color-primary-dark: #3888E0;
+  --color-secondary: #3888E0;
+  --color-secondary-light: #5EA8F8;
+  --color-accent: #88C0FF;
+  --color-accent-light: #B0D8FF;
 }
 
 /* ========== Design Theme: Sunset ========== */
@@ -106,19 +106,19 @@ body {
 }
 
 .dark.theme-sunset {
-  --color-background: #1A1210;
-  --color-surface: #2A1E18;
-  --color-dark: #F5E6D8;
-  --color-dark-light: #D9C4B0;
-  --color-muted: #B09880;
-  --color-border: #4A3828;
-  --color-primary: #F59E0B;
-  --color-primary-light: #FBBF24;
-  --color-primary-dark: #D97706;
-  --color-secondary: #D97706;
-  --color-secondary-light: #F59E0B;
-  --color-accent: #FBBF24;
-  --color-accent-light: #FDE68A;
+  --color-background: #18100A;
+  --color-surface: #261A10;
+  --color-dark: #F8EDE0;
+  --color-dark-light: #E0C8B0;
+  --color-muted: #A88868;
+  --color-border: #3A2818;
+  --color-primary: #F0A030;
+  --color-primary-light: #FFB850;
+  --color-primary-dark: #D08820;
+  --color-secondary: #D08820;
+  --color-secondary-light: #F0A030;
+  --color-accent: #FFB850;
+  --color-accent-light: #FFD080;
 }
 
 /* ========== Design Theme: Lavender ========== */
@@ -139,19 +139,19 @@ body {
 }
 
 .dark.theme-lavender {
-  --color-background: #13091F;
-  --color-surface: #1E1030;
-  --color-dark: #EDE9FE;
-  --color-dark-light: #C4B5FD;
-  --color-muted: #A8A0C0;
-  --color-border: #3B2960;
-  --color-primary: #A78BFA;
-  --color-primary-light: #C4B5FD;
-  --color-primary-dark: #8B5CF6;
-  --color-secondary: #8B5CF6;
-  --color-secondary-light: #A78BFA;
-  --color-accent: #C4B5FD;
-  --color-accent-light: #DDD6FE;
+  --color-background: #100820;
+  --color-surface: #1A1030;
+  --color-dark: #ECE0FF;
+  --color-dark-light: #C8B0F0;
+  --color-muted: #9880C0;
+  --color-border: #2A1850;
+  --color-primary: #A888F8;
+  --color-primary-light: #C0A8FF;
+  --color-primary-dark: #8868E0;
+  --color-secondary: #8868E0;
+  --color-secondary-light: #A888F8;
+  --color-accent: #C0A8FF;
+  --color-accent-light: #D8C8FF;
 }
 
 /* Smooth scrolling */
@@ -166,7 +166,7 @@ html {
 }
 
 .dark ::selection {
-  color: #111827;
+  color: #0B1120;
 }
 
 /* Custom scrollbar */
@@ -195,7 +195,7 @@ html {
 }
 
 .dark .glass {
-  background: rgba(17, 24, 39, 0.88);
+  background: rgba(11, 17, 32, 0.88);
 }
 
 /* Gradient text utility */
@@ -236,42 +236,17 @@ html {
   background: rgba(245, 248, 252, 0.85);
 }
 .dark.theme-ocean .glass {
-  background: rgba(15, 23, 36, 0.88);
+  background: rgba(10, 21, 37, 0.88);
 }
 .theme-sunset .glass {
   background: rgba(255, 250, 245, 0.85);
 }
 .dark.theme-sunset .glass {
-  background: rgba(26, 18, 16, 0.88);
+  background: rgba(24, 16, 10, 0.88);
 }
 .theme-lavender .glass {
   background: rgba(250, 245, 255, 0.85);
 }
 .dark.theme-lavender .glass {
-  background: rgba(19, 9, 31, 0.88);
-}
-
-/* High contrast mode */
-.high-contrast {
-  --color-dark: #000000;
-  --color-dark-light: #1a1a1a;
-  --color-muted: #333333;
-  --color-border: #666666;
-  --color-background: #FFFFFF;
-  --color-surface: #FFFFFF;
-  --color-primary: #005A4D;
-  --color-primary-light: #007A68;
-  --color-primary-dark: #003D34;
-}
-
-.dark.high-contrast {
-  --color-dark: #FFFFFF;
-  --color-dark-light: #F0F0F0;
-  --color-muted: #CCCCCC;
-  --color-border: #888888;
-  --color-background: #000000;
-  --color-surface: #111111;
-  --color-primary: #5EEAD4;
-  --color-primary-light: #99F6E4;
-  --color-primary-dark: #2DD4BF;
+  background: rgba(16, 8, 32, 0.88);
 }

@@ -132,6 +132,15 @@ export default async function ProductPage({
     ? [product.image_url]
     : [];
 
+  let priceValidUntil: string | undefined;
+  try {
+    const d = new Date(product.created_at);
+    d.setFullYear(d.getFullYear() + 2);
+    priceValidUntil = d.toISOString().split("T")[0];
+  } catch {
+    priceValidUntil = undefined;
+  }
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -153,7 +162,7 @@ export default async function ProductPage({
         name: "متجر التفرّد",
         url: BASE_URL,
       },
-      priceValidUntil: new Date(new Date(product.created_at).getTime() + 2 * 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+      priceValidUntil,
     },
     brand: {
       "@type": "Brand",

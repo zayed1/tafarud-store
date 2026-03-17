@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 export default function RootError({
   reset,
 }: {
@@ -34,12 +32,13 @@ export default function RootError({
             </svg>
             حاول مرة أخرى — Try Again
           </button>
-          <Link
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 text-teal-600 font-medium hover:text-teal-700 transition-colors"
           >
             العودة للرئيسية — Home
-          </Link>
+          </a>
         </div>
       </div>
     </div>
