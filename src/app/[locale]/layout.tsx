@@ -47,9 +47,6 @@ export default async function LocaleLayout({
                 if (dt && dt !== 'classic') {
                   document.documentElement.classList.add('theme-' + dt);
                 }
-                if (localStorage.getItem('high-contrast') === 'true') {
-                  document.documentElement.classList.add('high-contrast');
-                }
               } catch (e) {}
               if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js').catch(() => {});
