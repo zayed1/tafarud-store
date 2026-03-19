@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS categories (
   name_en TEXT DEFAULT '',
   slug TEXT UNIQUE NOT NULL,
   image_url TEXT,
+  sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -23,8 +24,10 @@ CREATE TABLE IF NOT EXISTS products (
   description_en TEXT DEFAULT '',
   price DECIMAL(10, 2) DEFAULT 0,
   image_url TEXT,
+  gallery_urls TEXT[],
   category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
   featured BOOLEAN DEFAULT FALSE,
+  sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -116,6 +119,22 @@ CREATE POLICY "Authenticated manage activity_logs" ON activity_logs
   FOR ALL USING (auth.role() = 'authenticated')
   WITH CHECK (auth.role() = 'authenticated');
 
+-- Store Settings table
+CREATE TABLE IF NOT EXISTS store_settings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  key TEXT UNIQUE NOT NULL,
+  value JSONB
+);
+
+ALTER TABLE store_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read store_settings" ON store_settings
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated manage store_settings" ON store_settings
+  FOR ALL USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
 -- Coupons table
 CREATE TABLE IF NOT EXISTS coupons (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -165,4 +184,4 @@ CREATE POLICY "Authenticated manage announcements" ON announcements
 
 -- Create storage bucket for product images
 -- Note: Run this separately or via Supabase Dashboard
--- INSERT INTO storage.buckets (id, name, public) VALUES ('product-images', 'product-images', true);
+-- INSERT INTO storage.buckets (id, name, public) VALUES ('product-images', 'product-images', true) ON CONFLICT (id) DO NOTHING;
