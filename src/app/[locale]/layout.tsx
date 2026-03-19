@@ -9,6 +9,8 @@ import PageTransition from "@/components/ui/PageTransition";
 import { ToastProvider } from "@/components/ui/Toast";
 import WebVitals from "@/components/ui/WebVitals";
 import { BASE_URL } from "@/lib/config";
+import { createClient } from "@/lib/supabase/server";
+import MaintenanceGate from "@/components/store/MaintenanceGate";
 
 export default async function LocaleLayout({
   children,
@@ -25,6 +27,14 @@ export default async function LocaleLayout({
 
   const messages = (await import(`../../messages/${locale}.json`)).default;
   const dir = locale === "ar" ? "rtl" : "ltr";
+
+  // Check maintenance mode (skip for admin pages)
+  let isMaintenanceMode = false;
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.from("store_settings").select("value").eq("key", "maintenance_mode").single();
+    if (data?.value === true || data?.value === "true") isMaintenanceMode = true;
+  } catch { /* not in maintenance */ }
 
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning id="top">
@@ -77,20 +87,22 @@ export default async function LocaleLayout({
         />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ToastProvider>
-            <a
-              href="#main-content"
-              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-medium"
-            >
-              {locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content"}
-            </a>
-            <AnnouncementBar />
-            <Header />
-            <main id="main-content" className="flex-1" role="main" aria-label={locale === "ar" ? "المحتوى الرئيسي" : "Main content"}>
-              <PageTransition>{children}</PageTransition>
-            </main>
-            <Footer />
-            <BackToTop />
-            <WebVitals />
+            <MaintenanceGate isEnabled={isMaintenanceMode}>
+              <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:shadow-lg focus:text-sm focus:font-medium"
+              >
+                {locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content"}
+              </a>
+              <AnnouncementBar />
+              <Header />
+              <main id="main-content" className="flex-1" role="main" aria-label={locale === "ar" ? "المحتوى الرئيسي" : "Main content"}>
+                <PageTransition>{children}</PageTransition>
+              </main>
+              <Footer />
+              <BackToTop />
+              <WebVitals />
+            </MaintenanceGate>
           </ToastProvider>
         </NextIntlClientProvider>
       </body>

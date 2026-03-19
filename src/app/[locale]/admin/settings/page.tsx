@@ -30,6 +30,7 @@ const DEFAULT_SETTINGS: StoreSettings = {
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<StoreSettings>(DEFAULT_SETTINGS);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const t = useTranslations("admin");
@@ -38,14 +39,12 @@ export default function SettingsPage() {
   useEffect(() => {
     async function loadSettings() {
       const supabase = createClient();
-      const { data } = await supabase
-        .from("store_settings")
-        .select("*")
-        .limit(1)
-        .single();
-      if (data) {
-        setSettings(data);
-      }
+      const [{ data }, { data: maint }] = await Promise.all([
+        supabase.from("store_settings").select("*").limit(1).single(),
+        supabase.from("store_settings").select("value").eq("key", "maintenance_mode").single(),
+      ]);
+      if (data) setSettings(data);
+      if (maint?.value) setMaintenanceMode(maint.value === true || maint.value === "true");
       setLoading(false);
     }
     loadSettings();
@@ -85,6 +84,19 @@ export default function SettingsPage() {
         .select()
         .single();
       if (data) setSettings(data);
+    }
+
+    // Save maintenance mode
+    const { data: existing } = await supabase
+      .from("store_settings")
+      .select("id")
+      .eq("key", "maintenance_mode")
+      .single();
+
+    if (existing) {
+      await supabase.from("store_settings").update({ value: maintenanceMode }).eq("key", "maintenance_mode");
+    } else {
+      await supabase.from("store_settings").insert({ key: "maintenance_mode", value: maintenanceMode });
     }
 
     toast.showToast(t("settingsSaved"), "success");
@@ -150,6 +162,23 @@ export default function SettingsPage() {
               dir="ltr"
             />
           </div>
+        </div>
+
+        {/* Maintenance Mode */}
+        <div className="border-t border-border pt-6">
+          <h2 className="text-lg font-semibold text-dark mb-2">{t("maintenance")}</h2>
+          <p className="text-sm text-muted mb-4">{t("maintenanceDesc")}</p>
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={maintenanceMode}
+              onChange={(e) => setMaintenanceMode(e.target.checked)}
+              className="w-5 h-5 accent-primary"
+            />
+            <span className={`font-medium ${maintenanceMode ? "text-red-500" : "text-dark"}`}>
+              {t("maintenanceMode")}
+            </span>
+          </label>
         </div>
 
         <div className="flex gap-3 pt-4">

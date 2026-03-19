@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import ImageLightbox from "./ImageLightbox";
 
 interface ProductGalleryProps {
   images: string[];
@@ -12,6 +13,7 @@ interface ProductGalleryProps {
 export default function ProductGallery({ images, name }: ProductGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isZooming, setIsZooming] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -62,6 +64,16 @@ export default function ProductGallery({ images, name }: ProductGalleryProps) {
             />
           </motion.div>
         </AnimatePresence>
+        {/* Fullscreen button */}
+        <button
+          onClick={(e) => { e.stopPropagation(); setLightboxOpen(true); }}
+          className="absolute top-3 end-3 z-10 bg-dark/50 hover:bg-dark/70 text-white p-2 rounded-full transition-colors cursor-pointer"
+          aria-label="Fullscreen"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </button>
       </div>
 
       {/* Thumbnails */}
@@ -86,6 +98,14 @@ export default function ProductGallery({ images, name }: ProductGalleryProps) {
           </button>
         ))}
       </div>
+
+      <ImageLightbox
+        images={images}
+        initialIndex={selectedIndex}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        name={name}
+      />
     </div>
   );
 }

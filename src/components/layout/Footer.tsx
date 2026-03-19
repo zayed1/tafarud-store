@@ -68,7 +68,10 @@ export default function Footer() {
                   { href: `/${locale}`, label: t("home") },
                   { href: `/${locale}/products`, label: t("allProducts") },
                   { href: `/${locale}/categories`, label: t("allCategories") },
+                  { href: `/${locale}/authors`, label: t("authors") },
                   { href: `/${locale}/about`, label: t("about") },
+                  { href: `/${locale}/faq`, label: t("faq") },
+                  { href: `/${locale}/privacy`, label: t("privacyTerms") },
                 ].map((link) => (
                   <motion.div key={link.href} whileHover={{ x: locale === "ar" ? -4 : 4 }} className="rtl:text-right">
                     <Link

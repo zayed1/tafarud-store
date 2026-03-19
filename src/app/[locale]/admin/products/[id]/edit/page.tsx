@@ -4,7 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
-import { Category, Product, PurchaseLink } from "@/types";
+import type { Author, Category, PurchaseLink } from "@/types";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
@@ -12,6 +12,7 @@ import PurchaseLinkEditor from "@/components/admin/PurchaseLinkEditor";
 import ProductPreview from "@/components/admin/ProductPreview";
 import MultiImageUpload from "@/components/admin/MultiImageUpload";
 import { useToast } from "@/components/ui/Toast";
+import { compressImage } from "@/lib/compressImage";
 
 export default function EditProductPage({
   params,
@@ -31,6 +32,8 @@ export default function EditProductPage({
   const [galleryUrls, setGalleryUrls] = useState<string[]>([]);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [authors, setAuthors] = useState<Author[]>([]);
+  const [authorId, setAuthorId] = useState("");
   const [purchaseLinks, setPurchaseLinks] = useState<Partial<PurchaseLink>[]>([]);
   const [saving, setSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -45,10 +48,11 @@ export default function EditProductPage({
     async function loadData() {
       const supabase = createClient();
 
-      const [{ data: product }, { data: links }, { data: cats }] = await Promise.all([
+      const [{ data: product }, { data: links }, { data: cats }, { data: auths }] = await Promise.all([
         supabase.from("products").select("*").eq("id", id).single(),
         supabase.from("purchase_links").select("*").eq("product_id", id).order("sort_order"),
         supabase.from("categories").select("*").order("name_ar"),
+        supabase.from("authors").select("*").order("name_ar"),
       ]);
 
       if (product) {
@@ -61,10 +65,12 @@ export default function EditProductPage({
         setFeatured(product.featured || false);
         setCurrentImageUrl(product.image_url);
         setGalleryUrls(product.gallery_urls || []);
+        setAuthorId(product.author_id || "");
       }
 
       setPurchaseLinks(links || []);
       setCategories(cats || []);
+      setAuthors(auths || []);
       setLoading(false);
     }
     loadData();
@@ -78,10 +84,11 @@ export default function EditProductPage({
     let imageUrl = currentImageUrl;
 
     if (imageFile) {
-      const fileName = `${Date.now()}-${imageFile.name}`;
+      const compressed = await compressImage(imageFile);
+      const fileName = `${Date.now()}-${compressed.name}`;
       const { data: uploadData } = await supabase.storage
         .from("product-images")
-        .upload(fileName, imageFile);
+        .upload(fileName, compressed);
 
       if (uploadData) {
         const { data: urlData } = supabase.storage
@@ -91,13 +98,14 @@ export default function EditProductPage({
       }
     }
 
-    // Upload new gallery images
+    // Upload new gallery images (with compression)
     const uploadedGalleryUrls = [...galleryUrls];
     for (const file of galleryFiles) {
-      const fileName = `gallery/${Date.now()}-${file.name}`;
+      const compressedGallery = await compressImage(file);
+      const fileName = `gallery/${Date.now()}-${compressedGallery.name}`;
       const { data: uploadData } = await supabase.storage
         .from("product-images")
-        .upload(fileName, file);
+        .upload(fileName, compressedGallery);
       if (uploadData) {
         const { data: urlData } = supabase.storage
           .from("product-images")
@@ -115,6 +123,7 @@ export default function EditProductPage({
         description_en: descEn,
         price: parseFloat(price) || 0,
         category_id: categoryId || null,
+        author_id: authorId || null,
         featured,
         image_url: imageUrl,
         gallery_urls: uploadedGalleryUrls.length > 0 ? uploadedGalleryUrls : null,
@@ -207,6 +216,20 @@ export default function EditProductPage({
               ))}
             </select>
           </div>
+        </div>
+
+        <div className="space-y-1">
+          <label className="block text-sm font-medium text-dark">{t("author")}</label>
+          <select
+            value={authorId}
+            onChange={(e) => setAuthorId(e.target.value)}
+            className="w-full px-4 py-2.5 rounded-lg border border-border bg-surface text-dark focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="">{t("selectAuthor")}</option>
+            {authors.map((a) => (
+              <option key={a.id} value={a.id}>{a.name_ar}</option>
+            ))}
+          </select>
         </div>
 
         <div className="space-y-1">

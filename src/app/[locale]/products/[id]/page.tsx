@@ -9,6 +9,7 @@ import { getLocalizedField, formatPrice } from "@/lib/utils";
 import PurchaseLinks from "@/components/store/PurchaseLinks";
 import WhatsAppButton from "@/components/store/WhatsAppButton";
 import ShareButton from "@/components/store/ShareButton";
+import QRCodeShare from "@/components/store/QRCodeShare";
 import ProductGallery from "@/components/store/ProductGallery";
 import Badge from "@/components/ui/Badge";
 import Breadcrumb from "@/components/ui/Breadcrumb";
@@ -42,7 +43,7 @@ const getProduct = cache(async function getProduct(id: string) {
     const supabase = await createClient();
     const { data: product } = await supabase
       .from("products")
-      .select("*, category:categories(*)")
+      .select("*, category:categories(*), author:authors(*)")
       .eq("id", id)
       .single();
 
@@ -124,6 +125,9 @@ export default async function ProductPage({
   const description = getLocalizedField(product, "description", locale);
   const categoryName = product.category
     ? getLocalizedField(product.category, "name", locale)
+    : "";
+  const authorName = product.author
+    ? getLocalizedField(product.author, "name", locale)
     : "";
 
   const images = product.gallery_urls?.length
@@ -247,8 +251,16 @@ export default async function ProductPage({
                 </Link>
               )}
               <h1 className="text-3xl sm:text-4xl font-bold text-dark leading-tight">{name}</h1>
+              {authorName && (
+                <Link href={`/${locale}/authors/${product.author?.slug}`} className="text-muted hover:text-primary transition-colors text-sm">
+                  {t("by")} {authorName}
+                </Link>
+              )}
             </div>
-            <ShareButton title={name} />
+            <div className="flex items-center gap-2">
+              <QRCodeShare title={name} />
+              <ShareButton title={name} />
+            </div>
           </div>
 
           <div className="flex items-baseline gap-3 bg-primary/5 px-5 py-3 rounded-xl">

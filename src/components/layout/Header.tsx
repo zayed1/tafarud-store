@@ -51,6 +51,7 @@ export default function Header() {
     { href: `/${locale}`, label: t("home") },
     { href: `/${locale}/products`, label: t("products") },
     { href: `/${locale}/categories`, label: t("categories") },
+    { href: `/${locale}/authors`, label: t("authors") },
     { href: `/${locale}/about`, label: t("about") },
   ];
 

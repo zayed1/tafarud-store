@@ -10,6 +10,7 @@ import AnalyticsSection from "@/components/admin/AnalyticsSection";
 import BackupRestore from "@/components/admin/BackupRestore";
 import PDFExport from "@/components/admin/PDFExport";
 import ExcelExport from "@/components/admin/ExcelExport";
+import AdminNotifications from "@/components/admin/AdminNotifications";
 
 async function getStats() {
   try {
@@ -123,6 +124,9 @@ function DashboardContent({
           <ExportCSVButton products={stats.allProducts} />
         </div>
       </div>
+
+      {/* Notifications */}
+      <AdminNotifications />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">

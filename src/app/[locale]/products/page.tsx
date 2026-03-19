@@ -3,7 +3,6 @@ export const revalidate = 60;
 import { createClient } from "@/lib/supabase/server";
 import { getLocale } from "next-intl/server";
 import type { Product, Category } from "@/types";
-import Breadcrumb from "@/components/ui/Breadcrumb";
 import ProductsPageClient from "./ProductsPageClient";
 
 async function getProducts(): Promise<Product[]> {
@@ -11,7 +10,7 @@ async function getProducts(): Promise<Product[]> {
     const supabase = await createClient();
     const { data } = await supabase
       .from("products")
-      .select("*, category:categories(*)")
+      .select("*, category:categories(*), author:authors(*)")
       .order("created_at", { ascending: false })
       .limit(200);
     return data || [];

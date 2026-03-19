@@ -7,6 +7,18 @@ export interface Category {
   created_at: string;
 }
 
+export interface Author {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  slug: string;
+  bio_ar: string;
+  bio_en: string;
+  image_url: string | null;
+  social_links: { platform: string; url: string }[] | null;
+  created_at: string;
+}
+
 export interface Product {
   id: string;
   name_ar: string;
@@ -17,9 +29,11 @@ export interface Product {
   image_url: string | null;
   gallery_urls?: string[] | null;
   category_id: string | null;
+  author_id: string | null;
   featured: boolean;
   created_at: string;
   category?: Category;
+  author?: Author;
   purchase_links?: PurchaseLink[];
 }
 

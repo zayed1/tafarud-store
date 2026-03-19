@@ -182,6 +182,55 @@ CREATE POLICY "Authenticated manage announcements" ON announcements
   FOR ALL USING (auth.role() = 'authenticated')
   WITH CHECK (auth.role() = 'authenticated');
 
+-- Authors table
+CREATE TABLE IF NOT EXISTS authors (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name_ar TEXT NOT NULL,
+  name_en TEXT DEFAULT '',
+  slug TEXT UNIQUE NOT NULL,
+  bio_ar TEXT DEFAULT '',
+  bio_en TEXT DEFAULT '',
+  image_url TEXT,
+  social_links JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_authors_slug ON authors(slug);
+
+ALTER TABLE authors ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read authors" ON authors
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated manage authors" ON authors
+  FOR ALL USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
+-- Add author_id to products
+ALTER TABLE products ADD COLUMN IF NOT EXISTS author_id UUID REFERENCES authors(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_products_author ON products(author_id);
+
+-- FAQ table
+CREATE TABLE IF NOT EXISTS faqs (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  question_ar TEXT NOT NULL,
+  question_en TEXT DEFAULT '',
+  answer_ar TEXT NOT NULL,
+  answer_en TEXT DEFAULT '',
+  sort_order INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE faqs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read faqs" ON faqs
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated manage faqs" ON faqs
+  FOR ALL USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
 -- Create storage bucket for product images
 -- Note: Run this separately or via Supabase Dashboard
 -- INSERT INTO storage.buckets (id, name, public) VALUES ('product-images', 'product-images', true) ON CONFLICT (id) DO NOTHING;
