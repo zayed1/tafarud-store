@@ -18,6 +18,7 @@ import type { Product, PurchaseLink as PurchaseLinkType } from "@/types";
 import { BASE_URL } from "@/lib/config";
 import type { Metadata } from "next";
 import RelatedProducts from "@/components/store/RelatedProducts";
+import AuthorBooks from "@/components/store/AuthorBooks";
 import ProductTabs from "@/components/store/ProductTabs";
 
 const RecentlyViewed = dynamic(() => import("@/components/store/RecentlyViewed"));
@@ -251,9 +252,25 @@ export default async function ProductPage({
                 </Link>
               )}
               <h1 className="text-3xl sm:text-4xl font-bold text-dark leading-tight">{name}</h1>
-              {authorName && (
-                <Link href={`/${locale}/authors/${product.author?.slug}`} className="text-muted hover:text-primary transition-colors text-sm">
-                  {t("by")} {authorName}
+              {product.author && authorName && (
+                <Link
+                  href={`/${locale}/authors/${product.author.slug}`}
+                  className="inline-flex items-center gap-2.5 group/author"
+                >
+                  {product.author.image_url ? (
+                    <div className="w-7 h-7 relative rounded-full overflow-hidden ring-1 ring-border group-hover/author:ring-primary transition-colors">
+                      <Image src={product.author.image_url} alt={authorName} fill className="object-cover" sizes="28px" />
+                    </div>
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
+                      <svg className="w-3.5 h-3.5 text-primary/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                  )}
+                  <span className="text-sm text-muted group-hover/author:text-primary transition-colors">
+                    {t("by")} {authorName}
+                  </span>
                 </Link>
               )}
             </div>
@@ -279,6 +296,11 @@ export default async function ProductPage({
         relatedProductsSlot={<RelatedProducts categoryId={product.category_id} currentProductId={product.id} />}
         hasPurchaseLinks={(product.purchase_links || []).filter(l => l.is_enabled).length > 0}
       />
+
+      {/* Author's Other Books */}
+      {product.author && (
+        <AuthorBooks author={product.author} currentProductId={product.id} />
+      )}
 
       {/* Recently Viewed */}
       <RecentlyViewed excludeProductId={product.id} />
