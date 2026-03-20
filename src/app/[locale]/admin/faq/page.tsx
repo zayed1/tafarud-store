@@ -14,6 +14,8 @@ interface FAQ {
   question_en: string;
   answer_ar: string;
   answer_en: string;
+  category_ar: string;
+  category_en: string;
   sort_order: number;
   is_active: boolean;
 }
@@ -27,6 +29,8 @@ export default function AdminFAQPage() {
   const [questionEn, setQuestionEn] = useState("");
   const [answerAr, setAnswerAr] = useState("");
   const [answerEn, setAnswerEn] = useState("");
+  const [categoryAr, setCategoryAr] = useState("");
+  const [categoryEn, setCategoryEn] = useState("");
   const [sortOrder, setSortOrder] = useState(0);
   const [saving, setSaving] = useState(false);
 
@@ -45,6 +49,7 @@ export default function AdminFAQPage() {
 
   function resetForm() {
     setQuestionAr(""); setQuestionEn(""); setAnswerAr(""); setAnswerEn("");
+    setCategoryAr(""); setCategoryEn("");
     setSortOrder(0); setEditingId(null); setShowForm(false);
   }
 
@@ -52,6 +57,7 @@ export default function AdminFAQPage() {
     setEditingId(faq.id);
     setQuestionAr(faq.question_ar); setQuestionEn(faq.question_en);
     setAnswerAr(faq.answer_ar); setAnswerEn(faq.answer_en);
+    setCategoryAr(faq.category_ar || ""); setCategoryEn(faq.category_en || "");
     setSortOrder(faq.sort_order); setShowForm(true);
   }
 
@@ -59,7 +65,7 @@ export default function AdminFAQPage() {
     e.preventDefault();
     setSaving(true);
     const supabase = createClient();
-    const data = { question_ar: questionAr, question_en: questionEn, answer_ar: answerAr, answer_en: answerEn, sort_order: sortOrder };
+    const data = { question_ar: questionAr, question_en: questionEn, answer_ar: answerAr, answer_en: answerEn, category_ar: categoryAr || null, category_en: categoryEn || null, sort_order: sortOrder };
 
     if (editingId) {
       await supabase.from("faqs").update(data).eq("id", editingId);
@@ -100,6 +106,10 @@ export default function AdminFAQPage() {
           <Input label={t("questionEn")} value={questionEn} onChange={(e) => setQuestionEn(e.target.value)} dir="ltr" />
           <Textarea label={t("answerAr")} value={answerAr} onChange={(e) => setAnswerAr(e.target.value)} required />
           <Textarea label={t("answerEn")} value={answerEn} onChange={(e) => setAnswerEn(e.target.value)} dir="ltr" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input label={t("categoryAr")} value={categoryAr} onChange={(e) => setCategoryAr(e.target.value)} placeholder="مثال: الشحن، الدفع..." />
+            <Input label={t("categoryEn")} value={categoryEn} onChange={(e) => setCategoryEn(e.target.value)} dir="ltr" placeholder="e.g. Shipping, Payment..." />
+          </div>
           <Input label={t("sortOrder")} type="number" value={sortOrder.toString()} onChange={(e) => setSortOrder(parseInt(e.target.value) || 0)} dir="ltr" />
           <div className="flex gap-3">
             <Button type="submit" disabled={saving}>{saving ? "..." : t("save")}</Button>

@@ -253,25 +253,32 @@ export default async function ProductPage({
               )}
               <h1 className="text-3xl sm:text-4xl font-bold text-dark leading-tight">{name}</h1>
               {product.author && authorName && (
-                <Link
-                  href={`/${locale}/authors/${product.author.slug}`}
-                  className="inline-flex items-center gap-2.5 group/author"
-                >
-                  {product.author.image_url ? (
-                    <div className="w-7 h-7 relative rounded-full overflow-hidden ring-1 ring-border group-hover/author:ring-primary transition-colors">
-                      <Image src={product.author.image_url} alt={authorName} fill className="object-cover" sizes="28px" />
-                    </div>
-                  ) : (
-                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
-                      <svg className="w-3.5 h-3.5 text-primary/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                    </div>
+                <div className="space-y-1.5">
+                  <Link
+                    href={`/${locale}/authors/${product.author.slug}`}
+                    className="inline-flex items-center gap-2.5 group/author"
+                  >
+                    {product.author.image_url ? (
+                      <div className="w-7 h-7 relative rounded-full overflow-hidden ring-1 ring-border group-hover/author:ring-primary transition-colors">
+                        <Image src={product.author.image_url} alt={authorName} fill className="object-cover" sizes="28px" />
+                      </div>
+                    ) : (
+                      <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
+                        <svg className="w-3.5 h-3.5 text-primary/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                    )}
+                    <span className="text-sm text-muted group-hover/author:text-primary transition-colors">
+                      {t("by")} {authorName}
+                    </span>
+                  </Link>
+                  {getLocalizedField(product.author, "bio", locale) && (
+                    <p className="text-xs text-muted/80 line-clamp-2 ps-9">
+                      {getLocalizedField(product.author, "bio", locale)}
+                    </p>
                   )}
-                  <span className="text-sm text-muted group-hover/author:text-primary transition-colors">
-                    {t("by")} {authorName}
-                  </span>
-                </Link>
+                </div>
               )}
             </div>
             <div className="flex items-center gap-2">

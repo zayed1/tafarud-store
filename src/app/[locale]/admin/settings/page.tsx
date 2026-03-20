@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
 import { useToast } from "@/components/ui/Toast";
 
 interface StoreSettings {
@@ -31,6 +32,10 @@ const DEFAULT_SETTINGS: StoreSettings = {
 export default function SettingsPage() {
   const [settings, setSettings] = useState<StoreSettings>(DEFAULT_SETTINGS);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [privacyAr, setPrivacyAr] = useState("");
+  const [privacyEn, setPrivacyEn] = useState("");
+  const [termsAr, setTermsAr] = useState("");
+  const [termsEn, setTermsEn] = useState("");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const t = useTranslations("admin");
@@ -39,16 +44,39 @@ export default function SettingsPage() {
   useEffect(() => {
     async function loadSettings() {
       const supabase = createClient();
-      const [{ data }, { data: maint }] = await Promise.all([
+      const [{ data }, { data: kvRows }] = await Promise.all([
         supabase.from("store_settings").select("*").limit(1).single(),
-        supabase.from("store_settings").select("value").eq("key", "maintenance_mode").single(),
+        supabase.from("store_settings").select("key, value").in("key", [
+          "maintenance_mode", "privacy_ar", "privacy_en", "terms_ar", "terms_en"
+        ]),
       ]);
       if (data) setSettings(data);
-      if (maint?.value) setMaintenanceMode(maint.value === true || maint.value === "true");
+
+      const kv: Record<string, string> = {};
+      (kvRows || []).forEach((r: { key: string; value: string }) => { kv[r.key] = r.value; });
+      if (kv.maintenance_mode) setMaintenanceMode(kv.maintenance_mode === "true" || kv.maintenance_mode === true as unknown as string);
+      if (kv.privacy_ar) setPrivacyAr(kv.privacy_ar as string);
+      if (kv.privacy_en) setPrivacyEn(kv.privacy_en as string);
+      if (kv.terms_ar) setTermsAr(kv.terms_ar as string);
+      if (kv.terms_en) setTermsEn(kv.terms_en as string);
+
       setLoading(false);
     }
     loadSettings();
   }, []);
+
+  async function upsertKV(supabase: ReturnType<typeof createClient>, key: string, value: unknown) {
+    const { data: existing } = await supabase
+      .from("store_settings")
+      .select("id")
+      .eq("key", key)
+      .single();
+    if (existing) {
+      await supabase.from("store_settings").update({ value }).eq("key", key);
+    } else {
+      await supabase.from("store_settings").insert({ key, value });
+    }
+  }
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -86,18 +114,14 @@ export default function SettingsPage() {
       if (data) setSettings(data);
     }
 
-    // Save maintenance mode
-    const { data: existing } = await supabase
-      .from("store_settings")
-      .select("id")
-      .eq("key", "maintenance_mode")
-      .single();
-
-    if (existing) {
-      await supabase.from("store_settings").update({ value: maintenanceMode }).eq("key", "maintenance_mode");
-    } else {
-      await supabase.from("store_settings").insert({ key: "maintenance_mode", value: maintenanceMode });
-    }
+    // Save key-value settings
+    await Promise.all([
+      upsertKV(supabase, "maintenance_mode", maintenanceMode),
+      upsertKV(supabase, "privacy_ar", privacyAr),
+      upsertKV(supabase, "privacy_en", privacyEn),
+      upsertKV(supabase, "terms_ar", termsAr),
+      upsertKV(supabase, "terms_en", termsEn),
+    ]);
 
     toast.showToast(t("settingsSaved"), "success");
     setSaving(false);
@@ -160,6 +184,40 @@ export default function SettingsPage() {
               value={settings.facebook_url}
               onChange={(e) => setSettings({ ...settings, facebook_url: e.target.value })}
               dir="ltr"
+            />
+          </div>
+        </div>
+
+        {/* Privacy & Terms */}
+        <div className="border-t border-border pt-6">
+          <h2 className="text-lg font-semibold text-dark mb-2">{t("privacyTerms")}</h2>
+          <p className="text-sm text-muted mb-4">{t("privacyTermsDesc")}</p>
+          <div className="space-y-4">
+            <Textarea
+              label={t("privacyAr")}
+              value={privacyAr}
+              onChange={(e) => setPrivacyAr(e.target.value)}
+              rows={6}
+            />
+            <Textarea
+              label={t("privacyEn")}
+              value={privacyEn}
+              onChange={(e) => setPrivacyEn(e.target.value)}
+              dir="ltr"
+              rows={6}
+            />
+            <Textarea
+              label={t("termsAr")}
+              value={termsAr}
+              onChange={(e) => setTermsAr(e.target.value)}
+              rows={6}
+            />
+            <Textarea
+              label={t("termsEn")}
+              value={termsEn}
+              onChange={(e) => setTermsEn(e.target.value)}
+              dir="ltr"
+              rows={6}
             />
           </div>
         </div>

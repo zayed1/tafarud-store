@@ -3,46 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
-
-function generateQRMatrix(data: string): boolean[][] {
-  // Simple QR-like pattern generator for visual display
-  // Uses a deterministic hash to create a unique pattern
-  const size = 25;
-  const matrix: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
-
-  // Finder patterns (top-left, top-right, bottom-left)
-  const drawFinder = (ox: number, oy: number) => {
-    for (let y = 0; y < 7; y++) {
-      for (let x = 0; x < 7; x++) {
-        const isBorder = y === 0 || y === 6 || x === 0 || x === 6;
-        const isInner = y >= 2 && y <= 4 && x >= 2 && x <= 4;
-        matrix[oy + y][ox + x] = isBorder || isInner;
-      }
-    }
-  };
-
-  drawFinder(0, 0);
-  drawFinder(size - 7, 0);
-  drawFinder(0, size - 7);
-
-  // Fill data area with deterministic pattern based on URL
-  let hash = 0;
-  for (let i = 0; i < data.length; i++) {
-    hash = ((hash << 5) - hash + data.charCodeAt(i)) | 0;
-  }
-
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
-      const inFinder =
-        (x < 8 && y < 8) || (x >= size - 8 && y < 8) || (x < 8 && y >= size - 8);
-      if (inFinder) continue;
-      hash = ((hash << 5) - hash + (x * 31 + y * 37)) | 0;
-      matrix[y][x] = (hash & 1) === 1;
-    }
-  }
-
-  return matrix;
-}
+import QRCode from "qrcode";
 
 export default function QRCodeShare({ title }: { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -57,27 +18,45 @@ export default function QRCodeShare({ title }: { title: string }) {
 
   useEffect(() => {
     if (!isOpen || !canvasRef.current || !url) return;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
 
-    const matrix = generateQRMatrix(url);
-    const cellSize = 8;
-    const size = matrix.length * cellSize;
-    canvas.width = size;
-    canvas.height = size;
+    async function renderQR() {
+      if (!canvasRef.current) return;
+      await QRCode.toCanvas(canvasRef.current, url, {
+        width: 200,
+        margin: 1,
+        color: { dark: "#000000", light: "#ffffff" },
+        errorCorrectionLevel: "H",
+      });
 
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, size, size);
-    ctx.fillStyle = "#000000";
+      // Draw store logo in center
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    for (let y = 0; y < matrix.length; y++) {
-      for (let x = 0; x < matrix[y].length; x++) {
-        if (matrix[y][x]) {
-          ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-        }
-      }
+      const logoSize = 40;
+      const x = (canvas.width - logoSize) / 2;
+      const y = (canvas.height - logoSize) / 2;
+
+      // White background for logo area
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.roundRect(x - 4, y - 4, logoSize + 8, logoSize + 8, 6);
+      ctx.fill();
+
+      // Draw "ت" as store logo
+      ctx.fillStyle = "#1a7a5e";
+      ctx.beginPath();
+      ctx.roundRect(x, y, logoSize, logoSize, 4);
+      ctx.fill();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 22px 'Arial', sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("ت", x + logoSize / 2, y + logoSize / 2);
     }
+
+    renderQR();
   }, [isOpen, url]);
 
   return (

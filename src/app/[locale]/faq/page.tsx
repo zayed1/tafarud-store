@@ -23,6 +23,8 @@ interface FAQ {
   question_en: string;
   answer_ar: string;
   answer_en: string;
+  category_ar?: string;
+  category_en?: string;
   sort_order: number;
 }
 
@@ -36,18 +38,33 @@ async function getFAQs(): Promise<FAQ[]> {
   }
 }
 
+async function getWhatsAppNumber(): Promise<string> {
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.from("store_settings").select("whatsapp_number").limit(1).single();
+    return data?.whatsapp_number || "+971504677161";
+  } catch {
+    return "+971504677161";
+  }
+}
+
 export default async function FAQPage() {
-  const [faqs, locale, t] = await Promise.all([
+  const [faqs, locale, t, whatsappNumber] = await Promise.all([
     getFAQs(),
     getLocale(),
     getTranslations("common"),
+    getWhatsAppNumber(),
   ]);
 
   const items = faqs.map((faq) => ({
     id: faq.id,
     question: getLocalizedField(faq, "question", locale),
     answer: getLocalizedField(faq, "answer", locale),
+    category: locale === "ar" ? faq.category_ar : faq.category_en || faq.category_ar,
   }));
+
+  // Extract unique categories
+  const categories = [...new Set(items.map((i) => i.category).filter(Boolean))] as string[];
 
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -79,7 +96,15 @@ export default async function FAQPage() {
       {items.length === 0 ? (
         <p className="text-muted text-center py-12">{t("noResults")}</p>
       ) : (
-        <FAQAccordion items={items} />
+        <FAQAccordion
+          items={items}
+          categories={categories}
+          whatsappNumber={whatsappNumber}
+          contactText={t("faqContact")}
+          contactDesc={t("faqContactDesc")}
+          searchPlaceholder={t("faqSearch")}
+          allText={t("allCategories2")}
+        />
       )}
     </div>
   );
