@@ -36,6 +36,7 @@ export default function SettingsPage() {
   const [privacyEn, setPrivacyEn] = useState("");
   const [termsAr, setTermsAr] = useState("");
   const [termsEn, setTermsEn] = useState("");
+  const [storeTheme, setStoreTheme] = useState("classic");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const t = useTranslations("admin");
@@ -47,7 +48,7 @@ export default function SettingsPage() {
       const [{ data }, { data: kvRows }] = await Promise.all([
         supabase.from("store_settings").select("*").limit(1).single(),
         supabase.from("store_settings").select("key, value").in("key", [
-          "maintenance_mode", "privacy_ar", "privacy_en", "terms_ar", "terms_en"
+          "maintenance_mode", "privacy_ar", "privacy_en", "terms_ar", "terms_en", "store_theme"
         ]),
       ]);
       if (data) setSettings(data);
@@ -59,6 +60,7 @@ export default function SettingsPage() {
       if (kv.privacy_en) setPrivacyEn(kv.privacy_en as string);
       if (kv.terms_ar) setTermsAr(kv.terms_ar as string);
       if (kv.terms_en) setTermsEn(kv.terms_en as string);
+      if (kv.store_theme) setStoreTheme(kv.store_theme as string);
 
       setLoading(false);
     }
@@ -121,6 +123,7 @@ export default function SettingsPage() {
       upsertKV(supabase, "privacy_en", privacyEn),
       upsertKV(supabase, "terms_ar", termsAr),
       upsertKV(supabase, "terms_en", termsEn),
+      upsertKV(supabase, "store_theme", storeTheme),
     ]);
 
     toast.showToast(t("settingsSaved"), "success");
@@ -219,6 +222,39 @@ export default function SettingsPage() {
               dir="ltr"
               rows={6}
             />
+          </div>
+        </div>
+
+        {/* Store Theme */}
+        <div className="border-t border-border pt-6">
+          <h2 className="text-lg font-semibold text-dark mb-2">{t("storeTheme")}</h2>
+          <p className="text-sm text-muted mb-4">{t("storeThemeDesc")}</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { id: "classic", color: "#0D8070", label: t("themeClassic") },
+              { id: "ocean", color: "#1E6CB0", label: t("themeOcean") },
+              { id: "sunset", color: "#C96830", label: t("themeSunset") },
+              { id: "lavender", color: "#7C3AED", label: t("themeLavender") },
+            ].map((theme) => (
+              <button
+                key={theme.id}
+                type="button"
+                onClick={() => setStoreTheme(theme.id)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all cursor-pointer ${
+                  storeTheme === theme.id
+                    ? "border-primary bg-primary/5 shadow-sm"
+                    : "border-border hover:border-primary/30"
+                }`}
+              >
+                <span
+                  className="w-6 h-6 rounded-full flex-shrink-0 shadow-inner"
+                  style={{ backgroundColor: theme.color }}
+                />
+                <span className={`text-sm font-medium ${storeTheme === theme.id ? "text-primary" : "text-dark"}`}>
+                  {theme.label}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 

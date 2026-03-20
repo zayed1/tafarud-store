@@ -4,6 +4,7 @@ import { getLocalizedField } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import AnimatedSection, { StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
+import BreadcrumbJsonLd from "@/components/ui/BreadcrumbJsonLd";
 import type { Author } from "@/types";
 import type { Metadata } from "next";
 import { BASE_URL } from "@/lib/config";
@@ -38,6 +39,10 @@ export default async function AuthorsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <BreadcrumbJsonLd items={[
+        { name: locale === "ar" ? "الرئيسية" : "Home", url: `/${locale}` },
+        { name: t("authors") },
+      ]} />
       <AnimatedSection>
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/5 rounded-full border border-primary/10 mb-4">

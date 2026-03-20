@@ -139,7 +139,8 @@
     "totalPublications": "إجمالي الإصدارات",
     "statsProducts": "منتج",
     "statsCategories": "تصنيف",
-    "statsAuthors": "كاتب"
+    "statsAuthors": "كاتب",
+    "sitemap": "خريطة الموقع"
   },
   "hero": {
     "title": "متجر التفرّد",
@@ -313,6 +314,12 @@
     "faqSaved": "تم حفظ السؤال",
     "faqDeleted": "تم حذف السؤال",
     "noFaqs": "لا توجد أسئلة",
+    "storeTheme": "ثيم المتجر",
+    "storeThemeDesc": "اختر ثيم الألوان الافتراضي للمتجر",
+    "themeClassic": "كلاسيكي",
+    "themeOcean": "المحيط",
+    "themeSunset": "الغروب",
+    "themeLavender": "اللافندر",
     "privacyTerms": "الخصوصية والشروط",
     "privacyTermsDesc": "تعديل محتوى صفحة الخصوصية والشروط",
     "privacyAr": "سياسة الخصوصية (عربي)",
@@ -326,6 +333,7 @@
     "notifications": "التنبيهات",
     "expiringCoupons": "كوبونات تنتهي قريباً",
     "noNotifications": "لا توجد تنبيهات",
-    "totalAuthors": "إجمالي الكتّاب"
+    "totalAuthors": "إجمالي الكتّاب",
+    "topAuthors": "أبرز الكتّاب"
   }
 }

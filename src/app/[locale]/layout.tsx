@@ -28,16 +28,23 @@ export default async function LocaleLayout({
   const messages = (await import(`../../messages/${locale}.json`)).default;
   const dir = locale === "ar" ? "rtl" : "ltr";
 
-  // Check maintenance mode (skip for admin pages)
+  // Check maintenance mode and store theme
   let isMaintenanceMode = false;
+  let storeTheme = "classic";
   try {
     const supabase = await createClient();
-    const { data } = await supabase.from("store_settings").select("value").eq("key", "maintenance_mode").single();
-    if (data?.value === true || data?.value === "true") isMaintenanceMode = true;
-  } catch { /* not in maintenance */ }
+    const { data: kvRows } = await supabase
+      .from("store_settings")
+      .select("key, value")
+      .in("key", ["maintenance_mode", "store_theme"]);
+    (kvRows || []).forEach((r) => {
+      if (r.key === "maintenance_mode" && (r.value === true || r.value === "true")) isMaintenanceMode = true;
+      if (r.key === "store_theme" && r.value) storeTheme = r.value as string;
+    });
+  } catch { /* defaults */ }
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning id="top">
+    <html lang={locale} dir={dir} suppressHydrationWarning id="top" className={storeTheme !== "classic" ? `theme-${storeTheme}` : undefined}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

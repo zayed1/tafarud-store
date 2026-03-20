@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { getLocale } from "next-intl/server";
 import CategoryCard from "@/components/store/CategoryCard";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import BreadcrumbJsonLd from "@/components/ui/BreadcrumbJsonLd";
 import EmptyState from "@/components/ui/EmptyState";
 import type { Category } from "@/types";
 
@@ -43,6 +44,10 @@ function CategoriesContent({ categories, locale }: { categories: (Category & { p
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <BreadcrumbJsonLd items={[
+        { name: t("home"), url: `/${locale}` },
+        { name: t("allCategories") },
+      ]} />
       <Breadcrumb
         items={[
           { label: t("home"), href: `/${locale}` },

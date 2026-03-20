@@ -139,7 +139,8 @@
     "totalPublications": "Total Publications",
     "statsProducts": "Products",
     "statsCategories": "Categories",
-    "statsAuthors": "Authors"
+    "statsAuthors": "Authors",
+    "sitemap": "Sitemap"
   },
   "hero": {
     "title": "Tafarud Store",
@@ -313,6 +314,12 @@
     "faqSaved": "Question saved",
     "faqDeleted": "Question deleted",
     "noFaqs": "No questions yet",
+    "storeTheme": "Store Theme",
+    "storeThemeDesc": "Choose the default color theme for the store",
+    "themeClassic": "Classic",
+    "themeOcean": "Ocean",
+    "themeSunset": "Sunset",
+    "themeLavender": "Lavender",
     "privacyTerms": "Privacy & Terms",
     "privacyTermsDesc": "Edit privacy policy and terms & conditions page content",
     "privacyAr": "Privacy Policy (Arabic)",
@@ -326,6 +333,7 @@
     "notifications": "Notifications",
     "expiringCoupons": "Expiring Coupons",
     "noNotifications": "No notifications",
-    "totalAuthors": "Total Authors"
+    "totalAuthors": "Total Authors",
+    "topAuthors": "Top Authors"
   }
 }

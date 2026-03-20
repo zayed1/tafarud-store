@@ -56,6 +56,24 @@ export default function AnalyticsSection({ products }: AnalyticsSectionProps) {
     });
     const categoryDist = Array.from(categoryMap.values()).sort((a, b) => b.count - a.count);
 
+    // Author distribution
+    const authorMap = new Map<string, { name: string; count: number }>();
+    products.forEach((p) => {
+      if (p.author) {
+        const key = p.author_id || "unknown";
+        const existing = authorMap.get(key);
+        if (existing) {
+          existing.count++;
+        } else {
+          authorMap.set(key, {
+            name: getLocalizedField(p.author, "name", locale),
+            count: 1,
+          });
+        }
+      }
+    });
+    const authorDist = Array.from(authorMap.values()).sort((a, b) => b.count - a.count).slice(0, 8);
+
     // Average price
     const avgPrice = products.length > 0
       ? products.reduce((sum, p) => sum + p.price, 0) / products.length
@@ -107,6 +125,7 @@ export default function AnalyticsSection({ products }: AnalyticsSectionProps) {
       mostExpensive,
       monthlyData,
       priceTrend,
+      authorDist,
     };
   }, [products, locale]);
 
@@ -339,6 +358,43 @@ export default function AnalyticsSection({ products }: AnalyticsSectionProps) {
             })}
           </div>
         </div>
+
+        {/* Author Distribution */}
+        {analytics.authorDist.length > 0 && (
+          <div className="bg-surface border border-border rounded-xl p-5">
+            <h3 className="font-semibold text-dark mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              {tAdmin("topAuthors")}
+            </h3>
+            <div className="space-y-3">
+              {analytics.authorDist.map((author, i) => {
+                const maxAuthorCount = Math.max(...analytics.authorDist.map((a) => a.count), 1);
+                const colors = ["bg-violet-500", "bg-primary", "bg-accent", "bg-secondary", "bg-pink-500", "bg-emerald-500", "bg-sky-500", "bg-orange-500"];
+                return (
+                  <div key={author.name}>
+                    <div className="flex items-center justify-between text-sm mb-1">
+                      <span className="text-dark flex items-center gap-2">
+                        <span className={`w-2.5 h-2.5 rounded-full ${colors[i % colors.length]}`} />
+                        {author.name}
+                      </span>
+                      <span className="text-xs text-muted">{author.count} {t("statsProducts")}</span>
+                    </div>
+                    <div className="h-2 bg-background rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full bg-gradient-to-r from-violet-500 to-primary rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(author.count / maxAuthorCount) * 100}%` }}
+                        transition={{ duration: 0.6, delay: i * 0.05 }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Price Trend Line Chart */}
         {trendPoints.length > 1 && (
