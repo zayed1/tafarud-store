@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS categories (
   name_en TEXT DEFAULT '',
   slug TEXT UNIQUE NOT NULL,
   image_url TEXT,
+  sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -23,8 +24,10 @@ CREATE TABLE IF NOT EXISTS products (
   description_en TEXT DEFAULT '',
   price DECIMAL(10, 2) DEFAULT 0,
   image_url TEXT,
+  gallery_urls TEXT[],
   category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
   featured BOOLEAN DEFAULT FALSE,
+  sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -116,6 +119,22 @@ CREATE POLICY "Authenticated manage activity_logs" ON activity_logs
   FOR ALL USING (auth.role() = 'authenticated')
   WITH CHECK (auth.role() = 'authenticated');
 
+-- Store Settings table
+CREATE TABLE IF NOT EXISTS store_settings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  key TEXT UNIQUE NOT NULL,
+  value JSONB
+);
+
+ALTER TABLE store_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read store_settings" ON store_settings
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated manage store_settings" ON store_settings
+  FOR ALL USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
 -- Coupons table
 CREATE TABLE IF NOT EXISTS coupons (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -142,6 +161,76 @@ CREATE POLICY "Authenticated manage coupons" ON coupons
   FOR ALL USING (auth.role() = 'authenticated')
   WITH CHECK (auth.role() = 'authenticated');
 
+-- Announcements table
+CREATE TABLE IF NOT EXISTS announcements (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  text_ar TEXT NOT NULL,
+  text_en TEXT DEFAULT '',
+  link TEXT,
+  bg_color TEXT DEFAULT '#0D8070',
+  text_color TEXT DEFAULT '#FFFFFF',
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE announcements ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read announcements" ON announcements
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated manage announcements" ON announcements
+  FOR ALL USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
+-- Authors table
+CREATE TABLE IF NOT EXISTS authors (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name_ar TEXT NOT NULL,
+  name_en TEXT DEFAULT '',
+  slug TEXT UNIQUE NOT NULL,
+  bio_ar TEXT DEFAULT '',
+  bio_en TEXT DEFAULT '',
+  image_url TEXT,
+  social_links JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_authors_slug ON authors(slug);
+
+ALTER TABLE authors ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read authors" ON authors
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated manage authors" ON authors
+  FOR ALL USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
+-- Add author_id to products
+ALTER TABLE products ADD COLUMN IF NOT EXISTS author_id UUID REFERENCES authors(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_products_author ON products(author_id);
+
+-- FAQ table
+CREATE TABLE IF NOT EXISTS faqs (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  question_ar TEXT NOT NULL,
+  question_en TEXT DEFAULT '',
+  answer_ar TEXT NOT NULL,
+  answer_en TEXT DEFAULT '',
+  sort_order INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE faqs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read faqs" ON faqs
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated manage faqs" ON faqs
+  FOR ALL USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
 -- Create storage bucket for product images
 -- Note: Run this separately or via Supabase Dashboard
--- INSERT INTO storage.buckets (id, name, public) VALUES ('product-images', 'product-images', true);
+-- INSERT INTO storage.buckets (id, name, public) VALUES ('product-images', 'product-images', true) ON CONFLICT (id) DO NOTHING;

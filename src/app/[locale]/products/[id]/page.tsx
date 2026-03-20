@@ -9,6 +9,7 @@ import { getLocalizedField, formatPrice } from "@/lib/utils";
 import PurchaseLinks from "@/components/store/PurchaseLinks";
 import WhatsAppButton from "@/components/store/WhatsAppButton";
 import ShareButton from "@/components/store/ShareButton";
+import QRCodeShare from "@/components/store/QRCodeShare";
 import ProductGallery from "@/components/store/ProductGallery";
 import Badge from "@/components/ui/Badge";
 import Breadcrumb from "@/components/ui/Breadcrumb";
@@ -17,6 +18,7 @@ import type { Product, PurchaseLink as PurchaseLinkType } from "@/types";
 import { BASE_URL } from "@/lib/config";
 import type { Metadata } from "next";
 import RelatedProducts from "@/components/store/RelatedProducts";
+import AuthorBooks from "@/components/store/AuthorBooks";
 import ProductTabs from "@/components/store/ProductTabs";
 
 const RecentlyViewed = dynamic(() => import("@/components/store/RecentlyViewed"));
@@ -42,7 +44,7 @@ const getProduct = cache(async function getProduct(id: string) {
     const supabase = await createClient();
     const { data: product } = await supabase
       .from("products")
-      .select("*, category:categories(*)")
+      .select("*, category:categories(*), author:authors(*)")
       .eq("id", id)
       .single();
 
@@ -124,6 +126,9 @@ export default async function ProductPage({
   const description = getLocalizedField(product, "description", locale);
   const categoryName = product.category
     ? getLocalizedField(product.category, "name", locale)
+    : "";
+  const authorName = product.author
+    ? getLocalizedField(product.author, "name", locale)
     : "";
 
   const images = product.gallery_urls?.length
@@ -247,8 +252,39 @@ export default async function ProductPage({
                 </Link>
               )}
               <h1 className="text-3xl sm:text-4xl font-bold text-dark leading-tight">{name}</h1>
+              {product.author && authorName && (
+                <div className="space-y-1.5">
+                  <Link
+                    href={`/${locale}/authors/${product.author.slug}`}
+                    className="inline-flex items-center gap-2.5 group/author"
+                  >
+                    {product.author.image_url ? (
+                      <div className="w-7 h-7 relative rounded-full overflow-hidden ring-1 ring-border group-hover/author:ring-primary transition-colors">
+                        <Image src={product.author.image_url} alt={authorName} fill className="object-cover" sizes="28px" />
+                      </div>
+                    ) : (
+                      <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
+                        <svg className="w-3.5 h-3.5 text-primary/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                    )}
+                    <span className="text-sm text-muted group-hover/author:text-primary transition-colors">
+                      {t("by")} {authorName}
+                    </span>
+                  </Link>
+                  {getLocalizedField(product.author, "bio", locale) && (
+                    <p className="text-xs text-muted/80 line-clamp-2 ps-9">
+                      {getLocalizedField(product.author, "bio", locale)}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
-            <ShareButton title={name} />
+            <div className="flex items-center gap-2">
+              <QRCodeShare title={name} />
+              <ShareButton title={name} />
+            </div>
           </div>
 
           <div className="flex items-baseline gap-3 bg-primary/5 px-5 py-3 rounded-xl">
@@ -267,6 +303,11 @@ export default async function ProductPage({
         relatedProductsSlot={<RelatedProducts categoryId={product.category_id} currentProductId={product.id} />}
         hasPurchaseLinks={(product.purchase_links || []).filter(l => l.is_enabled).length > 0}
       />
+
+      {/* Author's Other Books */}
+      {product.author && (
+        <AuthorBooks author={product.author} currentProductId={product.id} />
+      )}
 
       {/* Recently Viewed */}
       <RecentlyViewed excludeProductId={product.id} />

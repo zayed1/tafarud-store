@@ -13,6 +13,7 @@ import { BASE_URL } from "@/lib/config";
 import Link from "next/link";
 import type { Metadata } from "next";
 import ParallaxSection from "@/components/store/ParallaxSection";
+import StatsCounters from "@/components/store/StatsCounters";
 
 export async function generateMetadata({
   params,
@@ -54,7 +55,7 @@ async function getFeaturedProducts(): Promise<Product[]> {
     const supabase = await createClient();
     const { data } = await supabase
       .from("products")
-      .select("*, category:categories(*)")
+      .select("*, category:categories(*), author:authors(*)")
       .eq("featured", true)
       .order("created_at", { ascending: false })
       .limit(8);
@@ -110,16 +111,40 @@ async function getCategoriesWithCounts(): Promise<(Category & { product_count: n
   }
 }
 
+async function getAuthorsCount(): Promise<number> {
+  try {
+    const supabase = await createClient();
+    const { count } = await supabase.from("authors").select("id", { count: "exact", head: true });
+    return count || 0;
+  } catch {
+    return 0;
+  }
+}
+
+async function getProductsCount(): Promise<number> {
+  try {
+    const supabase = await createClient();
+    const { count } = await supabase.from("products").select("id", { count: "exact", head: true });
+    return count || 0;
+  } catch {
+    return 0;
+  }
+}
+
 function HomeContent({
   featuredProducts,
   categories,
   banners,
   locale,
+  productsCount,
+  authorsCount,
 }: {
   featuredProducts: Product[];
   categories: (Category & { product_count: number })[];
   banners: Banner[];
   locale: string;
+  productsCount: number;
+  authorsCount: number;
 }) {
   const t = useTranslations("common");
   const tAbout = useTranslations("about");
@@ -165,6 +190,13 @@ function HomeContent({
         />
       )}
       <HeroSection banners={banners} />
+
+      {/* Stats Counters */}
+      <StatsCounters
+        productsCount={productsCount}
+        categoriesCount={categories.length}
+        authorsCount={authorsCount}
+      />
 
       {/* Categories Section */}
       {categories.length > 0 && (
@@ -238,12 +270,23 @@ function HomeContent({
 }
 
 export default async function HomePage() {
-  const [featuredProducts, categories, banners, locale] = await Promise.all([
+  const [featuredProducts, categories, banners, locale, productsCount, authorsCount] = await Promise.all([
     getFeaturedProducts(),
     getCategoriesWithCounts(),
     getBanners(),
     getLocale(),
+    getProductsCount(),
+    getAuthorsCount(),
   ]);
 
-  return <HomeContent featuredProducts={featuredProducts} categories={categories} banners={banners} locale={locale} />;
+  return (
+    <HomeContent
+      featuredProducts={featuredProducts}
+      categories={categories}
+      banners={banners}
+      locale={locale}
+      productsCount={productsCount}
+      authorsCount={authorsCount}
+    />
+  );
 }

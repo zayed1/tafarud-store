@@ -31,6 +31,9 @@ function ProductCard({ product, onQuickView }: ProductCardProps) {
   const categoryName = product.category
     ? getLocalizedField(product.category, "name", locale)
     : "";
+  const authorName = product.author
+    ? getLocalizedField(product.author, "name", locale)
+    : "";
   const isNew = isNewProduct(product.created_at);
 
   // Smart prefetch on hover
@@ -109,6 +112,9 @@ function ProductCard({ product, onQuickView }: ProductCardProps) {
               <span className="text-xs text-primary/70 font-medium">{categoryName}</span>
             )}
             <h3 className="font-semibold text-dark text-base sm:text-lg line-clamp-2 group-hover:text-primary transition-colors duration-200">{name}</h3>
+            {authorName && (
+              <p className="text-xs text-muted">{t("by")} {authorName}</p>
+            )}
             <div className="flex items-center justify-between">
               <p className="text-primary font-bold text-lg">{formatPrice(product.price)}</p>
               <svg className="w-5 h-5 text-muted group-hover:text-primary transition-all rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

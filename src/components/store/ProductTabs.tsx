@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
+import CopyDescriptionButton from "./CopyDescriptionButton";
 
 interface ProductTabsProps {
   description: string;
@@ -72,6 +73,9 @@ export default function ProductTabs({
               <p className="text-dark-light text-lg leading-relaxed whitespace-pre-wrap">
                 {description}
               </p>
+              <div className="mt-4">
+                <CopyDescriptionButton text={description} />
+              </div>
             </div>
           )}
           {activeTab === "purchase" && purchaseLinksSlot}
