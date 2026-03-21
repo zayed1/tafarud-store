@@ -11,6 +11,8 @@ import WebVitals from "@/components/ui/WebVitals";
 import { BASE_URL } from "@/lib/config";
 import { createClient } from "@/lib/supabase/server";
 import MaintenanceGate from "@/components/store/MaintenanceGate";
+import WelcomeModal from "@/components/store/WelcomeModal";
+import LoadingScreen from "@/components/store/LoadingScreen";
 
 export default async function LocaleLayout({
   children,
@@ -108,6 +110,8 @@ export default async function LocaleLayout({
               </main>
               <Footer />
               <BackToTop />
+              <WelcomeModal />
+              <LoadingScreen />
               <WebVitals />
             </MaintenanceGate>
           </ToastProvider>

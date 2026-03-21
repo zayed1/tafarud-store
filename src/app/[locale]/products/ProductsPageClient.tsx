@@ -8,6 +8,7 @@ import ProductGrid from "@/components/store/ProductGrid";
 import ProductListItem from "@/components/store/ProductListItem";
 import ProductFilters from "@/components/store/ProductFilters";
 import ShareCollection from "@/components/store/ShareCollection";
+import { getCached, setCache } from "@/lib/cache";
 import type { Product, Category } from "@/types";
 
 const QuickViewModal = lazy(() => import("@/components/store/QuickViewModal"));
@@ -22,10 +23,13 @@ interface Props {
 
 export default function ProductsPageClient({ products, categories, locale }: Props) {
   const t = useTranslations("common");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [sortBy, setSortBy] = useState("newest");
+
+  // Restore filter state from session cache for smooth back-navigation
+  const cached = getCached<{ category: string; sort: string; view: string }>("products_filters");
+  const [selectedCategory, setSelectedCategory] = useState(cached?.category || "");
+  const [sortBy, setSortBy] = useState(cached?.sort || "newest");
   const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list">((cached?.view as "grid" | "list") || "grid");
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
@@ -75,6 +79,11 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
       if (el) observer.unobserve(el);
     };
   }, [hasMore]);
+
+  // Save filter state to session cache
+  useEffect(() => {
+    setCache("products_filters", { category: selectedCategory, sort: sortBy, view: viewMode });
+  }, [selectedCategory, sortBy, viewMode]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);

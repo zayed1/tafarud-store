@@ -11,6 +11,7 @@ import BackupRestore from "@/components/admin/BackupRestore";
 import PDFExport from "@/components/admin/PDFExport";
 import ExcelExport from "@/components/admin/ExcelExport";
 import AdminNotifications from "@/components/admin/AdminNotifications";
+import AnimatedCounter from "@/components/admin/AnimatedCounter";
 
 async function getStats() {
   try {
@@ -141,7 +142,7 @@ function DashboardContent({
                 {card.icon}
               </div>
             </div>
-            <p className="text-2xl font-bold text-dark">{card.count}</p>
+            <p className="text-2xl font-bold text-dark"><AnimatedCounter value={card.count} /></p>
             <p className="text-sm text-muted mt-1">{card.label}</p>
           </Link>
         ))}

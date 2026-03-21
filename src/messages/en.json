@@ -140,7 +140,12 @@
     "statsProducts": "Products",
     "statsCategories": "Categories",
     "statsAuthors": "Authors",
-    "sitemap": "Sitemap"
+    "sitemap": "Sitemap",
+    "welcomeTitle": "Welcome to Tafarud Store!",
+    "welcomeSubtitle": "Your window to our creative publications",
+    "welcomeDesc": "Discover our distinguished collection of books and cultural publications. We're glad you're here and wish you a pleasant shopping experience.",
+    "welcomeBrowse": "Browse Products",
+    "welcomeSkip": "Browse on your own"
   },
   "hero": {
     "title": "Tafarud Store",

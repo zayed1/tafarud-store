@@ -1,6 +1,6 @@
 /**
  * Compress an image file client-side before upload.
- * Reduces file size by resizing and adjusting JPEG quality.
+ * Converts to WebP format for smaller file sizes, with JPEG fallback.
  */
 export async function compressImage(
   file: File,
@@ -46,6 +46,12 @@ export async function compressImage(
 
       ctx.drawImage(img, 0, 0, width, height);
 
+      // Try WebP first, fallback to JPEG
+      const supportsWebP = canvas.toDataURL("image/webp").startsWith("data:image/webp");
+      const outputType = supportsWebP ? "image/webp" : "image/jpeg";
+      const ext = supportsWebP ? ".webp" : ".jpg";
+      const fileName = file.name.replace(/\.[^.]+$/, ext);
+
       canvas.toBlob(
         (blob) => {
           if (!blob || blob.size >= file.size) {
@@ -54,13 +60,13 @@ export async function compressImage(
             return;
           }
 
-          const compressedFile = new File([blob], file.name, {
-            type: "image/jpeg",
+          const compressedFile = new File([blob], fileName, {
+            type: outputType,
             lastModified: Date.now(),
           });
           resolve(compressedFile);
         },
-        "image/jpeg",
+        outputType,
         quality
       );
     };

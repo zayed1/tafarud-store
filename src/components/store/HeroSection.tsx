@@ -35,9 +35,11 @@ export default function HeroSection({ banners = [] }: HeroSectionProps) {
     offset: ["start start", "end start"],
   });
 
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  const midY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
 
   const nextBanner = useCallback(() => {
     if (activeBanners.length > 1) {
@@ -107,8 +109,8 @@ export default function HeroSection({ banners = [] }: HeroSectionProps) {
         }}
       />
 
-      {/* Decorative floating squares */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Decorative floating squares - mid-layer parallax */}
+      <motion.div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ y: midY, scale }}>
         {floatingSquares.map((sq) => (
           <motion.div
             key={sq.id}
@@ -127,7 +129,7 @@ export default function HeroSection({ banners = [] }: HeroSectionProps) {
             }}
           />
         ))}
-      </div>
+      </motion.div>
 
       <motion.div
         className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center w-full"
