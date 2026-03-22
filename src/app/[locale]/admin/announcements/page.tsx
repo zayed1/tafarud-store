@@ -16,6 +16,8 @@ interface Announcement {
   bg_color: string | null;
   text_color: string | null;
   is_active: boolean;
+  starts_at: string | null;
+  ends_at: string | null;
   created_at: string;
 }
 
@@ -30,6 +32,8 @@ export default function AdminAnnouncementsPage() {
   const [bgColor, setBgColor] = useState("#0D8070");
   const [textColor, setTextColor] = useState("#FFFFFF");
   const [isActive, setIsActive] = useState(true);
+  const [startsAt, setStartsAt] = useState("");
+  const [endsAt, setEndsAt] = useState("");
   const [saving, setSaving] = useState(false);
 
   const t = useTranslations("admin");
@@ -62,6 +66,8 @@ export default function AdminAnnouncementsPage() {
     setBgColor("#0D8070");
     setTextColor("#FFFFFF");
     setIsActive(true);
+    setStartsAt("");
+    setEndsAt("");
     setShowModal(true);
   }
 
@@ -73,6 +79,8 @@ export default function AdminAnnouncementsPage() {
     setBgColor(a.bg_color || "#0D8070");
     setTextColor(a.text_color || "#FFFFFF");
     setIsActive(a.is_active);
+    setStartsAt(a.starts_at ? a.starts_at.slice(0, 16) : "");
+    setEndsAt(a.ends_at ? a.ends_at.slice(0, 16) : "");
     setShowModal(true);
   }
 
@@ -88,6 +96,8 @@ export default function AdminAnnouncementsPage() {
       bg_color: bgColor,
       text_color: textColor,
       is_active: isActive,
+      starts_at: startsAt ? new Date(startsAt).toISOString() : null,
+      ends_at: endsAt ? new Date(endsAt).toISOString() : null,
     };
 
     if (editing) {
@@ -146,6 +156,13 @@ export default function AdminAnnouncementsPage() {
               <p className="text-sm text-muted truncate" dir="ltr">{a.text_en}</p>
               {a.link && (
                 <p className="text-xs text-primary truncate mt-1" dir="ltr">{a.link}</p>
+              )}
+              {(a.starts_at || a.ends_at) && (
+                <p className="text-xs text-muted mt-1" dir="ltr">
+                  {a.starts_at && `${t("startsAt")}: ${new Date(a.starts_at).toLocaleDateString()}`}
+                  {a.starts_at && a.ends_at && " — "}
+                  {a.ends_at && `${t("endsAt")}: ${new Date(a.ends_at).toLocaleDateString()}`}
+                </p>
               )}
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
@@ -225,6 +242,29 @@ export default function AdminAnnouncementsPage() {
                 />
                 <span className="text-sm text-muted" dir="ltr">{textColor}</span>
               </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-dark">{t("startsAt")}</label>
+              <input
+                type="datetime-local"
+                value={startsAt}
+                onChange={(e) => setStartsAt(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-dark text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                dir="ltr"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-dark">{t("endsAt")}</label>
+              <input
+                type="datetime-local"
+                value={endsAt}
+                onChange={(e) => setEndsAt(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-dark text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                dir="ltr"
+              />
             </div>
           </div>
 

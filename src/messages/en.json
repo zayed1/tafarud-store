@@ -139,7 +139,18 @@
     "totalPublications": "Total Publications",
     "statsProducts": "Products",
     "statsCategories": "Categories",
-    "statsAuthors": "Authors"
+    "statsAuthors": "Authors",
+    "sitemap": "Sitemap",
+    "welcomeTitle": "Welcome to Tafarud Store!",
+    "welcomeSubtitle": "Your window to our creative publications",
+    "welcomeDesc": "Discover our distinguished collection of books and cultural publications. We're glad you're here and wish you a pleasant shopping experience.",
+    "welcomeBrowse": "Browse Products",
+    "welcomeSkip": "Browse on your own",
+    "outOfStock": "Out of Stock",
+    "offlineTitle": "No Connection",
+    "offlineDesc": "You appear to be offline. Some content may not be available.",
+    "offlineRetry": "Retry",
+    "newProductAlert": "New product!"
   },
   "hero": {
     "title": "Tafarud Store",
@@ -313,6 +324,12 @@
     "faqSaved": "Question saved",
     "faqDeleted": "Question deleted",
     "noFaqs": "No questions yet",
+    "storeTheme": "Store Theme",
+    "storeThemeDesc": "Choose the default color theme for the store",
+    "themeClassic": "Classic",
+    "themeOcean": "Ocean",
+    "themeSunset": "Sunset",
+    "themeLavender": "Lavender",
     "privacyTerms": "Privacy & Terms",
     "privacyTermsDesc": "Edit privacy policy and terms & conditions page content",
     "privacyAr": "Privacy Policy (Arabic)",
@@ -326,6 +343,14 @@
     "notifications": "Notifications",
     "expiringCoupons": "Expiring Coupons",
     "noNotifications": "No notifications",
-    "totalAuthors": "Total Authors"
+    "totalAuthors": "Total Authors",
+    "topAuthors": "Top Authors",
+    "stock": "Stock",
+    "stockUnlimited": "Leave empty for unlimited",
+    "lowStock": "Low stock",
+    "outOfStock": "Out of Stock",
+    "startsAt": "Starts at",
+    "endsAt": "Ends at",
+    "scheduled": "Scheduled"
   }
 }

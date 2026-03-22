@@ -27,6 +27,7 @@ export default function EditProductPage({
   const [price, setPrice] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [featured, setFeatured] = useState(false);
+  const [stock, setStock] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(null);
   const [galleryUrls, setGalleryUrls] = useState<string[]>([]);
@@ -63,6 +64,7 @@ export default function EditProductPage({
         setPrice(product.price?.toString() || "");
         setCategoryId(product.category_id || "");
         setFeatured(product.featured || false);
+        setStock(product.stock !== null && product.stock !== undefined ? product.stock.toString() : "");
         setCurrentImageUrl(product.image_url);
         setGalleryUrls(product.gallery_urls || []);
         setAuthorId(product.author_id || "");
@@ -125,6 +127,7 @@ export default function EditProductPage({
         category_id: categoryId || null,
         author_id: authorId || null,
         featured,
+        stock: stock !== "" ? parseInt(stock) : null,
         image_url: imageUrl,
         gallery_urls: uploadedGalleryUrls.length > 0 ? uploadedGalleryUrls : null,
       })
@@ -256,15 +259,28 @@ export default function EditProductPage({
           pendingFiles={galleryFiles}
         />
 
-        <label className="flex items-center gap-3 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={featured}
-            onChange={(e) => setFeatured(e.target.checked)}
-            className="w-5 h-5 accent-primary"
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Input
+            label={t("stock")}
+            type="number"
+            min="0"
+            value={stock}
+            onChange={(e) => setStock(e.target.value)}
+            dir="ltr"
+            placeholder={t("stockUnlimited")}
           />
-          <span className="font-medium text-dark">{t("featured")}</span>
-        </label>
+          <div className="flex items-end pb-1">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={featured}
+                onChange={(e) => setFeatured(e.target.checked)}
+                className="w-5 h-5 accent-primary"
+              />
+              <span className="font-medium text-dark">{t("featured")}</span>
+            </label>
+          </div>
+        </div>
 
         <div className="border-t border-border pt-6">
           <PurchaseLinkEditor links={purchaseLinks} onChange={setPurchaseLinks} />

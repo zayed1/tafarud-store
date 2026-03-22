@@ -1,9 +1,11 @@
 export const revalidate = 60;
 
+import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { getLocale } from "next-intl/server";
 import type { Product, Category } from "@/types";
 import ProductsPageClient from "./ProductsPageClient";
+import { ProductGridSkeleton } from "@/components/store/ProductCardSkeleton";
 
 async function getProducts(): Promise<Product[]> {
   try {
@@ -41,5 +43,9 @@ export default async function ProductsPage() {
     getLocale(),
   ]);
 
-  return <ProductsPageClient products={products} categories={categories} locale={locale} />;
+  return (
+    <Suspense fallback={<div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16"><ProductGridSkeleton /></div>}>
+      <ProductsPageClient products={products} categories={categories} locale={locale} />
+    </Suspense>
+  );
 }

@@ -2,13 +2,13 @@
 
 import { memo, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import type { Product } from "@/types";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
+import ProgressiveImage from "@/components/ui/ProgressiveImage";
 import TiltCard from "./TiltCard";
 
 interface ProductCardProps {
@@ -47,14 +47,12 @@ function ProductCard({ product, onQuickView }: ProductCardProps) {
         <div className="bg-surface rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300">
           <div className="aspect-[3/4] relative bg-background overflow-hidden">
             {product.image_url ? (
-              <Image
+              <ProgressiveImage
                 src={product.image_url}
                 alt={name}
                 fill
                 className="object-contain transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                placeholder="blur"
-                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUzMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRjBGNEYzIi8+PC9zdmc+"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5">
@@ -67,6 +65,9 @@ function ProductCard({ product, onQuickView }: ProductCardProps) {
             <div className="absolute top-3 start-3 flex flex-col gap-1.5">
               {product.featured && (
                 <Badge variant="accent">{t("featuredProducts")}</Badge>
+              )}
+              {product.stock !== null && product.stock !== undefined && product.stock <= 0 && (
+                <Badge variant="danger">{t("outOfStock")}</Badge>
               )}
               {isNew && (
                 <motion.span

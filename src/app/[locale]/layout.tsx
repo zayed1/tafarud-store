@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/layout/Header";
 import AnnouncementBar from "@/components/store/AnnouncementBar";
+import OfflineBanner from "@/components/store/OfflineBanner";
 import Footer from "@/components/layout/Footer";
 import BackToTop from "@/components/ui/BackToTop";
 import PageTransition from "@/components/ui/PageTransition";
@@ -11,6 +12,10 @@ import WebVitals from "@/components/ui/WebVitals";
 import { BASE_URL } from "@/lib/config";
 import { createClient } from "@/lib/supabase/server";
 import MaintenanceGate from "@/components/store/MaintenanceGate";
+import WelcomeModal from "@/components/store/WelcomeModal";
+import LoadingScreen from "@/components/store/LoadingScreen";
+import FloatingRecentlyViewed from "@/components/store/FloatingRecentlyViewed";
+import NewProductNotification from "@/components/store/NewProductNotification";
 
 export default async function LocaleLayout({
   children,
@@ -28,16 +33,23 @@ export default async function LocaleLayout({
   const messages = (await import(`../../messages/${locale}.json`)).default;
   const dir = locale === "ar" ? "rtl" : "ltr";
 
-  // Check maintenance mode (skip for admin pages)
+  // Check maintenance mode and store theme
   let isMaintenanceMode = false;
+  let storeTheme = "classic";
   try {
     const supabase = await createClient();
-    const { data } = await supabase.from("store_settings").select("value").eq("key", "maintenance_mode").single();
-    if (data?.value === true || data?.value === "true") isMaintenanceMode = true;
-  } catch { /* not in maintenance */ }
+    const { data: kvRows } = await supabase
+      .from("store_settings")
+      .select("key, value")
+      .in("key", ["maintenance_mode", "store_theme"]);
+    (kvRows || []).forEach((r) => {
+      if (r.key === "maintenance_mode" && (r.value === true || r.value === "true")) isMaintenanceMode = true;
+      if (r.key === "store_theme" && r.value) storeTheme = r.value as string;
+    });
+  } catch { /* defaults */ }
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning id="top">
+    <html lang={locale} dir={dir} suppressHydrationWarning id="top" className={storeTheme !== "classic" ? `theme-${storeTheme}` : undefined}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -94,6 +106,7 @@ export default async function LocaleLayout({
               >
                 {locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content"}
               </a>
+              <OfflineBanner />
               <AnnouncementBar />
               <Header />
               <main id="main-content" className="flex-1" role="main" aria-label={locale === "ar" ? "المحتوى الرئيسي" : "Main content"}>
@@ -101,6 +114,10 @@ export default async function LocaleLayout({
               </main>
               <Footer />
               <BackToTop />
+              <WelcomeModal />
+              <LoadingScreen />
+              <FloatingRecentlyViewed />
+              <NewProductNotification />
               <WebVitals />
             </MaintenanceGate>
           </ToastProvider>

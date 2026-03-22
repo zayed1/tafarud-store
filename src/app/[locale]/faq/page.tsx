@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { getLocalizedField } from "@/lib/utils";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 import FAQAccordion from "@/components/store/FAQAccordion";
+import BreadcrumbJsonLd from "@/components/ui/BreadcrumbJsonLd";
 import type { Metadata } from "next";
 import { BASE_URL } from "@/lib/config";
 
@@ -78,6 +79,10 @@ export default async function FAQPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <BreadcrumbJsonLd items={[
+        { name: locale === "ar" ? "الرئيسية" : "Home", url: `/${locale}` },
+        { name: t("faq") },
+      ]} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}

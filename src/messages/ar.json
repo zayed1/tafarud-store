@@ -139,7 +139,18 @@
     "totalPublications": "إجمالي الإصدارات",
     "statsProducts": "منتج",
     "statsCategories": "تصنيف",
-    "statsAuthors": "كاتب"
+    "statsAuthors": "كاتب",
+    "sitemap": "خريطة الموقع",
+    "welcomeTitle": "أهلاً بك في متجر التفرّد!",
+    "welcomeSubtitle": "نافذتكم إلى إصداراتنا الإبداعية",
+    "welcomeDesc": "اكتشف مجموعتنا المتميزة من الكتب والإصدارات الثقافية. نسعد بزيارتك ونتمنى لك تجربة تسوق ممتعة.",
+    "welcomeBrowse": "تصفّح المنتجات",
+    "welcomeSkip": "تصفح بنفسك",
+    "outOfStock": "نفد المخزون",
+    "offlineTitle": "لا يوجد اتصال",
+    "offlineDesc": "يبدو أنك غير متصل بالإنترنت. بعض المحتوى قد لا يكون متاحاً.",
+    "offlineRetry": "إعادة المحاولة",
+    "newProductAlert": "منتج جديد!"
   },
   "hero": {
     "title": "متجر التفرّد",
@@ -313,6 +324,12 @@
     "faqSaved": "تم حفظ السؤال",
     "faqDeleted": "تم حذف السؤال",
     "noFaqs": "لا توجد أسئلة",
+    "storeTheme": "ثيم المتجر",
+    "storeThemeDesc": "اختر ثيم الألوان الافتراضي للمتجر",
+    "themeClassic": "كلاسيكي",
+    "themeOcean": "المحيط",
+    "themeSunset": "الغروب",
+    "themeLavender": "اللافندر",
     "privacyTerms": "الخصوصية والشروط",
     "privacyTermsDesc": "تعديل محتوى صفحة الخصوصية والشروط",
     "privacyAr": "سياسة الخصوصية (عربي)",
@@ -326,6 +343,14 @@
     "notifications": "التنبيهات",
     "expiringCoupons": "كوبونات تنتهي قريباً",
     "noNotifications": "لا توجد تنبيهات",
-    "totalAuthors": "إجمالي الكتّاب"
+    "totalAuthors": "إجمالي الكتّاب",
+    "topAuthors": "أبرز الكتّاب",
+    "stock": "المخزون",
+    "stockUnlimited": "اتركه فارغاً لغير محدود",
+    "lowStock": "مخزون منخفض",
+    "outOfStock": "نفد المخزون",
+    "startsAt": "يبدأ في",
+    "endsAt": "ينتهي في",
+    "scheduled": "مجدول"
   }
 }
