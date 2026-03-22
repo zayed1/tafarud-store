@@ -12,7 +12,7 @@ import type { Author, Product } from "@/types";
 import type { Metadata } from "next";
 import { BASE_URL } from "@/lib/config";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 const getAuthor = cache(async (slug: string) => {
   try {

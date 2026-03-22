@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
 import PurchaseLinks from "@/components/store/PurchaseLinks";
@@ -21,23 +21,9 @@ import RelatedProducts from "@/components/store/RelatedProducts";
 import AuthorBooks from "@/components/store/AuthorBooks";
 import ProductTabs from "@/components/store/ProductTabs";
 
-const RecentlyViewed = dynamic(() => import("@/components/store/RecentlyViewed"));
+const RecentlyViewed = nextDynamic(() => import("@/components/store/RecentlyViewed"));
 
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  try {
-    const supabase = await createClient();
-    const { data } = await supabase
-      .from("products")
-      .select("id")
-      .order("created_at", { ascending: false })
-      .limit(20);
-    return (data || []).map((p) => ({ id: p.id }));
-  } catch {
-    return [];
-  }
-}
+export const dynamic = "force-dynamic";
 
 const getProduct = cache(async function getProduct(id: string) {
   try {
