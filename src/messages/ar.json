@@ -145,7 +145,12 @@
     "welcomeSubtitle": "نافذتكم إلى إصداراتنا الإبداعية",
     "welcomeDesc": "اكتشف مجموعتنا المتميزة من الكتب والإصدارات الثقافية. نسعد بزيارتك ونتمنى لك تجربة تسوق ممتعة.",
     "welcomeBrowse": "تصفّح المنتجات",
-    "welcomeSkip": "تصفح بنفسك"
+    "welcomeSkip": "تصفح بنفسك",
+    "outOfStock": "نفد المخزون",
+    "offlineTitle": "لا يوجد اتصال",
+    "offlineDesc": "يبدو أنك غير متصل بالإنترنت. بعض المحتوى قد لا يكون متاحاً.",
+    "offlineRetry": "إعادة المحاولة",
+    "newProductAlert": "منتج جديد!"
   },
   "hero": {
     "title": "متجر التفرّد",
@@ -339,6 +344,13 @@
     "expiringCoupons": "كوبونات تنتهي قريباً",
     "noNotifications": "لا توجد تنبيهات",
     "totalAuthors": "إجمالي الكتّاب",
-    "topAuthors": "أبرز الكتّاب"
+    "topAuthors": "أبرز الكتّاب",
+    "stock": "المخزون",
+    "stockUnlimited": "اتركه فارغاً لغير محدود",
+    "lowStock": "مخزون منخفض",
+    "outOfStock": "نفد المخزون",
+    "startsAt": "يبدأ في",
+    "endsAt": "ينتهي في",
+    "scheduled": "مجدول"
   }
 }

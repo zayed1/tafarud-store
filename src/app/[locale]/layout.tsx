@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/layout/Header";
 import AnnouncementBar from "@/components/store/AnnouncementBar";
+import OfflineBanner from "@/components/store/OfflineBanner";
 import Footer from "@/components/layout/Footer";
 import BackToTop from "@/components/ui/BackToTop";
 import PageTransition from "@/components/ui/PageTransition";
@@ -13,6 +14,8 @@ import { createClient } from "@/lib/supabase/server";
 import MaintenanceGate from "@/components/store/MaintenanceGate";
 import WelcomeModal from "@/components/store/WelcomeModal";
 import LoadingScreen from "@/components/store/LoadingScreen";
+import FloatingRecentlyViewed from "@/components/store/FloatingRecentlyViewed";
+import NewProductNotification from "@/components/store/NewProductNotification";
 
 export default async function LocaleLayout({
   children,
@@ -103,6 +106,7 @@ export default async function LocaleLayout({
               >
                 {locale === "ar" ? "تخطي إلى المحتوى" : "Skip to content"}
               </a>
+              <OfflineBanner />
               <AnnouncementBar />
               <Header />
               <main id="main-content" className="flex-1" role="main" aria-label={locale === "ar" ? "المحتوى الرئيسي" : "Main content"}>
@@ -112,6 +116,8 @@ export default async function LocaleLayout({
               <BackToTop />
               <WelcomeModal />
               <LoadingScreen />
+              <FloatingRecentlyViewed />
+              <NewProductNotification />
               <WebVitals />
             </MaintenanceGate>
           </ToastProvider>

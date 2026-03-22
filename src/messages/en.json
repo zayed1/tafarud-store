@@ -145,7 +145,12 @@
     "welcomeSubtitle": "Your window to our creative publications",
     "welcomeDesc": "Discover our distinguished collection of books and cultural publications. We're glad you're here and wish you a pleasant shopping experience.",
     "welcomeBrowse": "Browse Products",
-    "welcomeSkip": "Browse on your own"
+    "welcomeSkip": "Browse on your own",
+    "outOfStock": "Out of Stock",
+    "offlineTitle": "No Connection",
+    "offlineDesc": "You appear to be offline. Some content may not be available.",
+    "offlineRetry": "Retry",
+    "newProductAlert": "New product!"
   },
   "hero": {
     "title": "Tafarud Store",
@@ -339,6 +344,13 @@
     "expiringCoupons": "Expiring Coupons",
     "noNotifications": "No notifications",
     "totalAuthors": "Total Authors",
-    "topAuthors": "Top Authors"
+    "topAuthors": "Top Authors",
+    "stock": "Stock",
+    "stockUnlimited": "Leave empty for unlimited",
+    "lowStock": "Low stock",
+    "outOfStock": "Out of Stock",
+    "startsAt": "Starts at",
+    "endsAt": "Ends at",
+    "scheduled": "Scheduled"
   }
 }

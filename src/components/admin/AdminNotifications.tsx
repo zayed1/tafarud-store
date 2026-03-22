@@ -40,6 +40,22 @@ export default function AdminNotifications() {
         });
       }
 
+      // Check low stock products (stock <= 3)
+      const { data: lowStockProducts } = await supabase
+        .from("products")
+        .select("name_ar, stock")
+        .not("stock", "is", null)
+        .lte("stock", 3);
+
+      if (lowStockProducts && lowStockProducts.length > 0) {
+        lowStockProducts.forEach((p) => {
+          alerts.push({
+            type: p.stock <= 0 ? "warning" : "info",
+            message: `${t("lowStock")}: ${p.name_ar} (${p.stock <= 0 ? t("outOfStock") : p.stock})`,
+          });
+        });
+      }
+
       setNotifications(alerts);
     }
     checkNotifications();

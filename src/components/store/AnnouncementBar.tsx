@@ -15,6 +15,8 @@ interface Announcement {
   is_active: boolean;
   bg_color: string | null;
   text_color: string | null;
+  starts_at: string | null;
+  ends_at: string | null;
 }
 
 export default function AnnouncementBar() {
@@ -32,7 +34,13 @@ export default function AnnouncementBar() {
         .order("created_at", { ascending: false })
         .limit(1)
         .single();
-      if (data) setAnnouncement(data);
+      if (data) {
+        const now = new Date().toISOString();
+        const withinSchedule =
+          (!data.starts_at || data.starts_at <= now) &&
+          (!data.ends_at || data.ends_at >= now);
+        if (withinSchedule) setAnnouncement(data);
+      }
     } catch {
       // Table might not exist yet
     }

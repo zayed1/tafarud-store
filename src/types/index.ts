@@ -31,6 +31,7 @@ export interface Product {
   category_id: string | null;
   author_id: string | null;
   featured: boolean;
+  stock: number | null;
   created_at: string;
   category?: Category;
   author?: Author;
