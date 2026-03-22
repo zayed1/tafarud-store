@@ -29,7 +29,7 @@ export default function AdminAnnouncementsPage() {
   const [textAr, setTextAr] = useState("");
   const [textEn, setTextEn] = useState("");
   const [link, setLink] = useState("");
-  const [bgColor, setBgColor] = useState("#0D8070");
+  const [bgColor, setBgColor] = useState("#047857");
   const [textColor, setTextColor] = useState("#FFFFFF");
   const [isActive, setIsActive] = useState(true);
   const [startsAt, setStartsAt] = useState("");
@@ -63,7 +63,7 @@ export default function AdminAnnouncementsPage() {
     setTextAr("");
     setTextEn("");
     setLink("");
-    setBgColor("#0D8070");
+    setBgColor("#047857");
     setTextColor("#FFFFFF");
     setIsActive(true);
     setStartsAt("");
@@ -76,7 +76,7 @@ export default function AdminAnnouncementsPage() {
     setTextAr(a.text_ar);
     setTextEn(a.text_en);
     setLink(a.link || "");
-    setBgColor(a.bg_color || "#0D8070");
+    setBgColor(a.bg_color || "#047857");
     setTextColor(a.text_color || "#FFFFFF");
     setIsActive(a.is_active);
     setStartsAt(a.starts_at ? a.starts_at.slice(0, 16) : "");
@@ -149,7 +149,7 @@ export default function AdminAnnouncementsPage() {
             {/* Color preview */}
             <div
               className="w-10 h-10 rounded-lg flex-shrink-0 border border-border"
-              style={{ backgroundColor: a.bg_color || "#0D8070" }}
+              style={{ backgroundColor: a.bg_color || "#047857" }}
             />
             <div className="flex-1 min-w-0">
               <p className="font-medium text-dark truncate">{a.text_ar}</p>

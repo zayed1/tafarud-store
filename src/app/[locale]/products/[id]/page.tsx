@@ -19,7 +19,7 @@ import { BASE_URL } from "@/lib/config";
 import type { Metadata } from "next";
 import RelatedProducts from "@/components/store/RelatedProducts";
 import AuthorBooks from "@/components/store/AuthorBooks";
-import ProductTabs from "@/components/store/ProductTabs";
+import CopyDescriptionButton from "@/components/store/CopyDescriptionButton";
 
 const RecentlyViewed = nextDynamic(() => import("@/components/store/RecentlyViewed"));
 
@@ -279,16 +279,32 @@ export default async function ProductPage({
 
           {/* WhatsApp Order */}
           <WhatsAppButton productName={name} />
+
+          {/* Purchase Links - directly beside the image */}
+          <PurchaseLinks links={product.purchase_links || []} />
         </div>
       </div>
 
-      {/* Tabbed Content */}
-      <ProductTabs
-        description={description}
-        purchaseLinksSlot={<PurchaseLinks links={product.purchase_links || []} />}
-        relatedProductsSlot={<RelatedProducts categoryId={product.category_id} currentProductId={product.id} />}
-        hasPurchaseLinks={(product.purchase_links || []).filter(l => l.is_enabled).length > 0}
-      />
+      {/* Description */}
+      {description && (
+        <div className="mt-12 pt-8 border-t border-border">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-primary to-accent rounded-full" />
+            <h2 className="text-2xl font-bold text-dark">{t("description")}</h2>
+          </div>
+          <div className="prose prose-lg max-w-none">
+            <p className="text-dark-light text-lg leading-relaxed whitespace-pre-wrap">
+              {description}
+            </p>
+            <div className="mt-4">
+              <CopyDescriptionButton text={description} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Related Products - directly visible */}
+      <RelatedProducts categoryId={product.category_id} currentProductId={product.id} />
 
       {/* Author's Other Books */}
       {product.author && (

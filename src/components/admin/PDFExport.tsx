@@ -29,7 +29,7 @@ export default function PDFExport({ products }: PDFExportProps) {
           <tr style="${i % 2 === 0 ? "background:#f8fafa;" : ""}">
             <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:13px;color:#666;">${i + 1}</td>
             <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;font-weight:600;">${name}</td>
-            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;color:#0D8070;font-weight:600;">${formatPrice(p.price)}</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;color:#047857;font-weight:600;">${formatPrice(p.price)}</td>
             <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;color:#666;">${category}</td>
             <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;text-align:center;color:#f59e0b;">${featured}</td>
             <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;font-size:12px;color:#999;">${date}</td>
@@ -52,29 +52,29 @@ export default function PDFExport({ products }: PDFExportProps) {
           </style>
         </head>
         <body>
-          <div style="text-align:center;margin-bottom:30px;padding-bottom:20px;border-bottom:2px solid #0D8070;">
-            <h1 style="font-size:24px;color:#0D8070;margin:0 0 5px;">متجر التفرّد</h1>
+          <div style="text-align:center;margin-bottom:30px;padding-bottom:20px;border-bottom:2px solid #047857;">
+            <h1 style="font-size:24px;color:#047857;margin:0 0 5px;">متجر التفرّد</h1>
             <p style="font-size:14px;color:#666;margin:0;">قائمة المنتجات — ${new Date().toLocaleDateString("ar-AE")}</p>
           </div>
 
           <div style="display:flex;gap:20px;margin-bottom:25px;">
             <div style="flex:1;background:#f0faf8;padding:15px;border-radius:8px;text-align:center;">
-              <div style="font-size:24px;font-weight:bold;color:#0D8070;">${products.length}</div>
+              <div style="font-size:24px;font-weight:bold;color:#047857;">${products.length}</div>
               <div style="font-size:12px;color:#666;margin-top:4px;">${t("totalProducts")}</div>
             </div>
             <div style="flex:1;background:#f0faf8;padding:15px;border-radius:8px;text-align:center;">
-              <div style="font-size:24px;font-weight:bold;color:#0D8070;">${formatPrice(totalPrice)}</div>
+              <div style="font-size:24px;font-weight:bold;color:#047857;">${formatPrice(totalPrice)}</div>
               <div style="font-size:12px;color:#666;margin-top:4px;">${t("totalRevenue")}</div>
             </div>
             <div style="flex:1;background:#f0faf8;padding:15px;border-radius:8px;text-align:center;">
-              <div style="font-size:24px;font-weight:bold;color:#0D8070;">${formatPrice(avgPrice)}</div>
+              <div style="font-size:24px;font-weight:bold;color:#047857;">${formatPrice(avgPrice)}</div>
               <div style="font-size:12px;color:#666;margin-top:4px;">${t("avgPrice")}</div>
             </div>
           </div>
 
           <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:8px;">
             <thead>
-              <tr style="background:#0D8070;color:white;">
+              <tr style="background:#047857;color:white;">
                 <th style="padding:10px 12px;font-size:13px;font-weight:600;text-align:center;">#</th>
                 <th style="padding:10px 12px;font-size:13px;font-weight:600;text-align:start;">${t("nameAr")}</th>
                 <th style="padding:10px 12px;font-size:13px;font-weight:600;text-align:start;">${t("price")}</th>
