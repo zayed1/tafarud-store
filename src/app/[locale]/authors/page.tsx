@@ -9,7 +9,7 @@ import type { Author } from "@/types";
 import type { Metadata } from "next";
 import { BASE_URL } from "@/lib/config";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
