@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS products (
   gallery_urls TEXT[],
   category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
   featured BOOLEAN DEFAULT FALSE,
+  stock INTEGER,
   sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -170,6 +171,8 @@ CREATE TABLE IF NOT EXISTS announcements (
   bg_color TEXT DEFAULT '#0D8070',
   text_color TEXT DEFAULT '#FFFFFF',
   is_active BOOLEAN DEFAULT TRUE,
+  starts_at TIMESTAMPTZ,
+  ends_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -217,6 +220,8 @@ CREATE TABLE IF NOT EXISTS faqs (
   question_en TEXT DEFAULT '',
   answer_ar TEXT NOT NULL,
   answer_en TEXT DEFAULT '',
+  category_ar TEXT DEFAULT '',
+  category_en TEXT DEFAULT '',
   sort_order INTEGER DEFAULT 0,
   is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ DEFAULT NOW()
