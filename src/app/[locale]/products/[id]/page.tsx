@@ -11,6 +11,7 @@ import WhatsAppButton from "@/components/store/WhatsAppButton";
 import ShareButton from "@/components/store/ShareButton";
 import QRCodeShare from "@/components/store/QRCodeShare";
 import ProductGallery from "@/components/store/ProductGallery";
+import WishlistButton from "@/components/store/WishlistButton";
 import Badge from "@/components/ui/Badge";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ProductViewTracker from "@/components/store/ProductViewTracker";
@@ -220,11 +221,24 @@ export default async function ProductPage({
                 </svg>
               </div>
             )}
-            {product.featured && (
-              <div className="absolute top-4 start-4">
-                <Badge variant="accent">{t("featuredProducts")}</Badge>
-              </div>
-            )}
+            {/* Badges */}
+            <div className="absolute top-4 start-4 flex flex-col gap-2">
+              {product.featured && (
+                <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-accent text-white shadow-md">
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  {t("featuredProducts")}
+                </span>
+              )}
+              {product.stock !== null && product.stock !== undefined && product.stock <= 0 && (
+                <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-red-500 text-white shadow-md">
+                  {t("outOfStock")}
+                </span>
+              )}
+            </div>
+            {/* Wishlist */}
+            <div className="absolute top-4 end-4">
+              <WishlistButton productId={product.id} />
+            </div>
           </div>
         )}
 
@@ -234,7 +248,12 @@ export default async function ProductPage({
             <div className="space-y-3">
               {categoryName && (
                 <Link href={`/${locale}/categories/${product.category?.slug}`}>
-                  <Badge variant="accent" className="hover:opacity-80 transition-opacity cursor-pointer">{categoryName}</Badge>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-primary/10 text-primary hover:bg-primary/15 transition-colors cursor-pointer">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    {categoryName}
+                  </span>
                 </Link>
               )}
               <h1 className="text-3xl sm:text-4xl font-bold text-dark leading-tight">{name}</h1>
@@ -273,8 +292,14 @@ export default async function ProductPage({
             </div>
           </div>
 
-          <div className="flex items-baseline gap-3 bg-primary/5 px-5 py-3 rounded-xl">
+          <div className="flex items-center gap-4 bg-gradient-to-r from-primary/5 to-primary/[0.02] px-5 py-4 rounded-xl border border-primary/10">
             <p className="text-3xl font-bold text-primary">{formatPrice(product.price)}</p>
+            {product.stock !== null && product.stock !== undefined && product.stock > 0 && (
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full dark:bg-emerald-500/10 dark:text-emerald-400">
+                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                {t("inStock")}
+              </span>
+            )}
           </div>
 
           {/* WhatsApp Order */}

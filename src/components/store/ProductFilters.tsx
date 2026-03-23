@@ -14,6 +14,9 @@ interface ProductFiltersProps {
   onCategoryChange: (category: string) => void;
   onSortChange: (sort: string) => void;
   productCount: number;
+  priceRange?: [number, number];
+  maxPrice?: number;
+  onPriceRangeChange?: (range: [number, number]) => void;
 }
 
 export default function ProductFilters({
@@ -23,6 +26,9 @@ export default function ProductFilters({
   onCategoryChange,
   onSortChange,
   productCount,
+  priceRange,
+  maxPrice,
+  onPriceRangeChange,
 }: ProductFiltersProps) {
   const t = useTranslations("common");
   const locale = useLocale();
@@ -128,6 +134,23 @@ export default function ProductFilters({
                 <span className="relative z-10">{getLocalizedField(category, "name", locale)}</span>
               </motion.button>
             ))}
+          </div>
+        )}
+        {/* Price Range Filter */}
+        {maxPrice !== undefined && maxPrice > 0 && priceRange && onPriceRangeChange && (
+          <div className="hidden sm:flex items-center gap-3 pt-1">
+            <span className="text-xs text-muted font-medium flex-shrink-0">{t("priceRange")}:</span>
+            <input
+              type="range"
+              min={0}
+              max={maxPrice}
+              value={priceRange[1]}
+              onChange={(e) => onPriceRangeChange([priceRange[0], parseInt(e.target.value)])}
+              className="flex-1 h-1.5 bg-border rounded-full appearance-none cursor-pointer accent-primary max-w-xs"
+            />
+            <span className="text-xs text-muted font-mono tabular-nums flex-shrink-0">
+              {priceRange[0]} - {priceRange[1]} AED
+            </span>
           </div>
         )}
       </motion.div>

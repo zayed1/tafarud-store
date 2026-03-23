@@ -73,7 +73,7 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href={`/${locale}`} className="flex items-center gap-2.5 group">
+            <Link href={`/${locale}`} className="flex items-center gap-2.5 group flex-shrink-0">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -102,7 +102,7 @@ export default function Header() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`relative px-4 py-2 font-medium transition-colors rounded-lg ${
+                    className={`relative px-4 py-2 font-medium transition-colors rounded-lg text-sm ${
                       isActive(link.href)
                         ? "text-primary bg-primary/10 dark:text-accent dark:bg-accent/10"
                         : "text-dark hover:text-primary hover:bg-primary/5 dark:text-gray-300 dark:hover:text-accent"
@@ -122,13 +122,24 @@ export default function Header() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-1 sm:gap-2">
-              {/* Search Button */}
+            <div className="flex items-center gap-1 sm:gap-1.5">
+              {/* Inline search trigger for desktop */}
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-background/50 text-muted hover:text-dark hover:border-primary/30 transition-all cursor-pointer min-w-[180px]"
+              >
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <span className="text-sm">{t("search")}...</span>
+                <kbd className="ms-auto text-[10px] bg-surface border border-border px-1.5 py-0.5 rounded font-mono text-muted/70">⌘K</kbd>
+              </button>
+
+              {/* Mobile search button */}
               <motion.button
                 onClick={() => setIsSearchOpen(true)}
-                className="p-2.5 rounded-xl hover:bg-primary/5 text-dark hover:text-primary transition-colors cursor-pointer dark:text-gray-300 dark:hover:text-accent"
+                className="md:hidden p-2.5 rounded-xl hover:bg-primary/5 text-dark hover:text-primary transition-colors cursor-pointer dark:text-gray-300 dark:hover:text-accent"
                 whileTap={{ scale: 0.9 }}
-                title="Ctrl+K"
                 aria-label={t("search")}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -181,36 +192,41 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Mobile Nav */}
+          {/* Mobile Nav - improved slide-in design */}
           <AnimatePresence>
             {isMenuOpen && (
               <motion.nav
-                className="md:hidden border-t border-border py-3 space-y-1 overflow-hidden"
+                className="md:hidden border-t border-border overflow-hidden"
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               >
-                {navLinks.map((link, index) => (
-                  <motion.div
-                    key={link.href}
-                    initial={{ opacity: 0, x: locale === "ar" ? 20 : -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05, duration: 0.3 }}
-                  >
-                    <Link
-                      href={link.href}
-                      className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
-                        isActive(link.href)
-                          ? "text-primary bg-primary/10 dark:text-accent"
-                          : "text-dark hover:text-primary hover:bg-primary/5 dark:text-gray-300"
-                      }`}
-                      onClick={() => setIsMenuOpen(false)}
+                <div className="py-3 space-y-1">
+                  {navLinks.map((link, index) => (
+                    <motion.div
+                      key={link.href}
+                      initial={{ opacity: 0, x: locale === "ar" ? 20 : -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05, duration: 0.3 }}
                     >
-                      {link.label}
-                    </Link>
-                  </motion.div>
-                ))}
+                      <Link
+                        href={link.href}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                          isActive(link.href)
+                            ? "text-primary bg-primary/10 dark:text-accent"
+                            : "text-dark hover:text-primary hover:bg-primary/5 dark:text-gray-300"
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {link.label}
+                        {isActive(link.href) && (
+                          <div className="ms-auto w-1.5 h-1.5 bg-primary rounded-full" />
+                        )}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
               </motion.nav>
             )}
           </AnimatePresence>

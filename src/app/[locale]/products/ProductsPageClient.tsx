@@ -33,12 +33,17 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
+  const maxPrice = useMemo(() => Math.ceil(Math.max(...products.map(p => p.price), 0)), [products]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, maxPrice]);
+
   const filteredAndSorted = useMemo(() => {
     let result = [...products];
 
     if (selectedCategory) {
       result = result.filter((p) => p.category_id === selectedCategory);
     }
+
+    result = result.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
 
     switch (sortBy) {
       case "price_asc":
@@ -54,7 +59,7 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
     }
 
     return result;
-  }, [products, selectedCategory, sortBy]);
+  }, [products, selectedCategory, sortBy, priceRange]);
 
   const visibleProducts = filteredAndSorted.slice(0, visibleCount);
   const hasMore = visibleCount < filteredAndSorted.length;
@@ -156,6 +161,9 @@ export default function ProductsPageClient({ products, categories, locale }: Pro
         onCategoryChange={handleCategoryChange}
         onSortChange={handleSortChange}
         productCount={filteredAndSorted.length}
+        priceRange={priceRange}
+        maxPrice={maxPrice}
+        onPriceRangeChange={(range) => { setPriceRange(range); setVisibleCount(PRODUCTS_PER_PAGE); }}
       />
 
       {visibleProducts.length > 0 ? (

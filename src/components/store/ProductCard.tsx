@@ -7,9 +7,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import type { Product } from "@/types";
 import { getLocalizedField, formatPrice } from "@/lib/utils";
-import Badge from "@/components/ui/Badge";
 import ProgressiveImage from "@/components/ui/ProgressiveImage";
-import TiltCard from "./TiltCard";
+import WishlistButton from "./WishlistButton";
 
 interface ProductCardProps {
   product: Product;
@@ -35,14 +34,17 @@ function ProductCard({ product, onQuickView }: ProductCardProps) {
     ? getLocalizedField(product.author, "name", locale)
     : "";
   const isNew = isNewProduct(product.created_at);
+  const isOutOfStock = product.stock !== null && product.stock !== undefined && product.stock <= 0;
 
-  // Smart prefetch on hover
   const handlePrefetch = useCallback(() => {
     router.prefetch(`/${locale}/products/${product.id}`);
   }, [router, locale, product.id]);
 
   return (
-    <TiltCard>
+    <motion.div
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+    >
       <Link href={`/${locale}/products/${product.id}`} className="block group" onMouseEnter={handlePrefetch}>
         <div className="bg-surface rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300">
           <div className="aspect-[3/4] relative bg-background overflow-hidden">
@@ -61,17 +63,23 @@ function ProductCard({ product, onQuickView }: ProductCardProps) {
                 </svg>
               </div>
             )}
-            {/* Badges */}
+
+            {/* Badges - top start */}
             <div className="absolute top-3 start-3 flex flex-col gap-1.5">
               {product.featured && (
-                <Badge variant="accent">{t("featuredProducts")}</Badge>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-accent text-white shadow-sm">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  {t("featuredProducts")}
+                </span>
               )}
-              {product.stock !== null && product.stock !== undefined && product.stock <= 0 && (
-                <Badge variant="danger">{t("outOfStock")}</Badge>
+              {isOutOfStock && (
+                <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-red-500 text-white shadow-sm">
+                  {t("outOfStock")}
+                </span>
               )}
               {isNew && (
                 <motion.span
-                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-500 text-white shadow-sm"
+                  className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-500 text-white shadow-sm"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 400, damping: 15 }}
@@ -80,8 +88,14 @@ function ProductCard({ product, onQuickView }: ProductCardProps) {
                 </motion.span>
               )}
             </div>
+
+            {/* Wishlist - top end */}
+            <div className="absolute top-3 end-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <WishlistButton productId={product.id} size="sm" />
+            </div>
+
             {/* Hover overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-dark/40 via-dark/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-4">
+            <div className="absolute inset-0 bg-gradient-to-t from-dark/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-4">
               <div className="flex items-center gap-2">
                 <span className="text-white text-sm font-medium bg-primary/90 backdrop-blur-sm px-4 py-2 rounded-full translate-y-3 group-hover:translate-y-0 transition-transform duration-300 flex items-center gap-1.5">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,24 +122,34 @@ function ProductCard({ product, onQuickView }: ProductCardProps) {
               </div>
             </div>
           </div>
-          <div className="p-4 space-y-2">
+
+          {/* Card content */}
+          <div className="p-4 space-y-2.5">
             {categoryName && (
-              <span className="text-xs text-primary/70 font-medium">{categoryName}</span>
+              <span className="inline-block text-xs text-primary font-medium bg-primary/5 px-2 py-0.5 rounded-md">{categoryName}</span>
             )}
-            <h3 className="font-semibold text-dark text-base sm:text-lg line-clamp-2 group-hover:text-primary transition-colors duration-200">{name}</h3>
+            <h3 className="font-semibold text-dark text-base sm:text-lg line-clamp-2 group-hover:text-primary transition-colors duration-200 leading-snug">{name}</h3>
             {authorName && (
-              <p className="text-xs text-muted">{t("by")} {authorName}</p>
+              <p className="text-xs text-muted flex items-center gap-1">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                {authorName}
+              </p>
             )}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pt-1 border-t border-border/50">
               <p className="text-primary font-bold text-lg">{formatPrice(product.price)}</p>
-              <svg className="w-5 h-5 text-muted group-hover:text-primary transition-all rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
+              <span className="text-xs text-muted flex items-center gap-1 group-hover:text-primary transition-colors">
+                {t("viewDetails")}
+                <svg className="w-3.5 h-3.5 rtl:rotate-180 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
             </div>
           </div>
         </div>
       </Link>
-    </TiltCard>
+    </motion.div>
   );
 }
 

@@ -9,14 +9,6 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { getLocalizedField } from "@/lib/utils";
 import type { Banner } from "@/types";
 
-const floatingSquares = Array.from({ length: 12 }, (_, i) => ({
-  id: i,
-  top: `${15 + (i * 5.83) % 70}%`,
-  left: `${5 + (i * 7.5) % 90}%`,
-  duration: 4 + (i % 5),
-  delay: (i % 4) * 0.75,
-}));
-
 interface HeroSectionProps {
   banners?: Banner[];
 }
@@ -35,11 +27,8 @@ export default function HeroSection({ banners = [] }: HeroSectionProps) {
     offset: ["start start", "end start"],
   });
 
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
-  const midY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
 
   const nextBanner = useCallback(() => {
     if (activeBanners.length > 1) {
@@ -58,7 +47,7 @@ export default function HeroSection({ banners = [] }: HeroSectionProps) {
   const bannerSubtitle = banner ? getLocalizedField(banner, "subtitle", locale) : t("subtitle");
 
   return (
-    <section ref={ref} className="relative overflow-hidden bg-gradient-to-br from-primary-dark via-primary to-secondary min-h-[520px] sm:min-h-[580px] flex items-center">
+    <section ref={ref} className="relative overflow-hidden bg-gradient-to-br from-primary-dark via-primary to-secondary min-h-[480px] sm:min-h-[540px] flex items-center">
       {/* Banner background image */}
       {banner?.image_url && (
         <div className="absolute inset-0">
@@ -72,67 +61,48 @@ export default function HeroSection({ banners = [] }: HeroSectionProps) {
         </div>
       )}
 
-      {/* Parallax animated decorative patterns */}
-      <motion.div className="absolute inset-0 overflow-hidden" style={{ y: bgY }}>
-        <motion.div
-          className="absolute top-10 start-10 w-72 h-72 bg-accent rounded-full blur-3xl opacity-20"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.2, 0.28, 0.2],
-          }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-10 end-10 w-96 h-96 bg-accent-light rounded-full blur-3xl opacity-10"
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.1, 0.18, 0.1],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white rounded-full blur-3xl opacity-[0.04]"
-          animate={{
-            scale: [1, 1.1, 1],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </motion.div>
+      {/* Animated gradient overlay */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-accent/20 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-primary-light/10 via-transparent to-transparent" />
+      </div>
 
-      {/* Geometric pattern overlay with parallax */}
-      <motion.div
-        className="absolute inset-0 opacity-[0.04]"
+      {/* Geometric pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
           backgroundSize: "40px 40px",
-          y: bgY,
         }}
       />
 
-      {/* Decorative floating squares - mid-layer parallax */}
-      <motion.div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ y: midY, scale }}>
-        {floatingSquares.map((sq) => (
-          <motion.div
-            key={sq.id}
-            className="absolute w-2 h-2 sm:w-3 sm:h-3 bg-white/10 rounded-sm"
-            style={{ top: sq.top, left: sq.left }}
-            animate={{
-              y: [0, -20, 0],
-              opacity: [0.1, 0.3, 0.1],
-              rotate: [0, 90, 0],
-            }}
-            transition={{
-              duration: sq.duration,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: sq.delay,
-            }}
-          />
-        ))}
-      </motion.div>
+      {/* Decorative shapes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-10 start-10 w-64 h-64 bg-accent rounded-full blur-3xl opacity-15"
+          animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.22, 0.15] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-10 end-10 w-80 h-80 bg-accent-light rounded-full blur-3xl opacity-10"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.16, 0.1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        {/* Floating line accents */}
+        <motion.div
+          className="absolute top-1/4 end-1/4 w-32 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
+          animate={{ opacity: [0, 0.5, 0], x: [0, 50, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-1/3 start-1/3 w-24 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"
+          animate={{ opacity: [0, 0.4, 0], x: [0, -30, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        />
+      </div>
 
       <motion.div
-        className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center w-full"
+        className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center w-full"
         style={{ y: textY, opacity }}
       >
         <AnimatePresence mode="wait">
@@ -158,7 +128,7 @@ export default function HeroSection({ banners = [] }: HeroSectionProps) {
             </h1>
 
             {!hasBanners && (
-              <p className="text-white/80 max-w-2xl mx-auto mb-10 text-base sm:text-lg leading-relaxed">
+              <p className="text-white/75 max-w-2xl mx-auto mb-10 text-base sm:text-lg leading-relaxed">
                 {t("description")}
               </p>
             )}
@@ -174,7 +144,7 @@ export default function HeroSection({ banners = [] }: HeroSectionProps) {
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Link
               href={banner?.link || `/${locale}/products`}
-              className="inline-flex items-center justify-center px-8 py-3.5 bg-white text-primary-dark font-semibold rounded-xl hover:bg-accent-light transition-all text-lg shadow-lg shadow-black/10 hover:shadow-xl"
+              className="inline-flex items-center justify-center px-8 py-3.5 bg-white text-primary-dark font-semibold rounded-xl hover:bg-accent-light hover:text-white transition-all text-lg shadow-lg shadow-black/10 hover:shadow-xl"
             >
               {t("browseProducts")}
               <svg className="w-5 h-5 ms-2 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,8 +169,8 @@ export default function HeroSection({ banners = [] }: HeroSectionProps) {
               <button
                 key={i}
                 onClick={() => setCurrentBanner(i)}
-                className={`w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${
-                  i === currentBanner ? "bg-white w-8" : "bg-white/40 hover:bg-white/60"
+                className={`h-2 rounded-full transition-all cursor-pointer ${
+                  i === currentBanner ? "bg-white w-8" : "w-2 bg-white/40 hover:bg-white/60"
                 }`}
                 aria-label={`Banner ${i + 1}`}
               />
@@ -214,7 +184,7 @@ export default function HeroSection({ banners = [] }: HeroSectionProps) {
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         >
-          <svg className="w-6 h-6 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-white/25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </motion.div>

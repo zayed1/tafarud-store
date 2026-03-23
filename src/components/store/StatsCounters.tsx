@@ -13,9 +13,9 @@ export default function StatsCounters({ productsCount, categoriesCount, authorsC
   const t = useTranslations("common");
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-      <div className="bg-surface rounded-2xl border border-border p-8 sm:p-10">
-        <div className="grid grid-cols-3 gap-6 sm:gap-8">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-8 relative z-10">
+      <div className="bg-surface rounded-2xl border border-border shadow-lg p-6 sm:p-8">
+        <div className="grid grid-cols-3 gap-4 sm:gap-8">
           <AnimatedCounter
             end={productsCount}
             label={t("statsProducts")}

@@ -7,6 +7,7 @@ import HeroSection from "@/components/store/HeroSection";
 import FeaturedSlider from "@/components/store/FeaturedSlider";
 import CategoryCard from "@/components/store/CategoryCard";
 import AnimatedSection, { StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
+import ProductCard from "@/components/store/ProductCard";
 import type { Product, Category, Banner } from "@/types";
 import { getLocalizedField } from "@/lib/utils";
 import { BASE_URL } from "@/lib/config";
@@ -111,6 +112,20 @@ async function getCategoriesWithCounts(): Promise<(Category & { product_count: n
   }
 }
 
+async function getNewArrivals(): Promise<Product[]> {
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("products")
+      .select("*, category:categories(*), author:authors(*)")
+      .order("created_at", { ascending: false })
+      .limit(8);
+    return data || [];
+  } catch {
+    return [];
+  }
+}
+
 async function getAuthorsCount(): Promise<number> {
   try {
     const supabase = await createClient();
@@ -138,6 +153,7 @@ function HomeContent({
   locale,
   productsCount,
   authorsCount,
+  newArrivals,
 }: {
   featuredProducts: Product[];
   categories: (Category & { product_count: number })[];
@@ -145,6 +161,7 @@ function HomeContent({
   locale: string;
   productsCount: number;
   authorsCount: number;
+  newArrivals: Product[];
 }) {
   const t = useTranslations("common");
   const tAbout = useTranslations("about");
@@ -228,6 +245,39 @@ function HomeContent({
         </section>
       )}
 
+      {/* New Arrivals */}
+      {newArrivals.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+          <AnimatedSection>
+            <div className="flex items-center justify-between mb-10">
+              <div className="flex items-center gap-3">
+                <div className="w-1 h-8 bg-gradient-to-b from-accent to-primary rounded-full" />
+                <div>
+                  <h2 className="text-3xl sm:text-4xl font-bold text-dark">{t("newArrivals")}</h2>
+                  <p className="text-muted text-sm mt-1">{t("newArrivalsDesc")}</p>
+                </div>
+              </div>
+              <Link
+                href={`/${locale}/products`}
+                className="text-primary hover:text-primary-dark font-medium text-sm flex items-center gap-1 transition-colors"
+              >
+                {t("viewAll")}
+                <svg className="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          </AnimatedSection>
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {newArrivals.map((product) => (
+              <StaggerItem key={product.id}>
+                <ProductCard product={product} />
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </section>
+      )}
+
       {/* Featured Products Slider */}
       {featuredProducts.length > 0 && (
         <FeaturedSlider products={featuredProducts} />
@@ -270,13 +320,14 @@ function HomeContent({
 }
 
 export default async function HomePage() {
-  const [featuredProducts, categories, banners, locale, productsCount, authorsCount] = await Promise.all([
+  const [featuredProducts, categories, banners, locale, productsCount, authorsCount, newArrivals] = await Promise.all([
     getFeaturedProducts(),
     getCategoriesWithCounts(),
     getBanners(),
     getLocale(),
     getProductsCount(),
     getAuthorsCount(),
+    getNewArrivals(),
   ]);
 
   return (
@@ -287,6 +338,7 @@ export default async function HomePage() {
       locale={locale}
       productsCount={productsCount}
       authorsCount={authorsCount}
+      newArrivals={newArrivals}
     />
   );
 }

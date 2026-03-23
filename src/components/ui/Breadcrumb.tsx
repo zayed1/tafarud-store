@@ -14,7 +14,7 @@ interface BreadcrumbProps {
 
 export default function Breadcrumb({ items }: BreadcrumbProps) {
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-muted mb-8 overflow-x-auto">
+    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-muted mb-8 overflow-x-auto pb-1">
       {items.map((item, index) => (
         <motion.span
           key={index}
@@ -40,7 +40,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
               {item.label}
             </Link>
           ) : (
-            <span className="text-dark font-medium truncate">{item.label}</span>
+            <span className="text-dark font-medium truncate max-w-[200px]">{item.label}</span>
           )}
         </motion.span>
       ))}
