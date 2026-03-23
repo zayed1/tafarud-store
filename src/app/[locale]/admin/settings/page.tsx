@@ -231,7 +231,7 @@ export default function SettingsPage() {
           <p className="text-sm text-muted mb-4">{t("storeThemeDesc")}</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { id: "classic", color: "#0D8070", label: t("themeClassic") },
+              { id: "classic", color: "#047857", label: t("themeClassic") },
               { id: "ocean", color: "#1E6CB0", label: t("themeOcean") },
               { id: "sunset", color: "#C96830", label: t("themeSunset") },
               { id: "lavender", color: "#7C3AED", label: t("themeLavender") },

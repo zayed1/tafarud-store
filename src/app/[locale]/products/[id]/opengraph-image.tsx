@@ -30,7 +30,7 @@ export default async function OGImage({
             justifyContent: "center",
             width: "100%",
             height: "100%",
-            background: "linear-gradient(135deg, #0A6658, #0D8070, #5EC4B0)",
+            background: "linear-gradient(135deg, #065F46, #047857, #34D399)",
             color: "white",
             fontSize: 48,
             fontWeight: "bold",
@@ -53,7 +53,7 @@ export default async function OGImage({
           display: "flex",
           width: "100%",
           height: "100%",
-          background: "linear-gradient(135deg, #0A6658 0%, #0D8070 50%, #5EC4B0 100%)",
+          background: "linear-gradient(135deg, #065F46 0%, #047857 50%, #34D399 100%)",
           padding: "60px",
           alignItems: "center",
           gap: "50px",
@@ -72,7 +72,7 @@ export default async function OGImage({
               boxShadow: "0 25px 50px rgba(0,0,0,0.3)",
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img
               src={product.image_url}
               alt={name}

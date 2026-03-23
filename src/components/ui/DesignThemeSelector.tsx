@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 
 const THEMES = [
-  { id: "classic", color: "#0D8070", darkColor: "#2DD4BF" },
+  { id: "classic", color: "#047857", darkColor: "#2DD4BF" },
   { id: "ocean", color: "#1E6CB0", darkColor: "#60A5FA" },
   { id: "sunset", color: "#C96830", darkColor: "#F59E0B" },
   { id: "lavender", color: "#7C3AED", darkColor: "#A78BFA" },
